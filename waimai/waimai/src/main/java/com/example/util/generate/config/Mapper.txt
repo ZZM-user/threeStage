@@ -1,0 +1,10 @@
+package {packageName}.mapper;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import {packageName}.entity.{a};
+import org.apache.ibatis.annotations.Mapper;
+
+@Mapper
+public interface {a}Mapper extends BaseMapper<{a}> {
+
+}
