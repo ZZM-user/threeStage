@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.DishFlavorMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.entity.DishFlavor">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="dish_id" column="dish_id" jdbcType="BIGINT"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="value" column="value" jdbcType="VARCHAR"/>
+            <result property="is_deleted" column="is_deleted" jdbcType="INTEGER"/>
+            <result property="create_by" column="create_by" jdbcType="VARCHAR"/>
+            <result property="create_time" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="update_time" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="update_by" column="update_by" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,dish_id,name,
+        value,is_deleted,create_by,
+        create_time,update_time,update_by
+    </sql>
+</mapper>
