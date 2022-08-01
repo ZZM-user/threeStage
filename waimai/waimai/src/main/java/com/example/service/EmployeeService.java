@@ -1,7 +1,8 @@
 package com.example.service;
 
-import com.example.entity.Employee;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.example.entity.Employee;
+import org.apache.ibatis.annotations.Param;
 
 /**
 * @author 17602
@@ -9,5 +10,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 * @createDate 2022-08-01 14:06:02
 */
 public interface EmployeeService extends IService<Employee> {
-
+    Employee selectOneByLoginName(@Param("name") String loginName);
 }

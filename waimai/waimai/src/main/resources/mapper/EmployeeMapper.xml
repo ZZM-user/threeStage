@@ -5,16 +5,16 @@
 <mapper namespace="com.example.mapper.EmployeeMapper">
 
     <resultMap id="BaseResultMap" type="com.example.entity.Employee">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="login_name" column="login_name" jdbcType="VARCHAR"/>
-            <result property="login_pwd" column="login_pwd" jdbcType="VARCHAR"/>
-            <result property="gender" column="gender" jdbcType="TINYINT"/>
-            <result property="status" column="status" jdbcType="TINYINT"/>
-            <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
-            <result property="create_time" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="create_by" column="create_by" jdbcType="VARCHAR"/>
-            <result property="update_time" column="update_time" jdbcType="TIMESTAMP"/>
-            <result property="update_by" column="update_by" jdbcType="VARCHAR"/>
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="login_name" column="login_name" jdbcType="VARCHAR"/>
+        <result property="login_pwd" column="login_pwd" jdbcType="VARCHAR"/>
+        <result property="gender" column="gender" jdbcType="TINYINT"/>
+        <result property="status" column="status" jdbcType="TINYINT"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="create_time" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="create_by" column="create_by" jdbcType="VARCHAR"/>
+        <result property="update_time" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="update_by" column="update_by" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -23,4 +23,11 @@
         create_time,create_by,update_time,
         update_by
     </sql>
+    <select id="selectOneByLoginName" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from employee
+        where
+        login_name = #{loginName,jdbcType=VARCHAR}
+    </select>
 </mapper>

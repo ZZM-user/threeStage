@@ -3,6 +3,7 @@ package com.example.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.entity.Employee;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
 * @author 17602
@@ -12,5 +13,5 @@ import org.apache.ibatis.annotations.Mapper;
 */
 @Mapper
 public interface EmployeeMapper extends BaseMapper<Employee> {
-
+    Employee selectOneByLoginName(@Param("loginName") String loginName);
 }
