@@ -23,11 +23,17 @@
         create_time,create_by,update_time,
         update_by
     </sql>
-    <select id="selectOneByLoginName" resultMap="BaseResultMap">
+    <select id="search" resultType="com.example.entity.Employee">
         select
         <include refid="Base_Column_List"/>
         from employee
-        where
-        login_name = #{loginName,jdbcType=VARCHAR}
+        <where>
+            <if test="emp.loginName != null and emp.loginName != ''">
+                login_name like concat('%', #{emp.loginName}, '%')
+            </if>
+            <if test="emp.status != null">
+                and `status` = #{emp.status}
+            </if>
+        </where>
     </select>
 </mapper>

@@ -1,10 +1,12 @@
 package com.example.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.dto.EmployeeSearchDTO;
 import com.example.entity.Employee;
 import com.example.mapper.EmployeeMapper;
 import com.example.service.EmployeeService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,11 +17,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee>
         implements EmployeeService {
-    @Autowired
-    EmployeeMapper mapper;
-    
+    /**
+     * 分页查询
+     *
+     * @param employeeSearchDTO
+     *
+     * @return
+     */
     @Override
-    public Employee selectOneByLoginName(String loginName) {
-        return mapper.selectOneByLoginName(loginName);
+    public IPage<Employee> search(EmployeeSearchDTO employeeSearchDTO) {
+        Page<Employee> employeePage = new Page<>(employeeSearchDTO.getPage(), employeeSearchDTO.getSize());
+        return super.baseMapper.search(employeePage, employeeSearchDTO);
     }
 }

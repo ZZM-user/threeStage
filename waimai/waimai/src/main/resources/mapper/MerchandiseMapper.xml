@@ -17,7 +17,7 @@
             <result property="create_time" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="create_by" column="create_by" jdbcType="VARCHAR"/>
             <result property="update_time" column="update_time" jdbcType="TIMESTAMP"/>
-            <result property="update_by" column="update_by" jdbcType="VARCHAR"/>
+        <result property="update_by" column="update_by" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -27,4 +27,20 @@
         create_time,create_by,update_time,
         update_by
     </sql>
+    <select id="search" resultType="com.example.entity.Merchandise">
+        select
+        <include refid="Base_Column_List"/>
+        from merchandise
+        <where>
+            <if test="mer.accountType==1 and mer.eid!=null">
+                b_id = #{mer.eid}
+            </if>
+            <if test="mer.name!=null">
+                and name like concat('%',#{mer.name},'%')
+            </if>
+            <if test="mer.isgrounding!=null">
+                and isgrounding = #{isgrounding}
+            </if>
+        </where>
+    </select>
 </mapper>

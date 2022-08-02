@@ -18,7 +18,7 @@
             <result property="create_time" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="create_by" column="create_by" jdbcType="VARCHAR"/>
             <result property="update_time" column="update_time" jdbcType="TIMESTAMP"/>
-            <result property="update_by" column="update_by" jdbcType="VARCHAR"/>
+        <result property="update_by" column="update_by" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -28,4 +28,27 @@
         audit_time,create_time,create_by,
         update_time,update_by
     </sql>
+    <select id="search" resultType="com.example.entity.Enterprise">
+        SELECT
+        id,`name`,album,address,
+        longitude,latitude,
+        phone,`status`,create_time,audit_time,
+        create_by,update_time,update_by
+        FROM
+        enterprise
+        <where>
+            <if test="enp.name!=null">
+                name like concat('%',#{enp.name},'%')
+            </if>
+            <if test="enp.phone!=null">
+                and phone like concat('%',#{enp.phone},'%')
+            </if>
+            <if test="enp.status!=null">
+                and `status` like concat('%',#{enp.status},'%')
+            </if>
+            <if test="enp.startDate!=null and enp.endDate!=null">
+                and create_time between #{enp.startDate} and #{enp.endDate}
+            </if>
+        </where>
+    </select>
 </mapper>

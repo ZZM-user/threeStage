@@ -5,17 +5,17 @@
 <mapper namespace="com.example.mapper.ContamerMapper">
 
     <resultMap id="BaseResultMap" type="com.example.entity.Contamer">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="loginId" column="loginId" jdbcType="VARCHAR"/>
-            <result property="passwold" column="passwold" jdbcType="VARCHAR"/>
-            <result property="user_name" column="user_name" jdbcType="VARCHAR"/>
-            <result property="gender" column="gender" jdbcType="TINYINT"/>
-            <result property="portrait" column="portrait" jdbcType="VARCHAR"/>
-            <result property="status" column="status" jdbcType="INTEGER"/>
-            <result property="create_time" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="create_by" column="create_by" jdbcType="VARCHAR"/>
-            <result property="update_time" column="update_time" jdbcType="TIMESTAMP"/>
-            <result property="update_by" column="update_by" jdbcType="VARCHAR"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="loginId" column="loginId" jdbcType="VARCHAR"/>
+        <result property="passwold" column="passwold" jdbcType="VARCHAR"/>
+        <result property="user_name" column="user_name" jdbcType="VARCHAR"/>
+        <result property="gender" column="gender" jdbcType="TINYINT"/>
+        <result property="portrait" column="portrait" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="create_time" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="create_by" column="create_by" jdbcType="VARCHAR"/>
+        <result property="update_time" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="update_by" column="update_by" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -24,4 +24,28 @@
         status,create_time,create_by,
         update_time,update_by
     </sql>
+    <select id="search" resultType="com.example.entity.Contamer">
+        SELECT id,
+        loginId,
+        user_name,
+        gender,
+        portrait,
+        `status`,
+        create_time,
+        create_by,
+        update_time,
+        update_by
+        FROM contamer
+        <where>
+            <if test="con.loginId!=null">
+                loginId like concat('%',#{con.loginId}, '%')
+            </if>
+            <if test="con.status!=null">
+                and `status` = #{con.status}
+            </if>
+            <if test="con.startDate!=null and con.endDate!=null">
+                and create_time between #{con.startDate} and #{con.endDate}
+            </if>
+        </where>
+    </select>
 </mapper>
