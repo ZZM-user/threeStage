@@ -15,16 +15,19 @@ public class GenerateMVC {
     
     // 包名
     private static final String packageName = "com.example";
-    
-    private String className = "People";
-    // 绝对路径
+    // 类名
+    private String className = "Entity";
+    // 当前包的绝对路径
     final private static String ABS_PATH = System.getProperty("user.dir") + "\\src\\main\\java\\" + packageName.replace(".", "\\");
     
-    // 置换的规则
-    private HashMap<String, String> BASE_FORMAT;
+    // 置换配置文件的规则
+    private HashMap<String, String> baseFormatRules;
     
+    /**
+     * 根据当前类名/包名，重置配置文件规则
+     */
     private void replaceRules() {
-        BASE_FORMAT = new HashMap<String, String>() {
+        baseFormatRules = new HashMap<String, String>() {
             {
                 put("{packageName}", packageName);
                 put("{a}", className);
@@ -64,9 +67,7 @@ public class GenerateMVC {
      *
      * @throws IOException
      */
-    private String readConfig(String configName) throws IOException {
-        String filePath = CONFIG_PATH + '\\' + configName + ".txt";
-        File configFile = new File(filePath);
+    private String readConfig(File configFile) throws IOException {
         FileReader fileReader;
         
         fileReader = new FileReader(configFile);
@@ -88,11 +89,12 @@ public class GenerateMVC {
      *
      * @return
      */
-    private String formatOfClass(String config) {
-        Set<String> set = BASE_FORMAT.keySet();
+    private String formatConfigOfClass(String config) {
+        Set<String> set = baseFormatRules.keySet();
         for (String key : set) {
-            config = config.replace(key, BASE_FORMAT.get(key));
+            config = config.replace(key, baseFormatRules.get(key));
         }
+        // 这里的主要是处理排版
         config = config.replace(";", ";\n")
                          .replace("{}", "{\n}")
                          .replace("import", "\nimport")
@@ -107,15 +109,21 @@ public class GenerateMVC {
      * @param type
      */
     private void buildFile(String context, String type) {
-        String space = ("ServiceImpl".equals(type)) ? "service\\impl" : type.substring(0, 1).toLowerCase() + type.substring(1);
+        // 是否为serviceImpl，是则替换为二级包名,否则直接转换取就可
+        String space = ("ServiceImpl".equals(type)) ? "service\\impl" :
+                               type.substring(0, 1).toLowerCase() + type.substring(1);
+    
         String newFileName = className + type + ".java";
         String newFilePath = ABS_PATH + "\\" + space + "\\" + newFileName;
-        System.out.println("newFilePath = " + newFilePath);
+    
         File file = new File(newFilePath);
         try {
-            boolean created = file.createNewFile();
-            System.out.println(created);
-            if (created || file.exists()) {
+            // 文件不存在就新建
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            // 如果文件存在，就写入内容
+            if (file.exists()) {
                 FileWriter writer = new FileWriter(file);
                 writer.write(context);
                 writer.flush();
@@ -124,26 +132,40 @@ public class GenerateMVC {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        
+    
     }
     
+    /**
+     * 生成三层
+     *
+     * @throws IOException
+     */
     public void generate() throws IOException {
+        initPackage();
+        // 构建配置文件路径
         File configPath = new File(CONFIG_PATH);
+        // 构建实体类绝对路径
         String entityPath = (ABS_PATH + "\\entity").replace(".", "\\");
-        System.out.println("entityPath = " + entityPath);
+        
         File entityFiles = new File(entityPath);
-        String[] configList = configPath.list();
+        File[] configList = configPath.listFiles();
         String[] entityList = entityFiles.list();
         assert configList != null;
-        for (String item : configList) {
+        for (File configFile : configList) {
             assert entityList != null;
             for (String entity : entityList) {
-                System.out.println(item + "-----" + entity);
+                System.out.println(configFile.getName() + "-----" + entity);
+                // 根据配置文件名抽取当前配置层(mapper?service？serviceImpl?)
+                String configType = configFile.getName().substring(0, configFile.getName().lastIndexOf("."));
+                // 重置当前类名
                 this.className = entity.substring(0, entity.lastIndexOf('.'));
+                // 重新定义替换规则中的类名
                 replaceRules();
-                String configType = item.substring(0, item.lastIndexOf('.'));
-                String config = readConfig(configType);
-                String configResult = formatOfClass(config);
+                // 读取配置文件内容
+                String config = readConfig(configFile);
+                // 执行替换规则
+                String configResult = formatConfigOfClass(config);
+                // 构建并写出文件
                 buildFile(configResult, configType);
             }
         }
