@@ -35,7 +35,7 @@
             <if test="mer.accountType==1 and mer.eid!=null">
                 b_id = #{mer.eid}
             </if>
-            <if test="mer.name!=null">
+            <if test="mer.name!=null and mer.name!=''">
                 and name like concat('%',#{mer.name},'%')
             </if>
             <if test="mer.isgrounding!=null">

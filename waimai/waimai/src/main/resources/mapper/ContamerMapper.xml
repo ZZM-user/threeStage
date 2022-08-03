@@ -37,14 +37,14 @@
         update_by
         FROM contamer
         <where>
-            <if test="con.loginId!=null">
+            <if test="con.loginId!=null and con.loginId!=''">
                 loginId like concat('%',#{con.loginId}, '%')
             </if>
             <if test="con.status!=null">
                 and `status` = #{con.status}
             </if>
             <if test="con.startDate!=null and con.endDate!=null">
-                and create_time between #{con.startDate} and #{con.endDate}
+                and create_time between #{con.startDate} and date_add(#{con.endDate}, interval 1 day)
             </if>
         </where>
     </select>

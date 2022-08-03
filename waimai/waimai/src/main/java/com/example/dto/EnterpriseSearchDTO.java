@@ -13,7 +13,7 @@ import lombok.Setter;
 @ApiModel(value = "商家信息对象")
 @Getter
 @Setter
-public class EnterpriseSearchDTO extends PageDTO {
+public class EnterpriseSearchDTO extends CreateDateSearchDTO {
     
     @ApiModelProperty(value = "商家名称", example = "蜜雪冰城")
     private String name;
@@ -21,8 +21,4 @@ public class EnterpriseSearchDTO extends PageDTO {
     private String phone;
     @ApiModelProperty(value = "商家状态(1停用,0正常)", example = "0")
     private Byte status;
-    @ApiModelProperty(value = "创建日期（起始）", example = "2020-01-08")
-    private String startDate;
-    @ApiModelProperty(value = "创建日期（结束）", example = "2022-10-10")
-    private String endDate;
 }

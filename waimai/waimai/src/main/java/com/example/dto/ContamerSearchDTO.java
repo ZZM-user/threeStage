@@ -13,14 +13,10 @@ import lombok.Setter;
 @ApiModel(value = "会员信息对象")
 @Getter
 @Setter
-public class ContamerSearchDTO extends PageDTO {
+public class ContamerSearchDTO extends CreateDateSearchDTO {
     
     @ApiModelProperty(value = "登录名", example = "test")
     private String loginId;
     @ApiModelProperty(value = "状态(1停用,0正常)", example = "1")
     private Byte status;
-    @ApiModelProperty(value = "创建日期（起始）", example = "2000-10-12")
-    private String startDate;
-    @ApiModelProperty(value = "创建日期（结束）", example = "2030-10-03")
-    private String endDate;
 }

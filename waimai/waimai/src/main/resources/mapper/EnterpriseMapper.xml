@@ -37,17 +37,17 @@
         FROM
         enterprise
         <where>
-            <if test="enp.name!=null">
+            <if test="enp.name!=null and enp.name != ''">
                 name like concat('%',#{enp.name},'%')
             </if>
-            <if test="enp.phone!=null">
+            <if test="enp.phone!=null and enp.phone != ''">
                 and phone like concat('%',#{enp.phone},'%')
             </if>
             <if test="enp.status!=null">
-                and `status` like concat('%',#{enp.status},'%')
+                and `status` = #{enp.status}
             </if>
             <if test="enp.startDate!=null and enp.endDate!=null">
-                and create_time between #{enp.startDate} and #{enp.endDate}
+                and create_time between #{enp.startDate} and date_add(#{enp.endDate}, interval 1 day)
             </if>
         </where>
     </select>

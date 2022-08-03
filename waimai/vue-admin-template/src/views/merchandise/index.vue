@@ -1,73 +1,82 @@
 <template>
   <div>
-    <el-row :gutter="20">
+    <el-row>
       <el-col :span="6">
-        <el-input v-model.trim="searchKeyWord" placeholder="请输入员工姓名" @blur="searchEmployee"></el-input>
+        <el-input v-model.trim="searchKeyWord" placeholder="请输入菜品" @blur="searchMerchandise"></el-input>
       </el-col>
-      <el-col :offset="12" :span="6">
-        <el-button icon="el-icon-plus" style="background-color: #FFC200;color: black" @click="openDialog(1)">添加员工
+      <el-col :offset="8" :span="4" style="line-height: 40px">
+        <el-link :underline="false" type="primary">批量启售</el-link>
+        |
+        <el-link :underline="false" type="danger">
+          批量停售
+        </el-link>
+      </el-col>
+      <el-col :span="6">
+        <el-button icon="el-icon-plus" style="background-color: #FFC200;color: black" @click="openDialog(1)">添加菜品
         </el-button>
       </el-col>
     </el-row>
     <el-table
       :data="tableData"
       style="width: 100%"
+      @selection-change="handleSelectionChange"
     >
       <el-table-column
-        align="center"
-        label="编号"
-        prop="id"
-        width="50"
+        type="selection"
+        width="30px"
+      >
+      </el-table-column>
+      <el-table-column
+        label="菜品名称"
+        prop="name"
+        width="150"
       />
       <el-table-column
-        label="登录名"
-        prop="login_name"
-      />
-      <el-table-column
-        label="头像"
-        prop="avatar"
+        label="图片"
+        prop="picture"
       >
         <template slot-scope="scope">
-          <el-image :src="scope.row.avatar" lazy></el-image>
+          <el-image :src="scope.row.picture" lazy></el-image>
         </template>
       </el-table-column>
       <el-table-column
-        label="性别"
-        prop="gender"
+        label="菜品分类"
+        prop="m_id"
+      />
+      <el-table-column
+        label="售价"
+        prop="price"
         width="80px"
       >
         <template slot-scope="scope">
-          <el-tag :type="getGenderTagsColor(scope.row.gender)">{{
-              scope.row.gender === 1 ? '男' : '女'
+          ￥{{ scope.row.price }}
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="售卖状态"
+        prop="isgrounding"
+        width="80px"
+      >
+        <template slot-scope="scope">
+          <el-tag :type="getGenderTagsColor(scope.row.isgrounding)" effect="dark">{{
+              scope.row.isgrounding === 1 ? '启售' : '停售'
             }}
           </el-tag>
         </template>
       </el-table-column>
       <el-table-column
-        label="状态"
-        prop="status"
-        width="80px"
-      >
-        <template slot-scope="scope">
-          <el-tag :type="getGenderTagsColor(scope.row.status)" effect="dark">{{
-              scope.row.status === 1 ? '正常' : '停用'
-            }}
-          </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="创建日期"
-        prop="create_time"
+        label="最后操作日期"
+        prop="update_time"
         width="180px"
       />
       <el-table-column
         label="操作"
       >
         <template slot-scope="scope">
-          <el-link :underline="false" type="primary" @click="openDialog(2,scope.row.login_name)">编辑</el-link>
+          <el-link :underline="false" type="primary" @click="openDialog(2,scope.row.name)">编辑</el-link>
           |
-          <el-link :underline="false" type="danger" @click="changeAccountState(scope.row)">
-            {{ scope.row.status === 1 ? '禁用' : '启用' }}
+          <el-link :underline="false" type="primary">
+            {{ scope.row.isgrounding === 1 ? '停售' : '启售' }}
           </el-link>
         </template>
       </el-table-column>
@@ -88,23 +97,32 @@
       width="55%"
     >
       <el-form ref="formInline" :inline="true" :model="formInline" :rules="rules" class="demo-form-inline">
-        <el-form-item label="登录名" prop="login_name">
-          <el-input v-model="formInline.login_name"></el-input>
+        <el-form-item label="菜品名" prop="name">
+          <el-input v-model="formInline.name"></el-input>
         </el-form-item>
-        <el-form-item label="性别" prop="gender">
-          <el-select :value="formInline.gender" placeholder="请选择性别">
-            <el-option :value="1" label="女"></el-option>
-            <el-option :value="0" label="男"></el-option>
+        <el-form-item label="分类" prop="m_id">
+          <el-select :value="formInline.m_id" placeholder="请选择">
+            <el-option :value="1" label="xx"></el-option>
+            <el-option :value="0" label="yy"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="账号状态" prop="status">
+        <el-form-item label="菜品状态" prop="isgrounding">
           <template>
-            <el-radio v-model="formInline.status" :label="0">禁用</el-radio>
-            <el-radio v-model="formInline.status" :label="1">启用</el-radio>
+            <el-radio v-model="formInline.isgrounding" :label="0">停售</el-radio>
+            <el-radio v-model="formInline.isgrounding" :label="1">启售</el-radio>
           </template>
         </el-form-item>
-        <el-form-item label="头像">
-          <el-input v-model="formInline.avatar"></el-input>
+        <el-form-item label="商品价格" prop="price">
+          <el-input v-model.number="formInline.price"></el-input>
+        </el-form-item>
+        <el-form-item label="商品图片">
+          <el-input v-model="formInline.picture"></el-input>
+        </el-form-item>
+        <el-form-item label="商家" prop="b_id">
+          <el-select :value="formInline.b_id" placeholder="请选择">
+            <el-option :value="1" label="xx"></el-option>
+            <el-option :value="0" label="yy"></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -117,7 +135,12 @@
 
 <script>
 
-import { addEmployeeInfo, changeEmployeeAccountStatus, fetchEmployeeList, updateEmployeeInfo } from '@/api/employee'
+import {
+  addMerchandiseInfo,
+  changeMerchandiseAccountStatus,
+  fetchMerchandiseList,
+  updateMerchandiseInfo
+} from '@/api/merchandise'
 
 export default {
   data() {
@@ -130,21 +153,30 @@ export default {
       dialogTitle: '',
       dialogVisible: false,
       formInline: {
-        login_name: '',
-        avatar: '',
-        gender: '',
-        status: ''
+        name: '',
+        m_id: '',
+        b_id: '',
+        picture: '',
+        price: '',
+        isgrounding: ''
       },
+      multipleSelection: [],
       rules: {
-        login_name: [
+        name: [
           { required: true, message: '请输入登录名', trigger: 'blur' },
           { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
         ],
-        gender: [
-          { required: true, message: '请选择性别', trigger: 'blur' }
+        m_id: [{
+          required: true, message: '请选择分类', trigger: 'blur'
+        }],
+        b_id: [{
+          required: true, message: '请选择分类', trigger: 'blur'
+        }],
+        price: [
+          { required: true, message: '请输入价格', trigger: 'blur' }
         ],
-        status: [
-          { required: true, message: '请选择账号状态', trigger: 'blur' }
+        isgrounding: [
+          { required: true, message: '请选择商品状态', trigger: 'blur' }
         ]
       },
       searchKeyWord: ''
@@ -158,7 +190,7 @@ export default {
     // 获取表格等数据
     fetchData() {
       const params = { page: this.currentPage, size: this.pageSize }
-      fetchEmployeeList(params).then(response => {
+      fetchMerchandiseList(params).then(response => {
         const { code, message, data } = response
         if (code === 0) {
           this.tableData = data.records
@@ -171,8 +203,8 @@ export default {
       })
     },
     // 新增用户信息
-    newEmployee(infoFrom) {
-      addEmployeeInfo({ infoFrom }).then(response => {
+    newMerchandise(infoFrom) {
+      addMerchandiseInfo({ infoFrom }).then(response => {
         const { code, message, data } = response
         if (code === 0) {
           this.tableData = data.records
@@ -185,8 +217,8 @@ export default {
       })
     },
     // 修改用户信息
-    updateEmployee(infoFrom) {
-      updateEmployeeInfo({ infoFrom }).then(response => {
+    updateMerchandise(infoFrom) {
+      updateMerchandiseInfo({ infoFrom }).then(response => {
         const { code, message, data } = response
         if (code === 0) {
           this.tableData = data.records
@@ -199,9 +231,9 @@ export default {
       })
     },
     // 用于编辑前获取用户信息，绑定到dialog
-    getEmployeeInfo(login_name) {
-      const params = { page: this.currentPage, size: this.pageSize, loginName: login_name }
-      fetchEmployeeList(params).then(response => {
+    getMerchandiseInfo(name) {
+      const params = { page: this.currentPage, size: this.pageSize, name }
+      fetchMerchandiseList(params).then(response => {
         const { code, message, data } = response
         if (code === 0) {
           this.formInline = data.records[0]
@@ -215,9 +247,9 @@ export default {
       })
     },
     // 用于搜索 用户信息
-    searchEmployee() {
+    searchMerchandise() {
       const params = { page: this.currentPage, size: this.pageSize, loginName: this.searchKeyWord }
-      fetchEmployeeList(params).then(response => {
+      fetchMerchandiseList(params).then(response => {
         const { code, message, data } = response
         if (code === 0) {
           this.tableData = data.records
@@ -243,7 +275,7 @@ export default {
     changeAccountState(emp) {
       const newState = emp.status === 1 ? 0 : 1
       const params = { eid: emp.id, status: newState }
-      changeEmployeeAccountStatus(params).then(response => {
+      changeMerchandiseAccountStatus(params).then(response => {
         const { code, message } = response
         const type = code === 0 ? 'success' : 'warning'
         this.$message({
@@ -262,7 +294,7 @@ export default {
         this.dialogTitle = '新增员工信息'
         this.dialogVisible = true
       } else if (type === 2) {
-        this.getEmployeeInfo(login_name)
+        this.getMerchandiseInfo(login_name)
         this.dialogTitle = '编辑员工信息'
         this.dialogVisible = true
       }
@@ -272,9 +304,9 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (this.dialogType === 1) {
-            this.newEmployee(this.formInline)
+            this.newMerchandise(this.formInline)
           } else if (this.dialogType === 2) {
-            this.updateEmployee(this.formInline)
+            this.updateMerchandise(this.formInline)
           }
         } else {
           console.log('error submit!!')
@@ -290,6 +322,9 @@ export default {
       if (this.$refs[formName] !== undefined) {
         this.$refs[formName].resetFields()
       }
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val
     }
   }
 }

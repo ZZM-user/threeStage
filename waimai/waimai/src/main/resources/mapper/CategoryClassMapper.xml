@@ -28,7 +28,7 @@
             <if test="cate.accountType==1 and cate.eid!=null">
                 enterprise_id = #{cate.eid}
             </if>
-            <if test="cate.name!=null">
+            <if test="cate.name!=null and cate.name !=''">
                 and name like concat('%',#{cate.name},'%')
             </if>
         </where>

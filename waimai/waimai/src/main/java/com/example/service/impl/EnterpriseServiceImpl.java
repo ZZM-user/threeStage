@@ -1,5 +1,9 @@
 package com.example.service.impl;
 
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -28,5 +32,25 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
     public IPage<Enterprise> search(EnterpriseSearchDTO enterpriseSearchDTO) {
         Page<Enterprise> enterprisePage = new Page<>(enterpriseSearchDTO.getPage(), enterpriseSearchDTO.getSize());
         return super.baseMapper.search(enterprisePage, enterpriseSearchDTO);
+    }
+    
+    /**
+     * plus
+     *
+     * @param enterpriseSearchDTO
+     *
+     * @return
+     */
+    @Override
+    public IPage<Enterprise> searchPlus(EnterpriseSearchDTO enterpriseSearchDTO) {
+        QueryWrapper<Enterprise> wrapper = new QueryWrapper<>();
+        if (StrUtil.isNotBlank(enterpriseSearchDTO.getName())) {
+            wrapper.like("name", enterpriseSearchDTO.getName());
+        }
+        if (ObjectUtil.isNotNull(enterpriseSearchDTO.getStartDate()) && ObjectUtil.isNotNull(enterpriseSearchDTO.getEndDate())) {
+            enterpriseSearchDTO.setEndDate(DateUtil.offsetDay(enterpriseSearchDTO.getEndDate(), 1));
+            wrapper.between("create_time", enterpriseSearchDTO.getStartDate(), enterpriseSearchDTO.getEndDate());
+        }
+        return null;
     }
 }

@@ -50,7 +50,7 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
+      meta: { title: '饿了么', icon: 'el-icon-eleme' }
     }]
   },
   {
@@ -61,7 +61,29 @@ export const constantRoutes = [
       path: '/employee',
       name: 'employee',
       component: () => import('@/views/employee/index'),
-      meta: { title: '员工管理', icon: 'dashboard' }
+      meta: { title: '员工管理', icon: 'el-icon-user' }
+    }]
+  },
+  {
+    path: '/category',
+    component: Layout,
+    redirect: '/category',
+    children: [{
+      path: '/category',
+      name: 'category',
+      component: () => import('@/views/category/index'),
+      meta: { title: '分类管理', icon: 'el-icon-menu' }
+    }]
+  },
+  {
+    path: '/merchandise',
+    component: Layout,
+    redirect: '/merchandise',
+    children: [{
+      path: '/merchandise',
+      name: 'merchandise',
+      component: () => import('@/views/merchandise/index'),
+      meta: { title: '菜品管理', icon: 'el-icon-dish-1' }
     }]
   },
 

@@ -20,4 +20,13 @@ public interface EnterpriseService extends IService<Enterprise> {
      */
     IPage<Enterprise> search(EnterpriseSearchDTO enterpriseSearchDTO);
     
+    /**
+     * plus
+     *
+     * @param enterpriseSearchDTO
+     *
+     * @return
+     */
+    IPage<Enterprise> searchPlus(EnterpriseSearchDTO enterpriseSearchDTO);
+    
 }
