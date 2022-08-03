@@ -8,6 +8,7 @@ import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * @Author： 17602
@@ -28,10 +29,13 @@ public class RecordFilter implements Filter {
     
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        // 获取request和response，添加白名单
         HttpServletRequest request = (HttpServletRequest) servletRequest;
-        
-        log.info("收到请求：" + request.getServerName() + " " + request.getMethod() + " " + request.getRequestURI());
+        log.info("收到请求："
+                         + request.getServerName()
+                         + " " + request.getMethod()
+                         + " " + request.getRequestURI()
+        );
+        log.info("详细参数： " + Arrays.toString(request.getQueryString().split("&")));
         filterChain.doFilter(servletRequest, servletResponse);
     }
     
