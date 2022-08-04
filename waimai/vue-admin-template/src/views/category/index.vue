@@ -1,5 +1,17 @@
 <template>
   <div>
+    <el-form :inline="true" :model="queryFrom" class="demo-form-inline">
+      <el-form-item label="商家id">
+        <el-input v-model="queryFrom.eid" placeholder="商家id"></el-input>
+      </el-form-item>
+      <el-form-item label="分类">
+        <el-input v-model="queryFrom.name" placeholder="菜品名"></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="fetchData">查询</el-button>
+      </el-form-item>
+    </el-form>
+
     <el-row :gutter="20">
       <el-col :span="6">
         <el-button icon="el-icon-plus" style="background-color: #FFC200;color: black"
@@ -71,7 +83,7 @@
           <el-input v-model="formInline.name"></el-input>
         </el-form-item>
         <el-form-item label="商家" prop="enterprise_id">
-          <el-select :value="formInline.enterprise_id" placeholder="请选择性别">
+          <el-select v-model="formInline.enterprise_id" placeholder="请选择性别">
             <el-option :value="1" label="兰州拉面"></el-option>
             <el-option :value="0" label="大排档"></el-option>
           </el-select>
@@ -116,7 +128,10 @@ export default {
           { required: true, message: '请选择商家', trigger: 'blur' }
         ]
       },
-      searchKeyWord: ''
+      queryFrom: {
+        eid: '',
+        name: ''
+      }
     }
   },
   computed: {},

@@ -7,7 +7,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * 购物车
@@ -60,12 +60,12 @@ public class ShoppingCart implements Serializable {
      * 金额
      */
     private BigDecimal amount;
-
+    
     /**
      * 创建时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime create_time;
+    private Date create_time;
 
     private static final long serialVersionUID = 1L;
 

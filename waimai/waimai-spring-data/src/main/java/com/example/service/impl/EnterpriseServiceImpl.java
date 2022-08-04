@@ -1,5 +1,6 @@
 package com.example.service.impl;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.example.dto.EnterpriseSearchDTO;
@@ -45,10 +46,10 @@ public class EnterpriseServiceImpl implements EnterpriseService {
                     list.add(criteriaBuilder.like(root.get("phone"), "%" + enterpriseSearchDTO.getPhone() + "%"));
                 }
                 if (ObjectUtil.isNotNull(enterpriseSearchDTO.getStatus())) {
-                    list.add(criteriaBuilder.like(root.get("status"), "%" + enterpriseSearchDTO.getStatus() + "%"));
+                    list.add(criteriaBuilder.equal(root.get("status"), enterpriseSearchDTO.getStatus()));
                 }
                 if (ObjectUtil.isNotNull(enterpriseSearchDTO.getStartDate()) && ObjectUtil.isNotNull(enterpriseSearchDTO.getEndDate())) {
-                    list.add(criteriaBuilder.between(root.get("create_time"), enterpriseSearchDTO.getStartDate(), enterpriseSearchDTO.getEndDate()));
+                    list.add(criteriaBuilder.between(root.get("create_time"), enterpriseSearchDTO.getStartDate(), DateUtil.offsetDay(enterpriseSearchDTO.getEndDate(), 1)));
                 }
                 
                 Predicate[] predicates = list.toArray(new Predicate[list.size()]);

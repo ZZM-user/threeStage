@@ -51,3 +51,15 @@ export function updateEmployeeInfo(params) {
     params
   })
 }
+
+/**
+ * 员工状态
+ * @returns {[{label: string},{label: string}]}
+ * @constructor
+ */
+export function EmployeeStatus() {
+  return [
+    { label: '正常', value: 1 },
+    { label: '停用', value: 0 }
+  ]
+}

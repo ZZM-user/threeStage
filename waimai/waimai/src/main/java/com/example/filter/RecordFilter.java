@@ -1,5 +1,6 @@
 package com.example.filter;
 
+import cn.hutool.core.util.ObjectUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -35,7 +36,9 @@ public class RecordFilter implements Filter {
                          + " " + request.getMethod()
                          + " " + request.getRequestURI()
         );
-        log.info("详细参数： " + Arrays.toString(request.getQueryString().split("&")));
+        if (ObjectUtil.isNotNull(request.getQueryString())) {
+            log.info("详细参数： " + Arrays.toString(request.getQueryString().split("&")));
+        }
         filterChain.doFilter(servletRequest, servletResponse);
     }
     

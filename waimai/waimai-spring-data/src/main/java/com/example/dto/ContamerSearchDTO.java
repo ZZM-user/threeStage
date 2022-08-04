@@ -17,6 +17,6 @@ public class ContamerSearchDTO extends CreateDateSearchDTO {
     
     @ApiModelProperty(value = "登录名")
     private String loginId;
-    @ApiModelProperty(value = "状态(1停用,0正常)")
+    @ApiModelProperty(value = "状态(1停用,0正常)", example = "0")
     private Integer status;
 }

@@ -18,6 +18,6 @@ public class EmployeeSearchDTO extends PageDTO {
     @ApiModelProperty(value = "登录名")
     private String loginName;
     
-    @ApiModelProperty(value = "状态(1停用,0正常)")
-    private Integer status;
+    @ApiModelProperty(value = "状态(1停用,0正常)", example = "0")
+    private Byte status;
 }

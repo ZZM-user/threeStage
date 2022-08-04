@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * 商品分类表
@@ -34,23 +34,23 @@ public class CategoryClass implements Serializable {
      * 口味图片
      */
     private String picture;
-
+    
     /**
      * 创建时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime create_time;
+    private Date create_time;
 
     /**
      * 创建人
      */
     private String create_by;
-
+    
     /**
      * 更新时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime update_time;
+    private Date update_time;
 
     /**
      * 更新人

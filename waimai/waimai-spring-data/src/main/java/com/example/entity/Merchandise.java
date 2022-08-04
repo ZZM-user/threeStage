@@ -63,6 +63,7 @@ public class Merchandise implements Serializable {
     /**
      * 是否上架 1：上架 ，0：没上架
      */
+    @Column(name = "isgrounding")
     private Integer isgrounding;
     
     /**

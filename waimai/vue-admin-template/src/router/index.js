@@ -50,27 +50,38 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: '饿了么', icon: 'el-icon-eleme' }
+      meta: { title: '饿美了么', icon: 'el-icon-eleme' }
     }]
   },
   {
     path: '/employee',
     component: Layout,
-    redirect: '/employee',
+    redirect: '/employee/index',
     children: [{
-      path: '/employee',
-      name: 'employee',
+      path: '/employee/index',
+      name: 'Index',
       component: () => import('@/views/employee/index'),
-      meta: { title: '员工管理', icon: 'el-icon-user' }
+      meta: { title: '员工管理', icon: 'el-icon-s-cooperation' }
+    }]
+  },
+  {
+    path: '/enterprise',
+    component: Layout,
+    redirect: '/enterprise/index',
+    children: [{
+      path: '/enterprise/index',
+      name: 'Index',
+      component: () => import('@/views/enterprise/index'),
+      meta: { title: '商家管理', icon: 'el-icon-s-check' }
     }]
   },
   {
     path: '/category',
     component: Layout,
-    redirect: '/category',
+    redirect: '/category/index',
     children: [{
-      path: '/category',
-      name: 'category',
+      path: '/category/index',
+      name: 'Index',
       component: () => import('@/views/category/index'),
       meta: { title: '分类管理', icon: 'el-icon-menu' }
     }]
@@ -78,12 +89,23 @@ export const constantRoutes = [
   {
     path: '/merchandise',
     component: Layout,
-    redirect: '/merchandise',
+    redirect: '/merchandise/index',
     children: [{
-      path: '/merchandise',
-      name: 'merchandise',
+      path: '/merchandise/index',
+      name: 'Index',
       component: () => import('@/views/merchandise/index'),
       meta: { title: '菜品管理', icon: 'el-icon-dish-1' }
+    }]
+  },
+  {
+    path: '/contamer',
+    component: Layout,
+    redirect: '/contamer/index',
+    children: [{
+      path: '/contamer/index',
+      name: 'Index',
+      component: () => import('@/views/contamer/index'),
+      meta: { title: '会员管理', icon: 'el-icon-user' }
     }]
   },
 

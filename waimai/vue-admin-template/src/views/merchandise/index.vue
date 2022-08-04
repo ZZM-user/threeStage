@@ -1,10 +1,29 @@
 <template>
   <div>
+    <el-form :inline="true" :model="queryFrom" class="demo-form-inline">
+      <el-form-item label="商家id">
+        <el-input v-model="queryFrom.eid" clearable placeholder="商家id"></el-input>
+      </el-form-item>
+      <el-form-item label="商品名称">
+        <el-input v-model="queryFrom.name" clearable placeholder="商品名称"></el-input>
+      </el-form-item>
+      <el-form-item label="是否上架">
+        <el-select v-model="queryFrom.isgrounding" clearable placeholder="上架状态">
+          <el-option
+            v-for="item in merchandiseStatus"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="this.fetchData">查询</el-button>
+      </el-form-item>
+    </el-form>
     <el-row>
-      <el-col :span="6">
-        <el-input v-model.trim="searchKeyWord" placeholder="请输入菜品" @blur="searchMerchandise"></el-input>
-      </el-col>
-      <el-col :offset="8" :span="4" style="line-height: 40px">
+      <el-col :span="3" style="line-height: 40px">
         <el-link :underline="false" type="primary">批量启售</el-link>
         |
         <el-link :underline="false" type="danger">
@@ -23,7 +42,7 @@
     >
       <el-table-column
         type="selection"
-        width="30px"
+        width="45px"
       >
       </el-table-column>
       <el-table-column
@@ -82,8 +101,8 @@
       </el-table-column>
     </el-table>
     <el-pagination
-      :current-page.sync="currentPage"
-      :page-size="pageSize"
+      :current-page.sync="this.queryFrom.page"
+      :page-size="this.queryFrom.size"
       :total="total"
       layout="total, sizes, prev, pager, next, jumper"
       @size-change="handleSizeChange"
@@ -101,7 +120,7 @@
           <el-input v-model="formInline.name"></el-input>
         </el-form-item>
         <el-form-item label="分类" prop="m_id">
-          <el-select :value="formInline.m_id" placeholder="请选择">
+          <el-select v-model="formInline.m_id" placeholder="请选择">
             <el-option :value="1" label="xx"></el-option>
             <el-option :value="0" label="yy"></el-option>
           </el-select>
@@ -119,7 +138,7 @@
           <el-input v-model="formInline.picture"></el-input>
         </el-form-item>
         <el-form-item label="商家" prop="b_id">
-          <el-select :value="formInline.b_id" placeholder="请选择">
+          <el-select v-model="formInline.b_id" placeholder="请选择">
             <el-option :value="1" label="xx"></el-option>
             <el-option :value="0" label="yy"></el-option>
           </el-select>
@@ -139,6 +158,7 @@ import {
   addMerchandiseInfo,
   changeMerchandiseAccountStatus,
   fetchMerchandiseList,
+  MerchandiseStatus,
   updateMerchandiseInfo
 } from '@/api/merchandise'
 
@@ -146,8 +166,6 @@ export default {
   data() {
     return {
       tableData: [],
-      currentPage: 1,
-      pageSize: 10,
       total: 0,
       dialogType: 1,
       dialogTitle: '',
@@ -179,7 +197,11 @@ export default {
           { required: true, message: '请选择商品状态', trigger: 'blur' }
         ]
       },
-      searchKeyWord: ''
+      queryFrom: {
+        page: 1,
+        size: 10
+      },
+      merchandiseStatus: MerchandiseStatus()
     }
   },
   computed: {},
@@ -189,8 +211,7 @@ export default {
   methods: {
     // 获取表格等数据
     fetchData() {
-      const params = { page: this.currentPage, size: this.pageSize }
-      fetchMerchandiseList(params).then(response => {
+      fetchMerchandiseList(this.queryFrom).then(response => {
         const { code, message, data } = response
         if (code === 0) {
           this.tableData = data.records
@@ -237,22 +258,6 @@ export default {
         const { code, message, data } = response
         if (code === 0) {
           this.formInline = data.records[0]
-          this.total = data.totalRecord
-        } else {
-          this.$message.error(message)
-        }
-        console.log(this.formInline)
-      }).catch(err => {
-        console.log(err)
-      })
-    },
-    // 用于搜索 用户信息
-    searchMerchandise() {
-      const params = { page: this.currentPage, size: this.pageSize, loginName: this.searchKeyWord }
-      fetchMerchandiseList(params).then(response => {
-        const { code, message, data } = response
-        if (code === 0) {
-          this.tableData = data.records
           this.total = data.totalRecord
         } else {
           this.$message.error(message)

@@ -17,7 +17,7 @@ public class EnterpriseSearchDTO extends CreateDateSearchDTO {
     
     @ApiModelProperty(value = "商家名称", example = "蜜雪冰城")
     private String name;
-    @ApiModelProperty(value = "商家电话", example = "1351xxxxxxx")
+    @ApiModelProperty(value = "商家电话", example = "13xxxxxxx")
     private String phone;
     @ApiModelProperty(value = "商家状态(1停用,0正常)", example = "0")
     private Integer status;

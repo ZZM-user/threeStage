@@ -18,7 +18,7 @@ public class MerchandiseSearchDTO extends PageDTO {
     private Long eid;
     @ApiModelProperty(value = "商品名称")
     private String name;
-    @ApiModelProperty(value = "是否上架 1：上架 ，0：没上架")
+    @ApiModelProperty(value = "是否上架 1：上架 ，0：没上架", example = "1")
     private Integer isgrounding;
     @ApiModelProperty(value = "账号类型(普通用户：0,管理员：1)", example = "1")
     private Integer accountType;

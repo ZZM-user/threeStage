@@ -7,7 +7,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * 商家信息表
@@ -60,29 +60,29 @@ public class Enterprise implements Serializable {
      * 状态（1停用，0正常  2未审核）
      */
     private Integer status;
-
+    
     /**
      * 审核时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime audit_time;
-
+    private Date audit_time;
+    
     /**
      * 创建时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime create_time;
+    private Date create_time;
 
     /**
      * 创建人
      */
     private String create_by;
-
+    
     /**
      * 修改时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime update_time;
+    private Date update_time;
 
     /**
      * 修改人

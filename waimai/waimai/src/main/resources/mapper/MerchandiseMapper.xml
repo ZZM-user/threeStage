@@ -39,7 +39,7 @@
                 and name like concat('%',#{mer.name},'%')
             </if>
             <if test="mer.isgrounding!=null">
-                and isgrounding = #{isgrounding}
+                and isgrounding = #{mer.isgrounding}
             </if>
         </where>
     </select>

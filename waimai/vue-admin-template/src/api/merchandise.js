@@ -51,3 +51,16 @@ export function updateMerchandiseInfo(params) {
     params
   })
 }
+
+export function MerchandiseStatus() {
+  return [
+    {
+      label: '停售',
+      value: 0
+    },
+    {
+      label: '启售',
+      value: 1
+    }
+  ]
+}

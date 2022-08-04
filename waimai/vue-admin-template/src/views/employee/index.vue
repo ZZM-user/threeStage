@@ -1,11 +1,29 @@
 <template>
   <div>
+    <el-form :inline="true" :model="queryFrom" class="demo-form-inline">
+      <el-form-item label="账号">
+        <el-input v-model="queryFrom.loginName" clearable placeholder="账号"></el-input>
+      </el-form-item>
+      <el-form-item label="员工状态">
+        <el-select v-model="queryFrom.status" clearable placeholder="员工状态">
+          <el-option
+            v-for="item in employeeStatus"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="fetchData">查询</el-button>
+      </el-form-item>
+    </el-form>
     <el-row :gutter="20">
-      <el-col :span="6">
-        <el-input v-model.trim="searchKeyWord" placeholder="请输入员工姓名" @blur="searchEmployee"></el-input>
-      </el-col>
-      <el-col :offset="12" :span="6">
-        <el-button icon="el-icon-plus" style="background-color: #FFC200;color: black" @click="openDialog(1)">添加员工
+      <el-col :span="4">
+        <el-button icon="el-icon-plus" size="mini" style="background-color: #FFC200;color: black"
+                   @click="openDialog(1)"
+        >添加员工
         </el-button>
       </el-col>
     </el-row>
@@ -73,8 +91,8 @@
       </el-table-column>
     </el-table>
     <el-pagination
-      :current-page.sync="currentPage"
-      :page-size="pageSize"
+      :current-page.sync="this.queryFrom.page"
+      :page-size="this.queryFrom.size"
       :total="total"
       layout="total, sizes, prev, pager, next, jumper"
       @size-change="handleSizeChange"
@@ -92,7 +110,7 @@
           <el-input v-model="formInline.login_name"></el-input>
         </el-form-item>
         <el-form-item label="性别" prop="gender">
-          <el-select :value="formInline.gender" placeholder="请选择性别">
+          <el-select v-model="formInline.gender" placeholder="请选择性别">
             <el-option :value="1" label="女"></el-option>
             <el-option :value="0" label="男"></el-option>
           </el-select>
@@ -117,14 +135,19 @@
 
 <script>
 
-import { addEmployeeInfo, changeEmployeeAccountStatus, fetchEmployeeList, updateEmployeeInfo } from '@/api/employee'
+import {
+  addEmployeeInfo,
+  changeEmployeeAccountStatus,
+  EmployeeStatus,
+  fetchEmployeeList,
+  updateEmployeeInfo
+} from '@/api/employee'
 
 export default {
   data() {
     return {
+      employeeStatus: EmployeeStatus(),
       tableData: [],
-      currentPage: 1,
-      pageSize: 10,
       total: 0,
       dialogType: 1,
       dialogTitle: '',
@@ -147,7 +170,10 @@ export default {
           { required: true, message: '请选择账号状态', trigger: 'blur' }
         ]
       },
-      searchKeyWord: ''
+      queryFrom: {
+        page: 1,
+        size: 10
+      }
     }
   },
   computed: {},
@@ -157,8 +183,7 @@ export default {
   methods: {
     // 获取表格等数据
     fetchData() {
-      const params = { page: this.currentPage, size: this.pageSize }
-      fetchEmployeeList(params).then(response => {
+      fetchEmployeeList(this.queryFrom).then(response => {
         const { code, message, data } = response
         if (code === 0) {
           this.tableData = data.records
@@ -216,7 +241,8 @@ export default {
     },
     // 用于搜索 用户信息
     searchEmployee() {
-      const params = { page: this.currentPage, size: this.pageSize, loginName: this.searchKeyWord }
+      const { loginName, status } = this.searchKeyWord
+      const params = { page: this.currentPage, size: this.pageSize, loginName, status }
       fetchEmployeeList(params).then(response => {
         const { code, message, data } = response
         if (code === 0) {

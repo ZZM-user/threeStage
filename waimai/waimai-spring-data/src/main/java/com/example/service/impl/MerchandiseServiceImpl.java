@@ -42,7 +42,7 @@ public class MerchandiseServiceImpl implements MerchandiseService {
                     list.add(criteriaBuilder.like(root.get("name"), "%" + merchandiseSearchDTO.getName() + "%"));
                 }
                 if (ObjectUtil.isNotNull(merchandiseSearchDTO.getIsgrounding())) {
-                    list.add(criteriaBuilder.equal(root.get("isgrouding"), merchandiseSearchDTO.getIsgrounding()));
+                    list.add(criteriaBuilder.equal(root.get("isgrounding"), merchandiseSearchDTO.getIsgrounding()));
                 }
                 Predicate[] predicates = list.toArray(new Predicate[list.size()]);
                 return query.where(predicates).getRestriction();
