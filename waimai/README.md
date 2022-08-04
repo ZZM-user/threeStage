@@ -10,5 +10,5 @@
 
    >前端：**vue-admin-template**
    >
-   >后端**waimai-spring-data**
+   >后端：**waimai-spring-data**
 
