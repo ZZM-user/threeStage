@@ -74,38 +74,18 @@
 
 <script>
 import { ContamerStatus, fetchContamerData } from '@/api/contamer'
+import PageMixin from '@/mixin/PageMixin'
 
 export default {
+  mixins: [PageMixin],
   data() {
     return {
-      totalData: {
-        totalRecord: 0,
-        records: []
-      },
-      contamerStatus: ContamerStatus(),
-      createDate: [],
-      queryFrom: {
-        page: 1,
-        size: 10
-      }
+      contamerStatus: ContamerStatus()
     }
   },
-  created() {
-    this.fetchData()
-  },
   methods: {
-    fetchData() {
-      fetchContamerData(this.queryFrom).then(response => {
-        const { code, message, data } = response
-        if (code === 0) {
-          this.totalData = data
-        }
-      }).catch(error => {
-        console.log(error)
-      })
-    },
-    handleSizeChange(val) {
-      this.queryFrom.size = val
+    fetchDataHook() {
+      return fetchContamerData
     }
   }
 }

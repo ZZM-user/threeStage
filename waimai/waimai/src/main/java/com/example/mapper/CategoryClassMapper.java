@@ -7,6 +7,8 @@ import com.example.entity.CategoryClass;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * @author 17602
  * @description 针对表【category_class(商品分类表)】的数据库操作Mapper
@@ -25,4 +27,13 @@ public interface CategoryClassMapper extends BaseMapper<CategoryClass> {
      * @return
      */
     IPage<CategoryClass> search(IPage<?> page, @Param("cate") CategoryClassSearchDTO categoryClassSearchDTO);
+    
+    /**
+     * 判断是否包含重复
+     *
+     * @param categoryClass
+     *
+     * @return
+     */
+    List<CategoryClass> hasRepeat(CategoryClass categoryClass);
 }

@@ -69,36 +69,17 @@
 
 <script>
 import { fetchMerchandiseData, MerchandiseStatus } from '@/api/merchandise'
+import PageMixin from '@/mixin/PageMixin'
 
 export default {
+  mixins: [PageMixin],
   data() {
     return {
-      queryFrom: {
-        page: 1,
-        size: 10
-        // 修复一下切换页数的问题，前两个没修
-      },
-      merchandiseStatus: MerchandiseStatus(),
-      totalData: {
-        totalRecord: 0,
-        records: []
-      }
+      merchandiseStatus: MerchandiseStatus()
     }
-  }, created() {
-    this.fetchData()
   }, methods: {
-    fetchData() {
-      fetchMerchandiseData(this.queryFrom).then(response => {
-        const { code, message, data } = response
-        if (code === 0) {
-          this.totalData = data
-        }
-      }).catch(error => {
-        console.log(error)
-      })
-    },
-    handleSizeChange(val) {
-      this.queryFrom.size = val
+    fetchDataHook() {
+      return fetchMerchandiseData
     }
   }
 }

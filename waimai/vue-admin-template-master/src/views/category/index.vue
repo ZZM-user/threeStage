@@ -44,37 +44,17 @@
 </template>
 
 <script>
+import PageMixin from '@/mixin/PageMixin'
 import { fetchCategoryData } from '@/api/category'
 
 export default {
+  mixins: [PageMixin],
   data() {
-    return {
-      totalData: {
-        totalRecord: 0,
-        records: []
-      },
-      queryFrom: {
-        page: 1,
-        size: 10
-      }
-    }
-  }, created() {
-    this.fetchData()
+    return {}
   }, methods: {
-    fetchData() {
-      fetchCategoryData(this.queryFrom).then(response => {
-        const { code, message, data } = response
-        if (code === 0) {
-          this.totalData = data
-        }
-      }).catch(error => {
-        console.log(error)
-      })
-    },
-    handleSizeChange(val) {
-      this.queryFrom.size = val
+    fetchDataHook() {
+      return fetchCategoryData
     }
-
   }
 }
 </script>

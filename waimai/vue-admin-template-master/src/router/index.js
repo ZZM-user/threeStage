@@ -50,7 +50,7 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: '饿美团儿', icon: 'dashboard' }
+      meta: { title: '饿美团儿', icon: 'el-icon-eleme' }
     }]
   },
   {
@@ -61,7 +61,7 @@ export const constantRoutes = [
       path: 'employee/index',
       name: 'employee',
       component: () => import('@/views/employee/index'),
-      meta: { title: '员工管理', icon: 'dashboard' }
+      meta: { title: '员工管理', icon: 'el-icon-user' }
     }]
   },
   {
@@ -73,7 +73,7 @@ export const constantRoutes = [
         path: 'enterprise/index',
         name: 'enterprise',
         component: () => import('@/views/enterprise/index'),
-        meta: { title: '商家管理', icon: 'el-icon-s-help' }
+        meta: { title: '商家管理', icon: 'el-icon-s-check' }
       }]
   },
   {
@@ -97,7 +97,7 @@ export const constantRoutes = [
         path: 'merchandise/index',
         name: 'merchandise',
         component: () => import('@/views/merchandise/index'),
-        meta: { title: '菜品管理', icon: 'el-icon-s-help' }
+        meta: { title: '菜品管理', icon: 'el-icon-goods' }
       }]
   },
 
@@ -110,7 +110,7 @@ export const constantRoutes = [
         path: 'contamer/index',
         name: 'contamer',
         component: () => import('@/views/contamer/index'),
-        meta: { title: '会员管理', icon: 'el-icon-s-help' }
+        meta: { title: '会员管理', icon: 'el-icon-user' }
       }]
   },
 

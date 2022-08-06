@@ -1,6 +1,7 @@
-<template>
+<template xmlns:el-col="http://www.w3.org/1999/html">
   <div>
-    <el-form :inline="true" :model="queryFrom" class="demo-form-inline">
+    <!--    搜索栏-->
+    <el-form :inline="true" :model="queryFrom" class="demo-form-inline" style="height: 60px">
       <el-form-item label="登录名">
         <el-input v-model="queryFrom.loginName" placeholder="登录名"></el-input>
       </el-form-item>
@@ -16,11 +17,94 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="fetchData">查询</el-button>
+        <el-button type="primary" @click="submitSearch">查询</el-button>
       </el-form-item>
     </el-form>
+    <!--    工具栏-->
+    <el-row>
+      <el-col>
+        <el-button icon="el-icon-plus" type="success" @click="openDialog(1)">新增</el-button>
+        <el-button :disabled="ableEdit" icon="el-icon-edit" type="warning" @click="openDialog(2)">修改</el-button>
+        <el-button :disabled="ableDelete" icon="el-icon-delete" type="danger" @click="submitDelete">删除</el-button>
+      </el-col>
+    </el-row>
+    <!--    dialog弹框-->
+    <el-dialog :closed="closeDialog" :title="dialogTitle" :visible.sync="dialogVisible" width="60%">
+      <el-form ref="dialogForm" :model="dialogForm" :rules="rules" class="demo-ruleForm" label-width="100px">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="登录名" prop="login_name">
+              <el-input v-model="dialogForm.login_name"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="性别" prop="gender">
+              <el-select v-model="dialogForm.gender" placeholder="请选择性别">
+                <el-option :value="1" label="男"></el-option>
+                <el-option :value="0" label="女"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <!--  不允许通过编辑来修改密码  -->
+        <el-row v-if="dialogType===1">
+          <el-col :span="12">
+            <el-form-item label="登录密码" prop="login_pwd">
+              <el-input v-model="dialogForm.login_pwd" type="password"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="重复密码" prop="login_pwd_again">
+              <el-input v-model="dialogForm.login_pwd_again" type="password"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="头像" prop="avatar">
+              <el-upload
+                :before-upload="beforeAvatarUpload"
+                :drag="true"
+                :on-success="handleAvatarSuccess"
+                :show-file-list="false"
+                action="http://localhost:8080/img/upload"
+                class="avatar-uploader"
+              >
+                <img v-if="avatar" :src="avatar" alt="头像" class="avatar">
+                <img v-if="this.dialogForm.avatar" :src="this.dialogForm.avatar" alt="头像" class="avatar">
+                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              </el-upload>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="状态" prop="status">
+              <el-select v-model="dialogForm.status" default-first-option placeholder="请选择状态">
+                <el-option
+                  v-for="item in employeeStatus"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :push="12" :span="12">
+            <el-form-item>
+              <el-button type="primary" @click="submitForm()">确定</el-button>
+              <el-button @click="closeDialog">关闭</el-button>
+            </el-form-item>
+          </el-col>
+        </el-row>
 
-    <el-table :data="totalData.records" style="width: 100%">
+      </el-form>
+    </el-dialog>
+    <!--    信息展示栏-->
+    <el-table ref="multipleSelection" :data="totalData.records"
+              style="width: 100%" @selection-change="handleSelectionChange"
+    >
+      <el-table-column type="selection" width="55"/>
       <el-table-column label="编号" prop="id" width="60"></el-table-column>
       <el-table-column :show-overflow-tooltip="true" label="登录名" prop="login_name" width="150"></el-table-column>
       <el-table-column label="性别" prop="gender" width="80">
@@ -36,8 +120,8 @@
       </el-table-column>
       <el-table-column label="状态" prop="status">
         <template slot-scope="scope">
-          <el-tag v-if="scope.row.status==0" effect="dark" type="success">正常</el-tag>
-          <el-tag v-if="scope.row.status==1" effect="dark" type="danger">停用</el-tag>
+          <el-tag v-if="scope.row.status===0" effect="dark" type="success">正常</el-tag>
+          <el-tag v-if="scope.row.status===1" effect="dark" type="danger">停用</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="创建时间" prop="create_time"></el-table-column>
@@ -52,47 +136,82 @@
       :total="totalData.totalRecord"
       layout="total, sizes, prev, pager, next, jumper"
       @size-change="handleSizeChange"
-      @current-change="this.fetchData"
+      @current-change="handleCurrentPageChange"
     >
     </el-pagination>
   </div>
 </template>
 
 <script>
-import { EmployeeStatus, fetchEmployeeData } from '@/api/employee'
+import { addEmployeeData, delEmployeeData, editEmployeeData, EmployeeStatus, fetchEmployeeData } from '@/api/employee'
+import PageMixin from '@/mixin/PageMixin'
 
 export default {
+  mixins: [PageMixin],
   data() {
+    let validatePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
+      } else if (value !== this.dialogForm.login_pwd) {
+        callback(new Error('两次输入密码不一致!'))
+      } else {
+        callback()
+      }
+    }
     return {
-      totalData: {
-        totalRecord: 1,
-        records: []
-      },
       employeeStatus: EmployeeStatus(),
-      queryFrom: {
-        page: 1,
-        size: 10
+      // 上传头像的中介载体
+      avatar: '',
+      rules: {
+        login_name: [
+          { required: true, message: '请输入登录名', trigger: 'blur' },
+          { min: 3, max: 12, message: '长度在 3 到 12 个字符', trigger: 'blur' }
+        ],
+        gender: [
+          { required: true, message: '请选择性别', trigger: 'blur' }
+        ],
+        login_pwd: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 6, max: 24, message: '长度在 6 到 24 个字符', trigger: 'blur' }
+        ],
+        login_pwd_again: [{ validator: validatePass, trigger: 'blur' }],
+        status: [
+          { required: true, message: '请选择状态', trigger: 'blur' }
+        ]
       }
     }
   },
-  created() {
-    this.fetchData()
-  },
   methods: {
-    fetchData() {
-      fetchEmployeeData(this.queryFrom).then(response => {
-        const { code, message, data } = response
-        if (code === 0) {
-          this.totalData = data
-        }
-      }).catch(error => {
-        console.log(error)
-      })
+    fetchDataHook() {
+      return fetchEmployeeData
     },
-    handleSizeChange(val) {
-      this.queryFrom.size = val
-    }
+    addDataHooK() {
+      return addEmployeeData
+    },
+    editDataHook() {
+      return editEmployeeData
+    },
+    delDataHook() {
+      return delEmployeeData
+    },
+    // 上传头像成功后
+    handleAvatarSuccess(res, file) {
+      this.dialogForm.avatar = 'http://localhost:8080/' + res.data.fileUrl
+      this.avatar = this.dialogForm.avatar
+    },
+    // 上传头像之前
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg' || file.type === 'image/gif'
+      const isLt2M = file.size / 1024 / 1024 < 2
 
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG,PNG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+      }
+      return isJPG && isLt2M
+    }
   }
 }
 </script>
@@ -100,5 +219,36 @@ export default {
 <style scoped>
 div {
   padding: 1%;
+}
+
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+  margin: 0 auto;
+  border: 1px solid #f1f2f6;
+  border-radius: 50%;
+}
+
+.avatar {
+  width: 178px;
+  height: 178px;
+  border-radius: 50%;
+  display: block;
 }
 </style>

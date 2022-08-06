@@ -23,9 +23,15 @@
         create_time,create_by,update_time,
         update_by
     </sql>
+    <sql id="showData">
+        id,login_name,
+        gender,status,avatar,
+        create_time,create_by,update_time,
+        update_by
+    </sql>
     <select id="search" resultType="com.example.entity.Employee">
         select
-        <include refid="Base_Column_List"/>
+        <include refid="showData"/>
         from employee
         <where>
             <if test="emp.loginName != null and emp.loginName != ''">

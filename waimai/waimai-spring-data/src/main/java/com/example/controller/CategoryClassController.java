@@ -35,4 +35,5 @@ public class CategoryClassController {
         PageVo<CategoryClass> categoryClassPageVo = PageVo.pageVo(categoryClassIPage);
         return R.okHasData(categoryClassPageVo);
     }
+    
 }

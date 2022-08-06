@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.dto.CategoryClassSearchDTO;
 import com.example.entity.CategoryClass;
 
+import java.util.List;
+
 /**
  * @author 17602
  * @description 针对表【category_class(商品分类表)】的数据库操作Service
@@ -21,4 +23,12 @@ public interface CategoryClassService extends IService<CategoryClass> {
      */
     IPage<CategoryClass> search(CategoryClassSearchDTO categoryClassSearchDTO);
     
+    /**
+     * 判断是否包含重复
+     *
+     * @param categoryClass
+     *
+     * @return
+     */
+    List<CategoryClass> hasRepeat(CategoryClass categoryClass);
 }

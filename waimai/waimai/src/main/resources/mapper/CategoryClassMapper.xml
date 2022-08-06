@@ -33,4 +33,10 @@
             </if>
         </where>
     </select>
+    <select id="hasRepeat" resultType="com.example.entity.CategoryClass">
+        select
+        <include refid="Base_Column_List"/>
+        from category_class
+        where enterprise_id = #{enterprise_id} and name = #{name}
+    </select>
 </mapper>

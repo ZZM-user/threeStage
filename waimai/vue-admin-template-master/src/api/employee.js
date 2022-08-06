@@ -14,6 +14,45 @@ export function fetchEmployeeData(params) {
 }
 
 /**
+ * 新增
+ * @param data
+ * @returns {*}
+ */
+export function addEmployeeData(data) {
+  return request({
+    url: 'http://localhost:8080/api/employee/add',
+    method: 'POST',
+    data
+  })
+}
+
+/**
+ * 修改
+ * @param data
+ * @returns {*}
+ */
+export function editEmployeeData(data) {
+  return request({
+    url: 'http://localhost:8080/api/employee/update',
+    method: 'POST',
+    data
+  })
+}
+
+/**
+ * 删除
+ * @param data
+ * @returns {*}
+ */
+export function delEmployeeData(data) {
+  return request({
+    url: 'http://localhost:8080/api/employee/del',
+    method: 'POST',
+    data
+  })
+}
+
+/**
  * 账号状态
  * @returns {[{label: string, value: number},{label: string, value: number}]}
  * @constructor

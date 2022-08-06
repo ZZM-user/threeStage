@@ -5,7 +5,7 @@ server:
   # 访问路径
   servlet:
     context-path: /
-  # 服务模块 热部署开关
+
 spring:
   application:
     name: waimai
@@ -30,6 +30,12 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
+  servlet:
+    multipart:
+      max-file-size:
+        50MB
+      max-request-size:
+        100MB
 # -------------------日志配置------------------------
 logging:
   level:

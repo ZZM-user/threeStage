@@ -72,42 +72,17 @@
 </template>
 <script>
 import { EnterpriseStatus, fetchEnterpriseData } from '@/api/enterprise'
+import PageMixin from '@/mixin/PageMixin'
 
 export default {
+  mixins: [PageMixin],
   data() {
     return {
-      createDate: [],
-      enterpriseStatus: EnterpriseStatus(),
-      totalData: {
-        totalRecord: 0,
-        records: []
-      },
-      queryFrom: {
-        page: 1,
-        size: 10
-      }
+      enterpriseStatus: EnterpriseStatus()
     }
-  }, created() {
-    this.fetchData()
   }, methods: {
-    fetchData() {
-      delete this.queryFrom.startDate
-      delete this.queryFrom.endDate
-      if (this.createDate && this.createDate.length === 2) {
-        this.queryFrom.createDate = this.createDate[0]
-        this.queryFrom.endDate = this.createDate[1]
-      }
-      fetchEnterpriseData(this.queryFrom).then(response => {
-        const { code, messages, data } = response
-        if (code === 0) {
-          this.totalData = data
-        }
-      }).catch(error => {
-        console.log(error)
-      })
-    },
-    handleSizeChange(val) {
-      this.queryFrom.size = val
+    fetchDataHook() {
+      return fetchEnterpriseData
     }
   }
 }
