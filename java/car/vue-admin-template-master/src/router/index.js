@@ -66,6 +66,18 @@ export const constantRoutes = [
       }
     ]
   },
+  {
+    path: '/car_model',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'car_model',
+        component: () => import('@/views/car_model/index'),
+        meta: { title: '车型配置管理', icon: 'form' }
+      }
+    ]
+  },
 
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }

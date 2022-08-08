@@ -1,12 +1,12 @@
 <template xmlns:el-col="http://www.w3.org/1999/html">
   <div>
     <!--    搜索栏-->
-    <el-form :inline="true" :model="queryFrom" class="demo-form-inline" style="height: 60px">
+    <el-form :inline="true" :model="queryFrom" class="demo-form-inline" size="small" style="height: 60px">
       <el-form-item label="登录名">
-        <el-input v-model="queryFrom.loginName" placeholder="登录名"></el-input>
+        <el-input v-model="queryFrom.loginName" placeholder="登录名" size="small"></el-input>
       </el-form-item>
       <el-form-item label="状态">
-        <el-select v-model="queryFrom.status" placeholder="状态">
+        <el-select v-model="queryFrom.status" placeholder="状态" size="small">
           <el-option
             v-for="item in employeeStatus"
             :key="item.value"
@@ -17,15 +17,17 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submitSearch">查询</el-button>
+        <el-button size="small" type="primary" @click="submitSearch">查询</el-button>
       </el-form-item>
     </el-form>
     <!--    工具栏-->
     <el-row>
       <el-col>
-        <el-button icon="el-icon-plus" type="success" @click="openDialog(1)">新增</el-button>
-        <el-button :disabled="ableEdit" icon="el-icon-edit" type="warning" @click="openDialog(2)">修改</el-button>
-        <el-button :disabled="ableDelete" icon="el-icon-delete" type="danger" @click="submitDelete">删除</el-button>
+        <el-button icon="el-icon-plus" size="small" type="success" @click="openDialog(1)">新增</el-button>
+        <el-button :disabled="ableEdit" icon="el-icon-edit" size="small" type="warning" @click="openDialog(2)">修改
+        </el-button>
+        <el-button :disabled="ableDelete" icon="el-icon-delete" size="small" type="danger" @click="submitDelete">删除
+        </el-button>
       </el-col>
     </el-row>
     <!--    dialog弹框-->
@@ -71,7 +73,6 @@
                 class="avatar-uploader"
               >
                 <img v-if="avatar" :src="avatar" alt="头像" class="avatar">
-                <img v-if="this.dialogForm.avatar" :src="this.dialogForm.avatar" alt="头像" class="avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
             </el-form-item>
@@ -113,21 +114,39 @@
           <el-tag v-if="scope.row.gender===0" type="danger">女</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="头像" prop="avatar" width="150">
+      <el-table-column label="头像" prop="avatar" width="120">
         <template slot-scope="scope">
           <el-avatar :src="scope.row.avatar"></el-avatar>
         </template>
       </el-table-column>
-      <el-table-column label="状态" prop="status">
+      <el-table-column label="状态" prop="status" width="80">
         <template slot-scope="scope">
-          <el-tag v-if="scope.row.status===0" effect="dark" type="success">正常</el-tag>
-          <el-tag v-if="scope.row.status===1" effect="dark" type="danger">停用</el-tag>
+          <el-switch
+            v-model="scope.row.status"
+            :active-value="1"
+            :inactive-value="0"
+            active-color="#13ce66"
+            inactive-color="#b2bec3"
+            @change="submitChangeStatus(scope.row)"
+          >
+          </el-switch>
         </template>
       </el-table-column>
       <el-table-column label="创建时间" prop="create_time"></el-table-column>
       <el-table-column label="创建人" prop="create_by"></el-table-column>
       <el-table-column label="修改时间" prop="update_time"></el-table-column>
       <el-table-column label="修改人" prop="update_by"></el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <span v-if="scope.row.status===2">
+            <el-link icon="el-icon-edit" type="primary" @click="approved(scope.row)">通过审核</el-link>
+              |
+          </span>
+          <el-link icon="el-icon-edit" type="primary" @click="openDialog(2,scope.row)">编辑</el-link>
+          |
+          <el-link icon="el-icon-delete" type="danger" @click="submitDelete(scope.row)">删除</el-link>
+        </template>
+      </el-table-column>
     </el-table>
     <el-pagination
       :current-page="this.queryFrom.page"
@@ -143,7 +162,16 @@
 </template>
 
 <script>
-import { addEmployeeData, delEmployeeData, editEmployeeData, EmployeeStatus, fetchEmployeeData } from '@/api/employee'
+import {
+  addEmployeeData,
+  changeEmployeeState,
+  checkLoginNameIsExists,
+  delEmployeeData,
+  editEmployeeData,
+  EmployeeStatus,
+  fetchEmployeeData,
+  findEmployeeData
+} from '@/api/employee'
 import PageMixin from '@/mixin/PageMixin'
 
 export default {
@@ -158,6 +186,15 @@ export default {
         callback()
       }
     }
+    let validateLoginName = (rule, value, callback) => {
+      checkLoginNameIsExists({ id: this.dialogForm.id, loginName: value }).then(response => {
+        if (response.code !== 0) {
+          callback(new Error(response.message))
+        } else {
+          callback()
+        }
+      })
+    }
     return {
       employeeStatus: EmployeeStatus(),
       // 上传头像的中介载体
@@ -165,7 +202,8 @@ export default {
       rules: {
         login_name: [
           { required: true, message: '请输入登录名', trigger: 'blur' },
-          { min: 3, max: 12, message: '长度在 3 到 12 个字符', trigger: 'blur' }
+          { min: 3, max: 12, message: '长度在 3 到 12 个字符', trigger: 'blur' },
+          { validator: validateLoginName, trigger: 'blur' }
         ],
         gender: [
           { required: true, message: '请选择性别', trigger: 'blur' }
@@ -188,11 +226,26 @@ export default {
     addDataHooK() {
       return addEmployeeData
     },
+    // 编辑前获取用户数据
+    beforeEditDataHook(row) {
+      const id = row ? row.id : this.ids[0]
+      findEmployeeData(id).then(response => {
+        this.dialogForm = response.data
+        this.avatar = this.dialogForm.avatar
+      }).catch(error => {
+        console.log(error)
+        return 0
+      })
+    },
     editDataHook() {
       return editEmployeeData
     },
     delDataHook() {
       return delEmployeeData
+    },
+    // 改变状态
+    changeStatusHook() {
+      return changeEmployeeState
     },
     // 上传头像成功后
     handleAvatarSuccess(res, file) {

@@ -29,4 +29,13 @@ public interface EnterpriseService extends IService<Enterprise> {
      */
     IPage<Enterprise> searchPlus(EnterpriseSearchDTO enterpriseSearchDTO);
     
+    /**
+     * 验证电话是否被使用
+     *
+     * @param id
+     * @param phone
+     *
+     * @return
+     */
+    int checkPhoneExists(Long id, String phone);
 }

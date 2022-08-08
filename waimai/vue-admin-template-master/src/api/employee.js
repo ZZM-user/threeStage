@@ -15,6 +15,44 @@ export function fetchEmployeeData(params) {
 
 /**
  * 新增
+ * @param params
+ * @returns {*}
+ */
+export function findEmployeeData(id) {
+  return request({
+    url: 'http://localhost:8080/api/employee/' + id,
+    method: 'GET'
+  })
+}
+
+/**
+ * 切换状态
+ * @param params
+ * @returns {*}
+ */
+export function changeEmployeeState(data) {
+  return request({
+    url: 'http://localhost:8080/api/employee/changeStatus',
+    method: 'POST',
+    data
+  })
+}
+
+/**
+ * 校验登录名是否存在
+ * @returns {*}
+ * @param params
+ */
+export function checkLoginNameIsExists(params) {
+  return request({
+    url: 'http://localhost:8080/api/employee/exists/',
+    method: 'GET',
+    params
+  })
+}
+
+/**
+ * 新增
  * @param data
  * @returns {*}
  */

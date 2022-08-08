@@ -13,6 +13,7 @@ export default {
         size: 10
       },
       multipleSelection: [],
+      ids: [],
       ableEdit: true,
       ableDelete: true,
       dialogForm: {
@@ -65,21 +66,27 @@ export default {
     // 当选择框发生变化
     handleSelectionChange(val) {
       this.multipleSelection = val
+      this.ids = val.map(p => p.id)
       this.ableEdit = this.multipleSelection.length !== 1
       this.ableDelete = this.multipleSelection.length === 0
     },
     // 打开dialog
-    openDialog(type) {
+    openDialog(type, row) {
       this.dialogType = type
+      this.resetForm()
       if (type === 2) {
+        // 如果在调用编辑前，需要请求数据
+        if (this.beforeEditDataHook && this.beforeEditDataHook instanceof Function) {
+          this.beforeEditDataHook(row)
+        }
         this.dialogTitle = '修改'
-        this.dialogForm = this.multipleSelection[0]
         this.dialogVisible = true
       } else {
         this.dialogTitle = '新增'
-        this.dialogForm = { status: 1 }
+        this.dialogForm = {}
         this.dialogVisible = true
       }
+      this.fetchData()
     },
     // 提交dialog表单
     submitForm() {
@@ -147,15 +154,41 @@ export default {
       }).catch(error => {
         console.log(error)
       })
+      this.fetchData()
     },
     // 删除
-    submitDelete() {
+    submitDelete(row) {
       if (!(this.delDataHook && this.delDataHook instanceof Function)) {
         this.$message.error('delDataHook不存在！')
         return
       }
+      const ids = row.id ? Array.of(row.id) : this.ids
       const invoke = this.delDataHook()
-      invoke(this.multipleSelection).then(response => {
+      invoke(ids).then(response => {
+        const { code, message, data } = response
+        if (code === 0) {
+          this.$message({
+            message: message,
+            type: 'success'
+          })
+        } else {
+          this.$message({
+            message: message || '操作失败！',
+            type: 'danger'
+          })
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    // 改变状态
+    submitChangeStatus(row) {
+      if (!(this.changeStatusHook && this.changeStatusHook instanceof Function)) {
+        this.$message.error('changeStatusHook不存在！')
+        return
+      }
+      const invoke = this.changeStatusHook()
+      invoke({ id: row.id }).then(response => {
         const { code, message, data } = response
         if (code === 0) {
           this.$message({
@@ -179,7 +212,14 @@ export default {
     },
     // 重置表单
     resetForm() {
-      this.$refs['dialogForm'].resetFields()
+      if (this.$refs['dialogForm']) {
+        this.$refs['dialogForm'].resetFields()
+        this.$refs['dialogForm'].clearValidate()
+      }
+      // 清空表单校验，避免再次进来会出现上次校验的记录
+      if (this.avatar) {
+        this.avatar = ''
+      }
     }
   }
 }

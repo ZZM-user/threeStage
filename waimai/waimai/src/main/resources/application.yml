@@ -8,12 +8,12 @@ server:
 
 spring:
   application:
-    name: waimai
+    name: adminAo
   devtools:
     remote:
       restart:
         enabled: true
-# --------------------数据源配置-----------------------
+  # --------------------数据源配置-----------------------
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/waimai?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true

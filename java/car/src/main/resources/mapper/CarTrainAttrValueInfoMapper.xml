@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.CarTrainAttrValueInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.entity.CarTrainAttrValueInfo">
+        <id property="train_value_id" column="train_value_id" jdbcType="BIGINT"/>
+        <result property="train_id" column="train_id" jdbcType="BIGINT"/>
+        <result property="train_attr_id" column="train_attr_id" jdbcType="BIGINT"/>
+        <result property="value_name" column="value_name" jdbcType="VARCHAR"/>
+        <result property="show_name" column="show_name" jdbcType="VARCHAR"/>
+        <result property="value_code" column="value_code" jdbcType="VARCHAR"/>
+        <result property="price" column="price" jdbcType="DECIMAL"/>
+        <result property="value_img" column="value_img" jdbcType="VARCHAR"/>
+        <result property="sort" column="sort" jdbcType="INTEGER"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="create_by" column="create_by" jdbcType="VARCHAR"/>
+        <result property="create_time" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="update_by" column="update_by" jdbcType="VARCHAR"/>
+        <result property="update_time" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="del_flag" column="del_flag" jdbcType="CHAR"/>
+        <result property="astrict" column="astrict" jdbcType="INTEGER"/>
+        <result property="value_sub_img" column="value_sub_img" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        train_value_id,train_id,train_attr_id,
+        value_name,show_name,value_code,
+        price,value_img,sort,
+        remark,create_by,create_time,
+        update_by,update_time,del_flag,
+        astrict,value_sub_img
+    </sql>
+</mapper>

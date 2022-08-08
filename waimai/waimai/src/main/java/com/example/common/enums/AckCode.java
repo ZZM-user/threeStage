@@ -26,6 +26,7 @@ public enum AckCode {
     
     /*-----Basic-----*/
     SUCCESS(0, "ok"),
+    VALUE_IS_USED(1, "该值已被使用"),
     FAIL(500, "fail"),
     SYSTEM_PARAM_FAIL(400, "参数错误"),
     SYSTEM_TOKEN_FAIL(401, "会话无效，请重新登录"),
@@ -33,6 +34,7 @@ public enum AckCode {
     SYSTEM_DATA_FAIL(500, "系统数据异常"),
     SYSTEM_SERVER_BUSY(501, "服务器繁忙"),
     SYSTEM_SERVER_MAINTAINING(503, "系统维护中"),
+    NOT_FOUND_DATA(504, "访问不到数据"),
     
     
     /*-------------------登录-------------------*/

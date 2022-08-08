@@ -13,6 +13,8 @@ import com.example.mapper.EnterpriseMapper;
 import com.example.service.EnterpriseService;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 /**
  * @author 17602
  * @description 针对表【enterprise(商家信息表)】的数据库操作Service实现
@@ -52,5 +54,24 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
             wrapper.between("create_time", enterpriseSearchDTO.getStartDate(), enterpriseSearchDTO.getEndDate());
         }
         return null;
+    }
+    
+    /**
+     * 验证电话是否被使用
+     *
+     * @param id
+     * @param phone
+     *
+     * @return
+     */
+    @Override
+    public int checkPhoneExists(Long id, String phone) {
+        QueryWrapper<Enterprise> wrapper = new QueryWrapper<>();
+        wrapper.eq("phone", phone);
+        
+        if (Objects.nonNull(id)) {
+            wrapper.ne("id", id);
+        }
+        return super.baseMapper.selectCount(wrapper).intValue();
     }
 }

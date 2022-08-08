@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.CarTrainAttrInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.entity.CarTrainAttrInfo">
+        <id property="train_attr_id" column="train_attr_id" jdbcType="BIGINT"/>
+        <result property="train_id" column="train_id" jdbcType="BIGINT"/>
+        <result property="attr_name" column="attr_name" jdbcType="VARCHAR"/>
+        <result property="attr_show_name" column="attr_show_name" jdbcType="VARCHAR"/>
+        <result property="sort" column="sort" jdbcType="INTEGER"/>
+        <result property="is_must" column="is_must" jdbcType="CHAR"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="create_by" column="create_by" jdbcType="VARCHAR"/>
+        <result property="create_time" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="update_by" column="update_by" jdbcType="VARCHAR"/>
+        <result property="update_man" column="update_man" jdbcType="TIMESTAMP"/>
+        <result property="del_flag" column="del_flag" jdbcType="CHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        train_attr_id,train_id,attr_name,
+        attr_show_name,sort,is_must,
+        remark,create_by,create_time,
+        update_by,update_man,del_flag
+    </sql>
+</mapper>

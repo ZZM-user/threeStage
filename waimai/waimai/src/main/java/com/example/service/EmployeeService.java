@@ -21,4 +21,15 @@ public interface EmployeeService extends IService<Employee> {
      * @return
      */
     IPage<Employee> search(EmployeeSearchDTO employeeSearchDTO);
+    
+    /**
+     * 验证电话是否被使用
+     *
+     * @param id
+     * @param phone
+     *
+     * @return
+     */
+    int checkPhoneExists(Long id, String loginName);
+    
 }
