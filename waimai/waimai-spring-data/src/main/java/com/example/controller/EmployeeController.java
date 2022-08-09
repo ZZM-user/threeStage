@@ -1,18 +1,25 @@
 package com.example.controller;
 
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.example.common.domain.R;
+import com.example.common.enums.AckCode;
 import com.example.common.vo.PageVo;
 import com.example.dto.EmployeeSearchDTO;
 import com.example.entity.Employee;
 import com.example.service.EmployeeService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * @Author： 17602
@@ -39,7 +46,7 @@ public class EmployeeController {
     @ApiOperation("员工分页查询")
     @GetMapping("/data")
     public R search(EmployeeSearchDTO employeeSearchDTO) {
-        Page<Employee> search = service.search(employeeSearchDTO);
+        IPage<Employee> search = service.search(employeeSearchDTO);
         PageVo<Employee> employeePageVo = PageVo.pageVo(search);
         return R.okHasData(employeePageVo);
     }
@@ -51,23 +58,124 @@ public class EmployeeController {
      *
      * @return
      */
-    // @PostMapping("/add")
-    // public R add(Employee employee) {
-    //     boolean save = service.save(employee);
-    //     return save ? R.ok() : R.build(AckCode.FAIL);
-    // }
-    //
-    // /**
-    //  * 修改信息
-    //  *
-    //  * @param employee
-    //  *
-    //  * @return
-    //  */
-    // @PostMapping("/update")
-    // public R update(Employee employee) {
-    //     boolean b = service.updateById(employee);
-    //     return b ? R.ok() : R.build(AckCode.FAIL);
-    // }
-    //
+    @ApiOperation("新增员工信息")
+    @PostMapping("/add")
+    public R add(@RequestBody Employee employee) {
+        Employee hasEmployee = hasEmployee(employee);
+        boolean save = false;
+        if (ObjectUtil.isNull(hasEmployee)) {
+            // 取出密码进行加密
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+            String passEncoded = encoder.encode(employee.getLogin_pwd());
+            // 存入加密后的密码
+            employee.setLogin_pwd(passEncoded);
+            // 构建创建时间、创建人
+            employee.setCreate_time(new Date());
+            employee.setCreate_by("admin");
+            save = service.save(employee);
+        }
+        return save ? R.ok() : R.build(AckCode.FAIL);
+    }
+    
+    @ApiOperation("查询主键获取员工数据")
+    @ApiImplicitParam(name = "id", value = "主键", example = "1")
+    @GetMapping("/{id}")
+    public R findEmployeeById(@PathVariable(value = "id") Long id) {
+        Employee employee = service.getById(id);
+        if (Objects.isNull(employee)) {
+            return R.build(AckCode.NOT_FOUND_DATA);
+        }
+        employee.setCreate_time(null);
+        employee.setUpdate_time(null);
+        return R.okHasData(employee);
+    }
+    
+    /**
+     * 测试电话是否存在
+     *
+     * @param id
+     * @param phone
+     *
+     * @return
+     */
+    @ApiOperation("检查登录名是否存在")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "id", value = "id为null代表新增", required = false),
+            @ApiImplicitParam(name = "login_name", value = "登录名", required = true)
+    })
+    @GetMapping("/exists")
+    public R findEmployeeById(Long id, String loginName) {
+        if (StrUtil.isBlank(loginName)) {
+            return R.build(AckCode.USER_PARAM_IS_NOT_NULL);
+        }
+        // 检查账号是否存在
+        int count = service.checkPhoneExists(id, loginName);
+        
+        return count == 0 ? R.ok() : R.build(AckCode.VALUE_IS_USED);
+    }
+    
+    
+    @ApiOperation("切换员工账号状态")
+    @ApiImplicitParam(name = "id", value = "主键", example = "1")
+    @PostMapping("/changeStatus")
+    public R changeStatus(@RequestBody Map<String, Long> map) {
+        Long id = map.get("id");
+        Employee employee = service.getById(id);
+        if (ObjectUtil.isNull(employee)) {
+            return R.build(AckCode.USER_NOT_FOUND);
+        }
+        Integer status = employee.getStatus();
+        Integer newStatus = status == 1 ? 0 : 1;
+        employee.setStatus(newStatus);
+        boolean count = service.updateById(employee);
+        return R.ok();
+    }
+    
+    /**
+     * 修改信息
+     *
+     * @param employee
+     *
+     * @return
+     */
+    @ApiOperation("编辑员工信息")
+    @PostMapping("/update")
+    public R update(@RequestBody Employee employee) {
+        boolean update = false;
+        // 查看是否有这个人
+        Employee hasEmployee = hasEmployee(employee);
+        if (ObjectUtil.isNotNull(hasEmployee)) {
+            // 构建更新时间、更新人
+            employee.setUpdate_time(new Date());
+            employee.setUpdate_by("admin");
+            update = service.updateById(employee);
+        }
+        return update ? R.ok() : R.build(AckCode.FAIL);
+    }
+    
+    /**
+     * 删除
+     *
+     * @param ids
+     *
+     * @return
+     */
+    @ApiOperation("移除员工信息")
+    @PostMapping("/del")
+    public R delete(@RequestBody List<Integer> ids) {
+        int counter = 0;
+        boolean remove;
+        for (Integer id : ids) {
+            remove = service.removeById(id);
+            counter += remove ? 1 : 0;
+        }
+        return counter == ids.size() ? R.ok() : R.build(AckCode.FAIL);
+    }
+    
+    private Employee hasEmployee(Employee employee) {
+        LambdaQueryWrapper<Employee> wrapper = new LambdaQueryWrapper<>();
+        LambdaQueryWrapper<Employee> eq = wrapper.eq(Employee::getLogin_name, employee.getLogin_name());
+        LambdaQueryWrapper<Employee> last = eq.last("limit 1");
+        return service.getOne(last);
+    }
 }

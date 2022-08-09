@@ -1,6 +1,8 @@
 package com.example.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
@@ -54,22 +56,26 @@ public class Contamer implements Serializable {
      * 创建时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @TableField(fill = FieldFill.INSERT)
     private Date create_time;
 
     /**
      * 创建人
      */
+    @TableField(fill = FieldFill.INSERT)
     private String create_by;
     
     /**
      * 修改时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @TableField(fill = FieldFill.UPDATE)
     private Date update_time;
 
     /**
      * 修改人
      */
+    @TableField(fill = FieldFill.UPDATE)
     private String update_by;
 
     private static final long serialVersionUID = 1L;

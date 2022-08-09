@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
+import java.util.Optional;
 
 /**
  * @Author： 17602
@@ -39,11 +40,17 @@ public class EmployeeServiceImpl implements EmployeeService {
                 if (ObjectUtil.isNotNull(employeeSearchDTO.getStatus())) {
                     list.add(criteriaBuilder.equal(root.get("status"), employeeSearchDTO.getStatus()));
                 }
-                
+    
                 Predicate[] predicates = list.toArray(new Predicate[list.size()]);
                 return query.where(predicates).getRestriction();
             }
         };
         return this.repository.findAll(specification, pageable);
+    }
+    
+    @Override
+    public Employee getById(Long id) {
+        Optional<Employee> byId = this.repository.findById(id);
+        return byId.orElse(null);
     }
 }

@@ -1,10 +1,15 @@
 package com.example.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -24,41 +29,51 @@ public class Enterprise implements Serializable {
     /**
      * 店名
      */
+    @NotNull(message = "商家名称不能为空")
     private String name;
 
     /**
      * 封面
      */
+    @NotNull(message = "商家封面不能为空")
     private String album;
 
     /**
      * 地址
      */
+    @NotNull(message = "商家地址不能为空")
     private String address;
 
     /**
      * 经度
      */
+    @NotNull(message = "商家经度不能为空")
     private BigDecimal longitude;
 
     /**
      * 纬度
      */
+    @NotNull(message = "商家纬度不能为空")
     private BigDecimal latitude;
-
+    
     /**
      * 联系电话
      */
+    @NotNull(message = "商家电话不能为空")
+    @Pattern(regexp = "^0?(13|15|17|18|14)[0-9]{9}$", message = "电话格式有误！")
     private String phone;
-
+    
     /**
      * 登录密码(加密)
      */
+    @NotNull(message = "商家密码不能为空")
+    @Length(min = 6, max = 24, message = "长度在 6 到 24 个字符")
     private String login_pwd;
 
     /**
      * 状态（1停用，0正常  2未审核）
      */
+    @NotNull(message = "商家状态不能为空")
     private Integer status;
     
     /**
@@ -71,22 +86,26 @@ public class Enterprise implements Serializable {
      * 创建时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @TableField(fill = FieldFill.INSERT)
     private Date create_time;
 
     /**
      * 创建人
      */
+    @TableField(fill = FieldFill.INSERT)
     private String create_by;
     
     /**
      * 修改时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @TableField(fill = FieldFill.UPDATE)
     private Date update_time;
 
     /**
      * 修改人
      */
+    @TableField(fill = FieldFill.UPDATE)
     private String update_by;
 
     private static final long serialVersionUID = 1L;

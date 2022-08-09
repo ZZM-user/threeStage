@@ -14,7 +14,7 @@ export function fetchEnterpriseData(params) {
 }
 
 /**
- * 新增
+ * 查找
  * @returns {*}
  * @param id
  */
@@ -22,6 +22,19 @@ export function findEnterpriseData(id) {
   return request({
     url: 'http://localhost:8080/api/enterprise/' + id,
     method: 'GET'
+  })
+}
+
+/**
+ * 查询商家信息（主要是为了分类）
+ * @returns {*}
+ * @param params
+ */
+export function findEnterprisesData(params) {
+  return request({
+    url: 'http://localhost:8080/api/enterprise/enterprises',
+    method: 'GET',
+    params
   })
 }
 
@@ -98,7 +111,7 @@ export function delEnterpriseData(data) {
 export function EnterpriseStatus() {
   return [
     { label: '未审核', value: 2 },
-    { label: '正常', value: 1 },
-    { label: '停用', value: 0 }
+    { label: '正常', value: 0 },
+    { label: '停用', value: 1 }
   ]
 }

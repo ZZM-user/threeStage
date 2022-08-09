@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.common.domain.R;
@@ -16,11 +17,9 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -60,13 +59,7 @@ public class EnterpriseController {
             @ApiImplicitParam(name = "phone", value = "联系电话", required = true)
     })
     @GetMapping("/exists")
-    public R findEmployeeById(@Valid PhoneValidatorDTO phoneValidatorDTO, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            String message = bindingResult.getAllErrors().get(0).getDefaultMessage();
-            R r = R.build(AckCode.SUCCESS);
-            r.setMessage(message);
-            return r;
-        }
+    public R findEmployeeById(@Valid PhoneValidatorDTO phoneValidatorDTO) {
         // 检查账号是否存在
         int count = service.checkPhoneExists(phoneValidatorDTO.getId(), phoneValidatorDTO.getPhone());
         
@@ -74,7 +67,7 @@ public class EnterpriseController {
     }
     
     @PostMapping("/add")
-    public R addEnterprise(@RequestBody Enterprise enterprise) {
+    public R addEnterprise(@RequestBody @Valid Enterprise enterprise) {
         Enterprise hasEnterprise = hasEnterprise(enterprise);
         boolean save = false;
         if (ObjectUtil.isNull(hasEnterprise)) {
@@ -83,13 +76,9 @@ public class EnterpriseController {
             String passEncoded = encoder.encode(enterprise.getLogin_pwd());
             // 存入加密后的密码
             enterprise.setLogin_pwd(passEncoded);
-            // 构建创建时间、创建人
-            enterprise.setCreate_time(new Date());
-            enterprise.setCreate_by("admin");
             save = service.save(enterprise);
         }
         return save ? R.ok() : R.build(AckCode.FAIL);
-        
     }
     
     @ApiOperation("通过审核")
@@ -133,9 +122,6 @@ public class EnterpriseController {
         // 查看是否有这个人
         Enterprise hasEnterprise = hasEnterprise(enterprise);
         if (ObjectUtil.isNotNull(enterprise)) {
-            // 构建更新时间、更新人
-            enterprise.setUpdate_time(new Date());
-            enterprise.setUpdate_by("admin");
             update = service.updateById(enterprise);
         }
         return update ? R.ok() : R.build(AckCode.FAIL);
@@ -158,6 +144,19 @@ public class EnterpriseController {
             counter += remove ? 1 : 0;
         }
         return counter == ids.size() ? R.ok() : R.build(AckCode.FAIL);
+    }
+    
+    
+    @ApiOperation("为分类菜单提供商家查询")
+    @GetMapping("/enterprises")
+    public R searchAllEnterprise(String enterpriseName) {
+        LambdaQueryWrapper<Enterprise> queryWrapper = new LambdaQueryWrapper<>();
+        if (StrUtil.isNotBlank(enterpriseName)) {
+            queryWrapper.like(Enterprise::getName, "%" + enterpriseName + "%");
+        }
+        queryWrapper.select(Enterprise::getId, Enterprise::getName);
+        List<Enterprise> enterpriseList = service.list(queryWrapper);
+        return R.okHasData(enterpriseList);
     }
     
     private Enterprise hasEnterprise(Enterprise enterprise) {

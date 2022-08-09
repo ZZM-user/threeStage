@@ -19,4 +19,6 @@ public interface ContamerService extends IService<Contamer> {
      * @return
      */
     IPage<Contamer> search(ContamerSearchDTO contamerSearchDTO);
+    
+    int checkLoginIdExists(Long id, String loginId);
 }

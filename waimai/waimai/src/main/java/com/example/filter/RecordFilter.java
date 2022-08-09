@@ -39,6 +39,12 @@ public class RecordFilter implements Filter {
         if (ObjectUtil.isNotNull(request.getQueryString())) {
             log.info("详细参数： " + Arrays.toString(request.getQueryString().split("&")));
         }
+        /* body只能被读取一次，controller就读不到了，有解决办法，但是也不想再平生事端了 */
+        // if ("POST".equalsIgnoreCase(request.getMethod())) {
+        //     String body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        //     log.info("携带请求体：" + body);
+        // }
+    
         filterChain.doFilter(servletRequest, servletResponse);
     }
     

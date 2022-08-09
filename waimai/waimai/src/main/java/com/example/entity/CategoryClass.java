@@ -1,10 +1,13 @@
 package com.example.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -23,38 +26,45 @@ public class CategoryClass implements Serializable {
     /**
      * 商家id
      */
+    @NotNull(message = "分类不能没有所属商家")
     private Long enterprise_id;
 
     /**
      * 类别名称
      */
+    @NotNull(message = "分类名称不能为空")
     private String name;
 
     /**
      * 口味图片
      */
+    @NotNull(message = "口味图片不能为空")
     private String picture;
     
     /**
      * 创建时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @TableField(fill = FieldFill.INSERT)
     private Date create_time;
 
     /**
      * 创建人
      */
+    @TableField(fill = FieldFill.INSERT)
     private String create_by;
     
     /**
      * 更新时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @TableField(fill = FieldFill.UPDATE)
     private Date update_time;
 
     /**
      * 更新人
      */
+    @TableField(fill = FieldFill.UPDATE)
     private String update_by;
 
     private static final long serialVersionUID = 1L;

@@ -1,5 +1,5 @@
 <template xmlns:el-col="http://www.w3.org/1999/html">
-  <div>
+  <div id="main">
     <!--    搜索栏-->
     <el-form :inline="true" :model="queryFrom" class="demo-form-inline" size="small" style="height: 60px">
       <el-form-item label="登录名">
@@ -252,25 +252,12 @@ export default {
       this.dialogForm.avatar = 'http://localhost:8080/' + res.data.fileUrl
       this.avatar = this.dialogForm.avatar
     },
-    // 上传头像之前
-    beforeAvatarUpload(file) {
-      const isJPG = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg' || file.type === 'image/gif'
-      const isLt2M = file.size / 1024 / 1024 < 2
-
-      if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG,PNG 格式!')
-      }
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
-      }
-      return isJPG && isLt2M
-    }
   }
 }
 </script>
 
 <style scoped>
-div {
+#main {
   padding: 1%;
 }
 

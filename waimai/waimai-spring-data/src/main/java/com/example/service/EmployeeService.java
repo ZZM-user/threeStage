@@ -11,4 +11,6 @@ import org.springframework.data.domain.Page;
  **/
 public interface EmployeeService {
     Page<Employee> search(EmployeeSearchDTO employeeSearchDTO);
+    
+    Employee getById(Long id);
 }

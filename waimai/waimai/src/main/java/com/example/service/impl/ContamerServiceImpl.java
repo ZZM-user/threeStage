@@ -1,5 +1,6 @@
 package com.example.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -8,6 +9,8 @@ import com.example.entity.Contamer;
 import com.example.mapper.ContamerMapper;
 import com.example.service.ContamerService;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 /**
  * @author 17602
@@ -28,5 +31,16 @@ public class ContamerServiceImpl extends ServiceImpl<ContamerMapper, Contamer>
     public IPage<Contamer> search(ContamerSearchDTO contamerSearchDTO) {
         Page<Contamer> contamerPage = new Page<>(contamerSearchDTO.getPage(), contamerSearchDTO.getSize());
         return super.baseMapper.search(contamerPage, contamerSearchDTO);
+    }
+    
+    @Override
+    public int checkLoginIdExists(Long id, String loginId) {
+        QueryWrapper<Contamer> wrapper = new QueryWrapper<>();
+        wrapper.eq("loginId", loginId);
+        
+        if (Objects.nonNull(id)) {
+            wrapper.ne("id", id);
+        }
+        return super.baseMapper.selectCount(wrapper).intValue();
     }
 }

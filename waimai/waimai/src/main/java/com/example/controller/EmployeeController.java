@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -71,9 +70,6 @@ public class EmployeeController {
             String passEncoded = encoder.encode(employee.getLogin_pwd());
             // 存入加密后的密码
             employee.setLogin_pwd(passEncoded);
-            // 构建创建时间、创建人
-            employee.setCreate_time(new Date());
-            employee.setCreate_by("admin");
             save = service.save(employee);
         }
         return save ? R.ok() : R.build(AckCode.FAIL);
@@ -147,9 +143,6 @@ public class EmployeeController {
         // 查看是否有这个人
         Employee hasEmployee = hasEmployee(employee);
         if (ObjectUtil.isNotNull(hasEmployee)) {
-            // 构建更新时间、更新人
-            employee.setUpdate_time(new Date());
-            employee.setUpdate_by("admin");
             update = service.updateById(employee);
         }
         return update ? R.ok() : R.build(AckCode.FAIL);

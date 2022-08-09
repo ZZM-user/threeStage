@@ -12,4 +12,7 @@ import org.springframework.data.domain.Page;
 public interface EnterpriseService {
     Page<Enterprise> search(EnterpriseSearchDTO enterpriseSearchDTO);
     
+    Long countByPhoneAndIdNot(String phone, Long id);
+    
+    Long countByPhone(String phone);
 }

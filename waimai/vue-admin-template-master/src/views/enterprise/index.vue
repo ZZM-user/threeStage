@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="main">
     <el-form :inline="true" :model="queryFrom" class="demo-form-inline" size="small">
       <el-form-item label="商家名称">
         <el-input v-model="queryFrom.name" clearable placeholder="商家名称" size="small"></el-input>
@@ -44,11 +44,11 @@
         </el-col>
       </el-row>
       <!--    dialog弹框-->
-      <el-dialog :closed="closeDialog" :title="dialogTitle" :visible.sync="dialogVisible" width="80%">
+      <el-dialog :closed="closeDialog" :title="dialogTitle" :visible.sync="dialogVisible" width="62%">
         <el-form ref="dialogForm" :model="dialogForm" :rules="rules" class="demo-ruleForm" label-width="100px">
           <el-row>
             <el-col :span="12">
-              <el-form-item label="商家名称" prop="login_name">
+              <el-form-item label="商家名称" prop="name">
                 <el-input v-model="dialogForm.name"></el-input>
               </el-form-item>
             </el-col>
@@ -72,13 +72,9 @@
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="12">
-              <el-form-item label="商家图片（网络链接）" prop="album">
-                <el-input v-model="dialogForm.album"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
+            <el-col :span="24">
               <el-form-item label="商家图片" prop="album">
+                <el-input v-model="dialogForm.album" placeholder="请输入商家封面图片地址" @change="setAlbumOfAvatar"/>
                 <el-upload
                   :before-upload="beforeAvatarUpload"
                   :drag="true"
@@ -87,7 +83,12 @@
                   action="http://localhost:8080/img/upload"
                   class="avatar-uploader"
                 >
-                  <img v-if="avatar" :src="avatar" alt="商家图片" class="avatar">
+                  <el-image
+                    v-if="avatar"
+                    :src="avatar"
+                    fit="scale-down"
+                    style="width: 180px; height: 180px"
+                  ></el-image>
                   <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
               </el-form-item>
@@ -101,7 +102,7 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="状态" prop="status">
-                <el-select v-model="dialogForm.status" default-first-option placeholder="请选择状态">
+                <el-select v-model="dialogForm.status" placeholder="请选择状态">
                   <el-option
                     v-for="item in enterpriseStatus"
                     :key="item.value"
@@ -132,7 +133,6 @@
               </el-form-item>
             </el-col>
           </el-row>
-
         </el-form>
       </el-dialog>
       <!--      信息展示-->
@@ -157,9 +157,9 @@
           </template>
         </el-table-column>
         <el-table-column :show-overflow-tooltip="true" label="创建日期" prop="create_time"></el-table-column>
-        <el-table-column label="创建人" prop="create_by"></el-table-column>
+        <el-table-column label="创建人" prop="create_by" width="80px"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" label="修改日期" prop="update_time"></el-table-column>
-        <el-table-column label="修改人" prop="update_by"></el-table-column>
+        <el-table-column label="修改人" prop="update_by" width="80px"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <span v-if="scope.row.status ===2">
@@ -181,7 +181,7 @@
       :total="totalData.totalRecord"
       layout="total, sizes, prev, pager, next, jumper"
       @size-change="handleSizeChange"
-      @current-change="this.fetchData"
+      @current-change="handleCurrentPageChange"
     >
     </el-pagination>
   </div>
@@ -244,11 +244,14 @@ export default {
         status: [
           { required: true, message: '请选择状态', trigger: 'blur' }
         ],
+        address: [
+          { required: true, message: '请输入地址', trigger: 'blur' }
+        ],
         latitude: [
           { required: true, message: '请输入纬度', trigger: 'blur' }
         ],
         longitude: [
-          { required: true, message: '请输入精度', trigger: 'blur' }
+          { required: true, message: '请输入经度', trigger: 'blur' }
         ]
       }
     }
@@ -261,7 +264,7 @@ export default {
     },
     // 编辑框打开之前
     beforeEditDataHook(row) {
-      const id = row ? row.id : this.ids[0]
+      const id = row.id ? row.id : this.ids[0]
       findEnterpriseData(id).then(resp => {
         this.dialogForm = resp.data
         this.avatar = this.dialogForm.album
@@ -282,6 +285,7 @@ export default {
             message: message,
             type: 'success'
           })
+          this.fetchData()
         } else {
           this.$message({
             message: message || '操作失败！',
@@ -293,29 +297,48 @@ export default {
     delDataHook() {
       return delEnterpriseData
     },
+    // 当手动键入封面图片时
+    setAlbumOfAvatar() {
+      this.avatar = this.dialogForm.album
+    },
     // 上传头像成功后
     handleAvatarSuccess(res, file) {
       this.dialogForm.album = 'http://localhost:8080/' + res.data.fileUrl
       this.avatar = this.dialogForm.album
-    },
-    // 上传头像之前
-    beforeAvatarUpload(file) {
-      const isJPG = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg' || file.type === 'image/gif'
-      const isLt2M = file.size / 1024 / 1024 < 2
-
-      if (!isJPG) {
-        this.$message.error('上传封面图片只能是 JPG,PNG 格式!')
-      }
-      if (!isLt2M) {
-        this.$message.error('上传封面图片大小不能超过 2MB!')
-      }
-      return isJPG && isLt2M
     }
   }
 }
 </script>
 <style scoped>
-div {
+#main {
   padding: 1%;
 }
+
+.el-image {
+  border-radius: 12%;
+}
+
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+  margin: 0 auto;
+  border: 1px solid #f1f2f6;
+}
+
 </style>

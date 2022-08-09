@@ -1,10 +1,14 @@
 package com.example.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -23,22 +27,27 @@ public class Employee implements Serializable {
     /**
      * 登录账户
      */
+    @NotNull(message = "登录名不能为空")
     private String login_name;
-
+    
     /**
      * 登录密码
      */
-
+    
+    @NotNull(message = "登录密码不能为空")
+    @Length(min = 6, max = 24, message = "长度在 6 到 24 个字符")
     private String login_pwd;
 
     /**
      * 性别(0 女 1 男)
      */
+    @NotNull(message = "性别不能为空")
     private Integer gender;
 
     /**
      * 状态（1停用，0正常）
      */
+    @NotNull(message = "状态不能为空")
     private Integer status;
 
     /**
@@ -50,22 +59,26 @@ public class Employee implements Serializable {
      * 创建时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @TableField(fill = FieldFill.INSERT)
     private Date create_time;
 
     /**
      * 创建人
      */
+    @TableField(fill = FieldFill.INSERT)
     private String create_by;
     
     /**
      * 修改时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @TableField(fill = FieldFill.UPDATE)
     private Date update_time;
 
     /**
      * 修改人
      */
+    @TableField(fill = FieldFill.UPDATE)
     private String update_by;
 
     private static final long serialVersionUID = 1L;
