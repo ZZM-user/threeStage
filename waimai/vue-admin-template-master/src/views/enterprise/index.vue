@@ -72,7 +72,7 @@
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="24">
+            <el-col :span="12">
               <el-form-item label="商家图片" prop="album">
                 <el-input v-model="dialogForm.album" placeholder="请输入商家封面图片地址" @change="setAlbumOfAvatar"/>
                 <el-upload
@@ -93,13 +93,6 @@
                 </el-upload>
               </el-form-item>
             </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="12">
-              <el-form-item label="地理位置" prop="address">
-                <el-input v-model="dialogForm.address"></el-input>
-              </el-form-item>
-            </el-col>
             <el-col :span="12">
               <el-form-item label="状态" prop="status">
                 <el-select v-model="dialogForm.status" placeholder="请选择状态">
@@ -114,16 +107,7 @@
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="12">
-              <el-form-item label="经度" prop="longitude">
-                <el-input v-model="dialogForm.longitude"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="纬度" prop="latitude">
-                <el-input v-model="dialogForm.latitude"></el-input>
-              </el-form-item>
-            </el-col>
+            <gaode-map v-if="this.dialogVisible" @change-location="changeLocation"/>
           </el-row>
           <el-row>
             <el-col :push="12" :span="12">
@@ -134,6 +118,7 @@
             </el-col>
           </el-row>
         </el-form>
+
       </el-dialog>
       <!--      信息展示-->
       <el-table :data="totalData.records" style="width: 100%" @selection-change="handleSelectionChange">
@@ -198,8 +183,10 @@ import {
   findEnterpriseData
 } from '@/api/enterprise'
 import PageMixin from '@/mixin/PageMixin'
+import GaodeMap from '@/components/Gaode'
 
 export default {
+  components: { GaodeMap },
   mixins: [PageMixin],
   data() {
     let validatePass = (rule, value, callback) => {
@@ -256,6 +243,14 @@ export default {
       }
     }
   }, methods: {
+    // 坐标更改之后
+    changeLocation(val) {
+      console.log('接收到变更信息: ', val)
+      this.dialogForm.latitude = val.location[0]
+      this.dialogForm.longitude = val.location[1]
+      this.dialogForm.address = val.address
+      console.log(this.dialogForm)
+    },
     fetchDataHook() {
       return fetchEnterpriseData
     },
@@ -264,7 +259,7 @@ export default {
     },
     // 编辑框打开之前
     beforeEditDataHook(row) {
-      const id = row.id ? row.id : this.ids[0]
+      const id = row ? row.id : this.ids[0]
       findEnterpriseData(id).then(resp => {
         this.dialogForm = resp.data
         this.avatar = this.dialogForm.album

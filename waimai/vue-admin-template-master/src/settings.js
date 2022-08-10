@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: 'EMeiL',
+  title: '饿了么',
 
   /**
    * @type {boolean} true | false

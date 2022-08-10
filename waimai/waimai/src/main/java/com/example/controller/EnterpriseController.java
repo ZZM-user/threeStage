@@ -121,7 +121,8 @@ public class EnterpriseController {
         boolean update = false;
         // 查看是否有这个人
         Enterprise hasEnterprise = hasEnterprise(enterprise);
-        if (ObjectUtil.isNotNull(enterprise)) {
+        if (ObjectUtil.isNotNull(hasEnterprise)) {
+            enterprise.setLogin_pwd(hasEnterprise.getLogin_pwd());
             update = service.updateById(enterprise);
         }
         return update ? R.ok() : R.build(AckCode.FAIL);
