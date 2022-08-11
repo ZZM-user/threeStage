@@ -22,28 +22,20 @@
         </el-card>
       </el-col>
     </el-row>
-    <gaode-map @change-location="changeLocation"></gaode-map>
 
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import GaodeMap from '@/components/Gaode'
 
 export default {
-  name: 'Dashboard',
-  components: { GaodeMap },
-  computed: {
-    ...mapGetters([
-      'name'
-    ])
-  },
-  methods: {
-    changeLocation(val) {
-      console.log(val)
-    }
-  }
+  name: 'Dashboard'
+  // computed: {
+  //   ...mapGetters([
+  //     'name'
+  //   ])
+  // },
+  // methods: {}
 }
 </script>
 

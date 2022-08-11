@@ -107,7 +107,17 @@
             </el-col>
           </el-row>
           <el-row>
-            <gaode-map v-if="this.dialogVisible" @change-location="changeLocation"/>
+            <el-col :span="12">
+              <el-form-item label="商家位置">
+                <el-button type="primary" @click="dialogMapVisible=true">
+                  选择商家位置
+                </el-button>
+              </el-form-item>
+              <el-dialog :visible.sync="dialogMapVisible" title="商家位置" width="62%">
+                <BMapSelector :item-data="dialogForm" @location="changeLocation"></BMapSelector>
+              </el-dialog>
+            </el-col>
+            <!--            <gaode-map v-if="this.dialogVisible" @change-location="changeLocation"/>-->
           </el-row>
           <el-row>
             <el-col :push="12" :span="12">
@@ -184,9 +194,10 @@ import {
 } from '@/api/enterprise'
 import PageMixin from '@/mixin/PageMixin'
 import GaodeMap from '@/components/Gaode'
+import BMapSelector from '@/components/BaiduAddress'
 
 export default {
-  components: { GaodeMap },
+  components: { BMapSelector, GaodeMap },
   mixins: [PageMixin],
   data() {
     let validatePass = (rule, value, callback) => {
@@ -211,6 +222,7 @@ export default {
     return {
       avatar: '',
       enterpriseStatus: EnterpriseStatus(),
+      dialogMapVisible: false,
       rules: {
         phone: [
           { required: true, message: '不能为空', trigger: 'blur' },
@@ -246,10 +258,11 @@ export default {
     // 坐标更改之后
     changeLocation(val) {
       console.log('接收到变更信息: ', val)
-      this.dialogForm.latitude = val.location[0]
-      this.dialogForm.longitude = val.location[1]
+      this.dialogForm.latitude = val.latitude
+      this.dialogForm.longitude = val.longitude
       this.dialogForm.address = val.address
       console.log(this.dialogForm)
+      this.dialogMapVisible = false
     },
     fetchDataHook() {
       return fetchEnterpriseData

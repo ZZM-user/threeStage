@@ -113,6 +113,27 @@ export const constantRoutes = [
         meta: { title: '会员管理', icon: 'el-icon-user' }
       }]
   },
+  {
+    path: '/map',
+    component: Layout,
+    redirect: '/map/gaode/index',
+    name: 'map',
+    meta: { title: '地图展示', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'gaode/index',
+        name: 'gaode',
+        component: () => import('@/views/map/gaode/index'),
+        meta: { title: '高德地图', icon: 'table' }
+      },
+      {
+        path: 'baidu/index',
+        name: 'baidu',
+        component: () => import('@/views/map/baidu/index'),
+        meta: { title: '百度地图', icon: 'tree' }
+      }
+    ]
+  },
 
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
