@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.common.domain.R;
 import com.example.common.enums.AckCode;
+import com.example.common.validtor.AddValidator;
+import com.example.common.validtor.EditValidator;
 import com.example.common.vo.PageVo;
 import com.example.dto.EnterpriseSearchDTO;
 import com.example.dto.PhoneValidatorDTO;
@@ -17,6 +19,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -67,22 +70,22 @@ public class EnterpriseController {
     }
     
     @PostMapping("/add")
-    public R addEnterprise(@RequestBody @Valid Enterprise enterprise) {
+    public R addEnterprise(@RequestBody @Validated(value = AddValidator.class) Enterprise enterprise) {
         Enterprise hasEnterprise = hasEnterprise(enterprise);
         boolean save = false;
         if (ObjectUtil.isNull(hasEnterprise)) {
             // 取出密码进行加密
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             String passEncoded = encoder.encode(enterprise.getLogin_pwd());
-            // 存入加密后的密码
             enterprise.setLogin_pwd(passEncoded);
+            // 存入加密后的密码
             save = service.save(enterprise);
         }
         return save ? R.ok() : R.build(AckCode.FAIL);
     }
     
     @ApiOperation("通过审核")
-    @ApiImplicitParam(name = "id", value = "主键", example = "1")
+    @ApiImplicitParam(name = "id", value = "商家", required = true, example = "1")
     @PostMapping("/approved")
     public R changeStatus(@RequestBody Map<String, Integer> map) {
         Integer id = map.get("id");
@@ -105,6 +108,7 @@ public class EnterpriseController {
         }
         enterprise.setCreate_time(null);
         enterprise.setUpdate_time(null);
+        enterprise.setLogin_pwd(null);
         return R.okHasData(enterprise);
     }
     
@@ -117,12 +121,14 @@ public class EnterpriseController {
      */
     @ApiOperation("编辑商家信息")
     @PostMapping("/update")
-    public R update(@RequestBody Enterprise enterprise) {
+    public R update(@RequestBody @Validated(value = {EditValidator.class}) Enterprise enterprise) {
         boolean update = false;
         // 查看是否有这个人
         Enterprise hasEnterprise = hasEnterprise(enterprise);
         if (ObjectUtil.isNotNull(hasEnterprise)) {
-            enterprise.setLogin_pwd(hasEnterprise.getLogin_pwd());
+            if (ObjectUtil.isNotNull(enterprise.getLogin_pwd())) {
+                enterprise.setLogin_pwd(hasEnterprise.getLogin_pwd());
+            }
             update = service.updateById(enterprise);
         }
         return update ? R.ok() : R.build(AckCode.FAIL);
@@ -141,8 +147,16 @@ public class EnterpriseController {
         int counter = 0;
         boolean remove;
         for (Integer id : ids) {
-            remove = service.removeById(id);
-            counter += remove ? 1 : 0;
+            Enterprise byId = service.getById(id);
+            if (ObjectUtil.isNotNull(byId)) {
+                if (byId.getStatus() == 2) {
+                    remove = service.removeById(id);
+                } else {
+                    byId.setStatus(1);
+                    remove = service.updateById(byId);
+                }
+                counter += remove ? 1 : 0;
+            }
         }
         return counter == ids.size() ? R.ok() : R.build(AckCode.FAIL);
     }

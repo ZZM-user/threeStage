@@ -5,6 +5,7 @@ import cn.hutool.core.util.IdUtil;
 import com.example.common.domain.R;
 import com.example.common.enums.AckCode;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,6 +34,7 @@ public class FileUploadController {
     
     private final String[] allowed_types = {"image/png", "image/jpg", "image/jpeg", "img/gif"};
     
+    @ApiOperation("文件上传")
     @PostMapping("img/upload")
     public R fileUpload(MultipartFile file) throws IOException {
         // 检查图片是否为空

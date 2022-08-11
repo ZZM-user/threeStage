@@ -16,9 +16,7 @@ export default {
       ids: [],
       ableEdit: true,
       ableDelete: true,
-      dialogForm: {
-        status: 1
-      },
+      dialogForm: {},
       dialogVisible: false,
       dialogType: 0,
       dialogTitle: ''
@@ -26,6 +24,7 @@ export default {
     }
   }, created() {
     this.fetchData()
+    this.initFormValue()
   }, methods: {
     // 获取数据
     fetchData() {
@@ -127,6 +126,7 @@ export default {
             type: 'danger'
           })
         }
+        this.fetchData()
       }).catch(error => {
         console.log(error)
       })
@@ -151,10 +151,10 @@ export default {
             type: 'danger'
           })
         }
+        this.fetchData()
       }).catch(error => {
         console.log(error)
       })
-      this.fetchData()
     },
     // 删除
     submitDelete(row) {
@@ -177,6 +177,7 @@ export default {
             type: 'danger'
           })
         }
+        this.fetchData()
       }).catch(error => {
         console.log(error)
       })
@@ -201,6 +202,7 @@ export default {
             type: 'danger'
           })
         }
+        this.fetchData()
       }).catch(error => {
         console.log(error)
       })
@@ -219,6 +221,12 @@ export default {
       // 清空表单校验，避免再次进来会出现上次校验的记录
       if (this.avatar) {
         this.avatar = ''
+      }
+    },
+    // 初始化表单值
+    initFormValue() {
+      this.dialogForm = {
+        status: 1
       }
     },
     // 上传头像之前

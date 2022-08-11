@@ -1,7 +1,6 @@
 package com.example.config;
 
 import io.swagger.annotations.ApiOperation;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -16,7 +15,7 @@ import java.util.ArrayList;
 @Configuration
 @EnableOpenApi
 public class SwaggerConfig {
-    @Bean
+    
     public Docket docket() {
         return new Docket(DocumentationType.SWAGGER_2)
                        .apiInfo(apiInfo())

@@ -99,6 +99,7 @@
                   <el-option
                     v-for="item in enterpriseStatus"
                     :key="item.value"
+                    :if="item.value!==2"
                     :label="item.label"
                     :value="item.value"
                   />
@@ -114,10 +115,11 @@
                 </el-button>
               </el-form-item>
               <el-dialog :visible.sync="dialogMapVisible" title="商家位置" width="62%">
-                <BMapSelector :item-data="dialogForm" @location="changeLocation"></BMapSelector>
+                <!--                <BMapSelector :item-data="dialogForm" @location="changeLocation"></BMapSelector>-->
+                <gaode-map v-if="this.dialogMapVisible" @change-location="changeLocation"/>
+
               </el-dialog>
             </el-col>
-            <!--            <gaode-map v-if="this.dialogVisible" @change-location="changeLocation"/>-->
           </el-row>
           <el-row>
             <el-col :push="12" :span="12">
@@ -158,12 +160,22 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <span v-if="scope.row.status ===2">
-            <el-link icon="el-icon-check" type="success" @click="submitCheck(scope.row)">通过</el-link>
-              |
+              <el-popconfirm
+                cancel-button-text="不了"
+                confirm-button-text="是的"
+                icon="el-icon-info"
+                icon-color="red"
+                title="是否通过该商家的审核？"
+                @onConfirm="submitCheck(scope.row)"
+              >
+            <el-link slot="reference" icon="el-icon-check" type="success">审核通过</el-link>
+              |</el-popconfirm>
             </span>
             <el-link icon="el-icon-edit" type="primary" @click="openDialog(2,scope.row)">编辑</el-link>
             |
-            <el-link icon="el-icon-delete" type="danger" @click="submitDelete(scope.row)">删除</el-link>
+            <el-link v-if="scope.row.status!==1" icon="el-icon-delete" type="danger" @click="submitDelete(scope.row)">
+              删除
+            </el-link>
           </template>
         </el-table-column>
       </el-table>
@@ -317,7 +329,7 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style>
 #main {
   padding: 1%;
 }
@@ -349,4 +361,9 @@ export default {
   border: 1px solid #f1f2f6;
 }
 
+.amap-sug-result {
+  top: 540px !important;
+  z-index: 3000 !important;
+  position: absolute;
+}
 </style>

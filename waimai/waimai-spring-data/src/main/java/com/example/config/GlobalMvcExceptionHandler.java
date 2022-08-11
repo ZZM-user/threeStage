@@ -8,10 +8,9 @@ package com.example.config;
 
 import com.example.common.domain.R;
 import com.example.common.enums.AckCode;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.net.BindException;
 
 @RestControllerAdvice
 public class GlobalMvcExceptionHandler {
@@ -23,10 +22,10 @@ public class GlobalMvcExceptionHandler {
      * @return
      */
     @ExceptionHandler(value = BindException.class)
-    public R bindException(BindException exception) {
-        String message = exception.getMessage();
-        R r = R.build(AckCode.SUCCESS);
-        r.setMessage(message);
-        return r;
+    public R bindException(BindException e) {
+        String message = e.getAllErrors().get(0).getDefaultMessage();
+        R<Object> build = R.build(AckCode.FAIL);
+        build.setData(message);
+        return build;
     }
 }

@@ -1,6 +1,7 @@
 <template>
   <div id="GaodeMap">
     <div id="container"></div>
+
     <div class="input-item">
       <el-form :inline="true" class="demo-form-inline">
         <el-form-item label="商家地址">
@@ -8,8 +9,8 @@
           />
         </el-form-item>
       </el-form>
-
     </div>
+
   </div>
 
 </template>
@@ -194,8 +195,9 @@ export default {
       if (this.currentAddress !== '') {
         address = this.currentAddress
       }
-      this.$emit('change-location', { location: this.currentLocation, address })
-      console.log('当前位置' + '-' + this.currentLocation)
+      const data = { latitude: this.currentLocation[0], longitude: this.currentLocation[1], address }
+      this.$emit('change-location', data)
+      console.log('当前位置', '-', data)
     }
   }
 }
@@ -208,7 +210,7 @@ export default {
   margin: 0;
   width: 100%;
   height: 300px;
-  border-radius: 3%;
+  border-radius: 5%;
 }
 
 .demo-form-inline {

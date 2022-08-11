@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.example.common.validtor.EditValidator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
@@ -29,51 +30,51 @@ public class Enterprise implements Serializable {
     /**
      * 店名
      */
-    @NotNull(message = "商家名称不能为空")
+    @NotNull(message = "商家名称不能为空", groups = {AddressBook.class, EditValidator.class})
     private String name;
 
     /**
      * 封面
      */
-    @NotNull(message = "商家封面不能为空")
+    @NotNull(message = "商家封面不能为空", groups = {AddressBook.class, EditValidator.class})
     private String album;
 
     /**
      * 地址
      */
-    @NotNull(message = "商家地址不能为空")
+    @NotNull(message = "商家地址不能为空", groups = {AddressBook.class, EditValidator.class})
     private String address;
 
     /**
      * 经度
      */
-    @NotNull(message = "商家经度不能为空")
+    @NotNull(message = "商家经度不能为空", groups = {AddressBook.class, EditValidator.class})
     private BigDecimal longitude;
 
     /**
      * 纬度
      */
-    @NotNull(message = "商家纬度不能为空")
+    @NotNull(message = "商家纬度不能为空", groups = {AddressBook.class, EditValidator.class})
     private BigDecimal latitude;
     
     /**
      * 联系电话
      */
-    @NotNull(message = "商家电话不能为空")
-    @Pattern(regexp = "^0?(13|15|17|18|14)[0-9]{9}$", message = "电话格式有误！")
+    @NotNull(message = "商家电话不能为空", groups = {AddressBook.class, EditValidator.class})
+    @Pattern(regexp = "^0?(13|15|17|18|14)[0-9]{9}$", message = "电话格式有误！", groups = {AddressBook.class, EditValidator.class})
     private String phone;
     
     /**
      * 登录密码(加密)
      */
-    @NotNull(message = "商家密码不能为空")
-    @Length(min = 6, max = 24, message = "长度在 6 到 24 个字符")
+    @NotNull(message = "商家密码不能为空", groups = {AddressBook.class})
+    @Length(min = 6, max = 24, message = "长度在 6 到 24 个字符", groups = {AddressBook.class})
     private String login_pwd;
 
     /**
      * 状态（1停用，0正常  2未审核）
      */
-    @NotNull(message = "商家状态不能为空")
+    @NotNull(message = "商家状态不能为空", groups = {AddressBook.class, EditValidator.class})
     private Integer status;
     
     /**
