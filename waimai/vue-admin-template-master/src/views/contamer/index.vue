@@ -124,7 +124,7 @@
       <el-table-column type="selection" width="55"/>
       <el-table-column label="编号" prop="id" width="50"></el-table-column>
       <el-table-column :show-overflow-tooltip="true" label="名称" prop="user_name" width="150"></el-table-column>
-      <el-table-column label="头像" prop="portrait" width="150">
+      <el-table-column label="头像" prop="portrait" width="100">
         <template slot-scope="scope">
           <el-avatar :src="scope.row.portrait"></el-avatar>
         </template>
@@ -141,9 +141,9 @@
           <el-tag v-if="scope.row.status===1" effect="dark" type="danger">停用</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="创建日期" prop="create_time"></el-table-column>
+      <el-table-column label="创建日期" prop="create_time" width="160px"></el-table-column>
       <el-table-column label="创建人" prop="create_by"></el-table-column>
-      <el-table-column label="修改日期" prop="update_time"></el-table-column>
+      <el-table-column label="修改日期" prop="update_time" width="160px"></el-table-column>
       <el-table-column label="修改人" prop="update_by"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">

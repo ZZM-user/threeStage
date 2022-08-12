@@ -85,7 +85,7 @@ export const constantRoutes = [
         path: 'category/index',
         name: 'enterprise',
         component: () => import('@/views/category/index'),
-        meta: { title: '分类管理', icon: 'el-icon-s-help' }
+        meta: { title: '分类管理', icon: 'el-icon-s-unfold' }
       }]
   },
   {
@@ -118,19 +118,19 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/map/gaode/index',
     name: 'map',
-    meta: { title: '地图展示', icon: 'el-icon-s-help' },
+    meta: { title: '地图展示', icon: 'el-icon-map-location' },
     children: [
       {
         path: 'gaode/index',
         name: 'gaode',
         component: () => import('@/views/map/gaode/index'),
-        meta: { title: '高德地图', icon: 'table' }
+        meta: { title: '高德地图', icon: 'el-icon-location-information' }
       },
       {
         path: 'baidu/index',
         name: 'baidu',
         component: () => import('@/views/map/baidu/index'),
-        meta: { title: '百度地图', icon: 'tree' }
+        meta: { title: '百度地图', icon: 'el-icon-location-information' }
       }
     ]
   },
