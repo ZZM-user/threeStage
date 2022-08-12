@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.CarTrainColourInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.entity.CarTrainColourInfo">
+            <id property="trainColourId" column="train_colour_id" jdbcType="BIGINT"/>
+            <result property="trainId" column="train_id" jdbcType="BIGINT"/>
+            <result property="colourName" column="colour_name" jdbcType="VARCHAR"/>
+            <result property="colourCode" column="colour_code" jdbcType="VARCHAR"/>
+            <result property="colourImg" column="colour_img" jdbcType="VARCHAR"/>
+            <result property="colourSubImg" column="colour_sub_img" jdbcType="VARCHAR"/>
+            <result property="colourPrice" column="colour_price" jdbcType="DECIMAL"/>
+            <result property="sort" column="sort" jdbcType="INTEGER"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="delFlag" column="del_flag" jdbcType="CHAR"/>
+            <result property="valueCode" column="value_code" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        train_colour_id,train_id,colour_name,
+        colour_code,colour_img,colour_sub_img,
+        colour_price,sort,create_by,
+        create_time,update_by,update_time,
+        del_flag,value_code
+    </sql>
+</mapper>
