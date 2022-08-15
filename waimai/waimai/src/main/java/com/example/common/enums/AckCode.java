@@ -119,7 +119,8 @@ public enum AckCode {
     PASSWORD_VERIFY_FAILED(1125, "密码必须是6~16位的数字、字母组合"),
     BUY_LIMIT(1126, "购买受限"),
     
-    ;
+    // 商家
+    ENTERPRISE_NOT_VALIDATED(2000, "商家信息未审核，不允许登录");
     
     
     public Integer code;

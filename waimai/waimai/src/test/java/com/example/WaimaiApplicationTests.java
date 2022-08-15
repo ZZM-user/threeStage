@@ -14,9 +14,10 @@ class WaimaiApplicationTests {
     
     @Test
     void contextLoads() {
-        String s = "$2a$10$oQpj4laDLatd/GzIo.4oR.3m9Fl8NxsrN11seE4iwpTCb31E78Dqm";
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        boolean matches = encoder.matches("123456", s);
+        String encode = encoder.encode("123456");
+        System.out.println("encode = " + encode);
+        boolean matches = encoder.matches("123456", encode);
         System.out.println("matches = " + matches);
     }
     
