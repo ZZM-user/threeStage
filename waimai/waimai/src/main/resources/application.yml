@@ -50,3 +50,10 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
     banner: false
+
+jwt:
+  signer: "dasd1a3d$#%^$%&*@##$@%^1as5d1adasd1@$#@%#^$^#ad1ad31as#$%#$52452425/^$$%24455^$^455%^$^#"
+  header: "Authorization"
+
+exclude:
+  url: "/api/login,/api/**/register,/api/captcha/**"

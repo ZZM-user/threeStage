@@ -53,6 +53,7 @@ public enum AckCode {
     APPLE_ILLEGAL(611, "苹果token非法"),
     APPLE_FAIL(612, "苹果token验证失败"),
     INVITATION_CODE_ERROR(613, "邀请码不正确"),
+    TOKEN_EXPIRED(614, "令牌过期"),
     
     
     /*-------------------短信验证-------------------*/

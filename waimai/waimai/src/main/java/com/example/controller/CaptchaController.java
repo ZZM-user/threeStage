@@ -56,7 +56,7 @@ public class CaptchaController {
     
     @ApiOperation("算数验证")
     @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "width", value = "图片宽度", defaultValue = "150"),
+            @ApiImplicitParam(name = "width", dataType = "Integer", value = "图片宽度", defaultValue = "150"),
             @ApiImplicitParam(name = "height", value = "图片高度", defaultValue = "50"),
             @ApiImplicitParam(name = "len", value = "验证码长度", defaultValue = "2"),
     })

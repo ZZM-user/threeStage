@@ -1,51 +1,79 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
+    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" auto-complete="on" class="login-form"
+             label-position="left"
+    >
 
       <div class="title-container">
         <h3 class="title">Login Form</h3>
       </div>
 
-      <el-form-item prop="username">
+      <el-form-item prop="account">
         <span class="svg-container">
-          <svg-icon icon-class="user" />
+          <svg-icon icon-class="user"/>
         </span>
         <el-input
-          ref="username"
-          v-model="loginForm.username"
-          placeholder="Username"
-          name="username"
-          type="text"
-          tabindex="1"
+          ref="account"
+          v-model="loginForm.account"
           auto-complete="on"
+          name="account"
+          placeholder="Username"
+          tabindex="1"
+          type="text"
         />
       </el-form-item>
 
-      <el-form-item prop="password">
+      <el-form-item prop="loginPwd">
         <span class="svg-container">
-          <svg-icon icon-class="password" />
+          <svg-icon icon-class="password"/>
         </span>
         <el-input
           :key="passwordType"
-          ref="password"
-          v-model="loginForm.password"
+          ref="loginPwd"
+          v-model="loginForm.loginPwd"
           :type="passwordType"
-          placeholder="Password"
-          name="password"
-          tabindex="2"
           auto-complete="on"
+          name="loginPwd"
+          placeholder="Password"
+          tabindex="2"
           @keyup.enter.native="handleLogin"
         />
         <span class="show-pwd" @click="showPwd">
-          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"/>
         </span>
       </el-form-item>
+      <el-form-item prop="code">
+                <span class="svg-container">
+                    <svg-icon class="el-input__icon input-icon" icon-class="code"/>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
+        </span>
+        <el-input
+          v-model="loginForm.code"
+          auto-complete="off"
+          placeholder="验证码"
+          style="width: 63%;"
+          tabindex="3"
+          @keyup.enter.native="handleLogin"
+        >
+        </el-input>
+        <div class="login-code">
+          <el-image
+            :src="base64Image" alt="看不清，就用莎普爱思！" class="login-code-img" @click="getCode"
+          >
+            <div slot="error" class="image-slot">
+              <i class="el-icon-picture-outline"></i>
+            </div>
+          </el-image>
+        </div>
+      </el-form-item>
+      <el-button :loading="loading" style="width:100%;margin-bottom:30px;" type="primary"
+                 @click.native.prevent="handleLogin"
+      >Login
+      </el-button>
 
       <div class="tips">
-        <span style="margin-right:20px;">username: admin</span>
-        <span> password: any</span>
+        <span style="margin-right:20px;">username: 123456</span>
+        <span> password: 123456</span>
       </div>
 
     </el-form>
@@ -53,18 +81,11 @@
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
+import { getCaptcha } from '@/api/user'
 
 export default {
   name: 'Login',
   data() {
-    const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
-      } else {
-        callback()
-      }
-    }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
         callback(new Error('The password can not be less than 6 digits'))
@@ -74,16 +95,21 @@ export default {
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: '111111'
+        account: '123456',
+        loginPwd: '123456',
+        code: undefined,
+        uuid: undefined
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        account: [{ required: true, trigger: 'blur' }],
+        code: [{ required: true, trigger: 'blur' }],
+        loginPwd: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       loading: false,
       passwordType: 'password',
-      redirect: undefined
+      redirect: undefined,
+      // 验证码
+      base64Image: undefined
     }
   },
   watch: {
@@ -94,7 +120,17 @@ export default {
       immediate: true
     }
   },
+  created() {
+    this.getCode()
+  },
   methods: {
+    getCode() {
+      const params = { width: 120, height: 45 }
+      getCaptcha(params).then(resp => {
+        this.base64Image = resp.data.img
+        this.loginForm.uuid = resp.data.uuid
+      })
+    },
     showPwd() {
       if (this.passwordType === 'password') {
         this.passwordType = ''
@@ -120,6 +156,7 @@ export default {
           return false
         }
       })
+      this.getCode()
     }
   }
 }
@@ -168,6 +205,13 @@ $cursor: #fff;
     background: rgba(0, 0, 0, 0.1);
     border-radius: 5px;
     color: #454545;
+  }
+
+  .login-code-img {
+    position: absolute;
+    top: 0;
+    right: 0;
+    cursor: pointer;
   }
 }
 </style>

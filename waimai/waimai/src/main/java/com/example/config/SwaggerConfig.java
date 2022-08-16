@@ -1,45 +1,81 @@
 package com.example.config;
 
-import io.swagger.annotations.ApiOperation;
+import org.springframework.boot.SpringBootVersion;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.oas.annotations.EnableOpenApi;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.Contact;
+import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 
-import java.util.ArrayList;
+import java.util.*;
 
 @Configuration
 @EnableOpenApi
-public class SwaggerConfig {
+public class SwaggerConfig implements WebMvcConfigurer {
     
-    public Docket docket() {
-        return new Docket(DocumentationType.SWAGGER_2)
+    @Bean
+    public Docket createRestApi() {
+        return new Docket(DocumentationType.OAS_30).pathMapping("/")
+                       // 将api的元信息设置为包含在json ResourceListing响应中。
                        .apiInfo(apiInfo())
-                       // .enable(false) //配置是否启用Swagger，如果是false，在浏览器将无法访问
-                       .select()// 通过.select()方法，去配置扫描接口,RequestHandlerSelectors配置如何扫描接口
-                       .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
-                       // 配置你想在那个controller层生产接口文档
+                       // 选择哪些接口作为swagger的doc发布
+                       .select()
+                       .apis(RequestHandlerSelectors.any())
                        .paths(PathSelectors.any())
+                       .build()
+                
+                       // 支持的通讯协议集合
+                       .protocols(newHashSet("https", "http"))
+                
+                       // 授权信息设置，必要的header token等认证信息
+                       .securitySchemes(securitySchemes())
+                
+                       // 授权信息全局应用
+                       .securityContexts(securityContexts());
+    }
+    
+    /**
+     * API 页面上半部分展示信息
+     */
+    private ApiInfo apiInfo() {
+        return new ApiInfoBuilder().title("外卖 Api Doc")
+                       .description("")
+                       .contact(new Contact("lighter", null, "123456@gmail.com"))
+                       .version("Application Version: " + "" + ", Spring Boot Version: " + SpringBootVersion.getVersion())
                        .build();
     }
     
-    // 配置文档信息
-    private ApiInfo apiInfo() {
-        Contact contact = new Contact("外卖程序员", "https://www.baidu.com", "xxxx@126.com");
-        return new ApiInfo(
-                "外卖文档", // 标题
-                "外卖前后台api", // 描述
-                "v1.0", // 版本
-                "", // 组织链接
-                contact, // 联系人信息
-                "Apach 2.0 许可", // 许可
-                "许可链接", // 许可连接
-                new ArrayList<>()// 扩展
+    /**
+     * 设置授权信息
+     */
+    private List<SecurityScheme> securitySchemes() {
+        ApiKey apiKey = new ApiKey("", "Authorization", "header");
+        return Collections.singletonList(apiKey);
+    }
+    
+    /**
+     * 授权信息全局应用
+     */
+    private List<SecurityContext> securityContexts() {
+        return Collections.singletonList(
+                SecurityContext.builder()
+                        .securityReferences(Collections.singletonList(new SecurityReference("BASE_TOKEN", new AuthorizationScope[]{new AuthorizationScope("global", "")})))
+                        .build()
         );
+    }
+    
+    @SafeVarargs
+    private final <T> Set<T> newHashSet(T... ts) {
+        if (ts.length > 0) {
+            return new LinkedHashSet<>(Arrays.asList(ts));
+        }
+        return null;
     }
     
 }

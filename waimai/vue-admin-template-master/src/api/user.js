@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function login(data) {
   return request({
-    url: '/vue-admin-template/user/login',
+    url: 'http://localhost:8080/api/login',
     method: 'post',
     data
   })
@@ -20,5 +20,13 @@ export function logout() {
   return request({
     url: '/vue-admin-template/user/logout',
     method: 'post'
+  })
+}
+
+export function getCaptcha(params) {
+  return request({
+    url: 'http://localhost:8080/captcha/arithmetic',
+    method: 'GET',
+    params
   })
 }

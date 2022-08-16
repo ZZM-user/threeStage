@@ -3,6 +3,7 @@ package com.example.controller;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.jwt.JWTUtil;
 import com.example.common.constants.Waimai;
 import com.example.common.domain.R;
 import com.example.common.enums.AckCode;
@@ -13,10 +14,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -35,6 +39,9 @@ public class LoginController {
     private RedisTemplate redisTemplate;
     @Autowired
     private LoginService loginService;
+    
+    @Value(value = "${jwt.signer}")
+    private String jwtSinger;
     
     @ApiOperation("登录")
     @PostMapping("/login")
@@ -65,7 +72,13 @@ public class LoginController {
         
         String[] redisLoginKey = Waimai.getRedisLoginKey(uuid);
         this.redisTemplate.opsForValue().set(redisLoginKey[1], dbUser, Waimai.REDIS_CAPTCHA_LOGIN_MINUTES, TimeUnit.MINUTES);
+        
+        // jwt执行操作
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("uuid", redisLoginKey[0]);
+        String token = JWTUtil.createToken(map, jwtSinger.getBytes(StandardCharsets.UTF_8));
+        
         log.info(loginDTO.getAccount() + "\n登录成功！");
-        return R.okHasData(uuid);
+        return R.okHasData(token);
     }
 }

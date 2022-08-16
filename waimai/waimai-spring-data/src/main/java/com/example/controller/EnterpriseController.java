@@ -39,7 +39,6 @@ public class EnterpriseController {
     @Autowired
     private EnterpriseRepository repository;
     
-    
     @Autowired
     private EnterpriseService service;
     

@@ -51,14 +51,24 @@ public class EnterpriseServiceImpl implements EnterpriseService {
                 if (ObjectUtil.isNotNull(enterpriseSearchDTO.getStartDate()) && ObjectUtil.isNotNull(enterpriseSearchDTO.getEndDate())) {
                     list.add(criteriaBuilder.between(root.get("create_time"), enterpriseSearchDTO.getStartDate(), DateUtil.offsetDay(enterpriseSearchDTO.getEndDate(), 1)));
                 }
-                
+    
                 Predicate[] predicates = list.toArray(new Predicate[list.size()]);
-                
+    
                 return query.where(predicates).getRestriction();
             }
         };
-        
+    
         // 返回结果
         return this.enterpriseRepository.findAll(specification, pageable);
+    }
+    
+    @Override
+    public Long countByPhoneAndIdNot(String phone, Long id) {
+        return null;
+    }
+    
+    @Override
+    public Long countByPhone(String phone) {
+        return null;
     }
 }
