@@ -59,4 +59,5 @@ public class LoginServerImpl implements LoginService {
         }
         return currentUser;
     }
+    
 }

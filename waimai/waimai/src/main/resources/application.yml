@@ -39,9 +39,8 @@ spring:
 # -------------------日志配置------------------------
 logging:
   level:
-    org:
-      example: debug
-      springframework: warn
+    - org.example: debug
+    - org.springframework: warn
 
 mybatis-plus:
   configuration:

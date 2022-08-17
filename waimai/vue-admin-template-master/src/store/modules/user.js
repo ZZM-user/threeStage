@@ -5,8 +5,10 @@ import { resetRouter } from '@/router'
 const getDefaultState = () => {
   return {
     token: getToken(),
-    name: '写死的',
-    avatar: ''
+    name: '',
+    avatar: '',
+    // 1、管理员 2、商家
+    loginType: 2
   }
 }
 
@@ -24,6 +26,9 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
+  },
+  SET_LOGIN_TYPE: (state, loginType) => {
+    state.loginType = loginType
   }
 }
 
@@ -32,11 +37,14 @@ const actions = {
   login({ commit }, userInfo) {
     const { account, loginPwd, code, uuid } = userInfo
     return new Promise((resolve, reject) => {
-      login({ account: account.trim(), loginPwd: loginPwd, uuid, code }).then(response => {
-        const { data } = response
-        commit('SET_TOKEN', data)
-        setToken(data)
-        resolve()
+      login({ account: account.trim(), loginPwd, uuid, code }).then(response => {
+        const { code, data, message } = response
+        if (code === 0) {
+          commit('SET_TOKEN', data)
+          setToken(data)
+          resolve()
+        }
+        reject(message)
       }).catch(error => {
         reject(error)
       })
@@ -44,19 +52,19 @@ const actions = {
   },
 
   // get user info
-  getInfo({ commit, state }) {
+  getInfo({ commit }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
+      getInfo().then(response => {
         const { data } = response
 
         if (!data) {
-          return reject('Verification failed, please Login again.')
+          return reject('身份验证失败，请重新登录！')
         }
+        const { account, avatar, loginType } = data
 
-        const { name, avatar } = data
-
-        commit('SET_NAME', name)
+        commit('SET_NAME', account)
         commit('SET_AVATAR', avatar)
+        commit('SET_LOGIN_TYPE', loginType)
         resolve(data)
       }).catch(error => {
         reject(error)

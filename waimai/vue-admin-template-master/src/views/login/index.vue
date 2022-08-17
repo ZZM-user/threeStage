@@ -43,9 +43,8 @@
         </span>
       </el-form-item>
       <el-form-item prop="code">
-                <span class="svg-container">
-                    <svg-icon class="el-input__icon input-icon" icon-class="code"/>
-
+        <span class="svg-container">
+            <svg-icon class="el-input__icon input-icon" icon-class="code"/>
         </span>
         <el-input
           v-model="loginForm.code"
@@ -72,7 +71,7 @@
       </el-button>
 
       <div class="tips">
-        <span style="margin-right:20px;">username: 123456</span>
+        <span style="margin-right:20px;">username: 123456 or 13565421563</span>
         <span> password: 123456</span>
       </div>
 
@@ -82,13 +81,14 @@
 
 <script>
 import { getCaptcha } from '@/api/user'
+import { Message } from 'element-ui'
 
 export default {
   name: 'Login',
   data() {
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
+        callback(new Error('密码至少为6位字符组成'))
       } else {
         callback()
       }
@@ -102,8 +102,8 @@ export default {
       },
       loginRules: {
         account: [{ required: true, trigger: 'blur' }],
-        code: [{ required: true, trigger: 'blur' }],
-        loginPwd: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        loginPwd: [{ message: '密码至少为6位字符组成', required: true, trigger: 'blur', validator: validatePassword }],
+        code: [{ message: '验证码不能为空', required: true, trigger: 'blur' }]
       },
       loading: false,
       passwordType: 'password',
@@ -125,7 +125,7 @@ export default {
   },
   methods: {
     getCode() {
-      const params = { width: 120, height: 45 }
+      const params = { width: 150, height: 52 }
       getCaptcha(params).then(resp => {
         this.base64Image = resp.data.img
         this.loginForm.uuid = resp.data.uuid
@@ -148,15 +148,21 @@ export default {
           this.$store.dispatch('user/login', this.loginForm).then(() => {
             this.$router.push({ path: this.redirect || '/' })
             this.loading = false
-          }).catch(() => {
+          }).catch((message) => {
+            Message({
+              message: message || 'Error',
+              type: 'error',
+              duration: 5 * 1000
+            })
             this.loading = false
+            this.getCode()
           })
         } else {
           console.log('error submit!!')
+          this.getCode()
           return false
         }
       })
-      this.getCode()
     }
   }
 }

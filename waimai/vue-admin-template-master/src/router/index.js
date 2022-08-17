@@ -54,6 +54,33 @@ export const constantRoutes = [
     }]
   },
   {
+    path: '/map',
+    component: Layout,
+    redirect: '/map/gaode/index',
+    name: 'map',
+    meta: { title: '地图展示', icon: 'el-icon-map-location' },
+    children: [
+      {
+        path: 'gaode/index',
+        name: 'gaode',
+        component: () => import('@/views/map/gaode/index'),
+        meta: { title: '高德地图', icon: 'el-icon-location-information' }
+      },
+      {
+        path: 'baidu/index',
+        name: 'baidu',
+        component: () => import('@/views/map/baidu/index'),
+        meta: { title: '百度地图', icon: 'el-icon-location-information' }
+      }
+    ]
+  },
+
+  // 404 page must be placed at the end !!!
+  { path: '*', redirect: '/404', hidden: true }
+]
+// 管理员路由
+export const adminRotes = [
+  {
     path: '/employee',
     component: Layout,
     redirect: '/employee/index',
@@ -112,33 +139,46 @@ export const constantRoutes = [
         component: () => import('@/views/contamer/index'),
         meta: { title: '会员管理', icon: 'el-icon-user' }
       }]
-  },
+  }
+]
+export const enterpriseRotes = [
   {
-    path: '/map',
+    path: '/enterprise',
     component: Layout,
-    redirect: '/map/gaode/index',
-    name: 'map',
-    meta: { title: '地图展示', icon: 'el-icon-map-location' },
+    redirect: '/enterprise/index',
     children: [
       {
-        path: 'gaode/index',
-        name: 'gaode',
-        component: () => import('@/views/map/gaode/index'),
-        meta: { title: '高德地图', icon: 'el-icon-location-information' }
-      },
-      {
-        path: 'baidu/index',
-        name: 'baidu',
-        component: () => import('@/views/map/baidu/index'),
-        meta: { title: '百度地图', icon: 'el-icon-location-information' }
-      }
-    ]
+        path: 'enterprise/index',
+        name: 'enterprise',
+        component: () => import('@/views/enterprise/index'),
+        meta: { title: '商家管理', icon: 'el-icon-s-check' }
+      }]
   },
-
-  // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+  {
+    path: '/category',
+    component: Layout,
+    redirect: '/category/index',
+    children: [
+      {
+        path: 'category/index',
+        name: 'enterprise',
+        component: () => import('@/views/category/index'),
+        meta: { title: '分类管理', icon: 'el-icon-s-unfold' }
+      }]
+  },
+  {
+    path: '/merchandise',
+    component: Layout,
+    redirect: '/merchandise/index',
+    children: [
+      {
+        path: 'merchandise/index',
+        name: 'merchandise',
+        component: () => import('@/views/merchandise/index'),
+        meta: { title: '菜品管理', icon: 'el-icon-goods' }
+      }]
+  }
 ]
-
 const createRouter = () => new Router({
   // mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),

@@ -32,9 +32,14 @@ router.beforeEach(async(to, from, next) => {
       } else {
         try {
           // get user info
-          await store.dispatch('user/getInfo')
-
-          next()
+          await store.dispatch('user/getInfo').then(() => {
+            // 调用该用户权限所属的菜单的动态路由,动态加载路由菜单
+            store.dispatch('GenerateRoutes').then(() => {
+              // 最终路由 = 基本路由 + 需要追加的路由
+              router.addRoutes(store.getters.addRouters)
+              next({ ...to, replace: true })
+            })
+          })
         } catch (error) {
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')

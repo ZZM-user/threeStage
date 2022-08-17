@@ -8,11 +8,11 @@ export function login(data) {
   })
 }
 
-export function getInfo(token) {
+export function getInfo(params) {
   return request({
-    url: '/vue-admin-template/user/info',
+    url: 'http://localhost:8080/api/user/info',
     method: 'get',
-    params: { token }
+    params
   })
 }
 
@@ -25,7 +25,7 @@ export function logout() {
 
 export function getCaptcha(params) {
   return request({
-    url: 'http://localhost:8080/captcha/arithmetic',
+    url: 'http://localhost:8080/api/captcha/arithmetic',
     method: 'GET',
     params
   })

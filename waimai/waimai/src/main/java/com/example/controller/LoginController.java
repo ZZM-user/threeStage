@@ -10,6 +10,7 @@ import com.example.common.enums.AckCode;
 import com.example.common.vo.LoginUserVO;
 import com.example.dto.LoginDTO;
 import com.example.service.LoginService;
+import com.example.util.ThreadLocalUser;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -69,16 +70,24 @@ public class LoginController {
         // 拿令牌，必须唯一
         // 不带-的uuid
         String uuid = IdUtil.simpleUUID();
-        
+    
         String[] redisLoginKey = Waimai.getRedisLoginKey(uuid);
         this.redisTemplate.opsForValue().set(redisLoginKey[1], dbUser, Waimai.REDIS_CAPTCHA_LOGIN_MINUTES, TimeUnit.MINUTES);
-        
+    
         // jwt执行操作
         HashMap<String, Object> map = new HashMap<>();
         map.put("uuid", redisLoginKey[0]);
         String token = JWTUtil.createToken(map, jwtSinger.getBytes(StandardCharsets.UTF_8));
-        
-        log.info(loginDTO.getAccount() + "\n登录成功！");
+    
+        log.info(loginDTO.getAccount() + "\t登录成功！");
         return R.okHasData(token);
+    }
+    
+    @ApiOperation("获取本地登录用户信息")
+    @GetMapping("/user/info")
+    public R getUserInfo() {
+        LoginUserVO loginUserVO = ThreadLocalUser.loginThreadLocal.get();
+        log.info("获取用户信息：" + loginUserVO);
+        return R.okHasData(loginUserVO);
     }
 }

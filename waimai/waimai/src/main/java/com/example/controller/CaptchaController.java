@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 @Api(tags = "图形验证码")
 @CrossOrigin
 @RestController
-@RequestMapping("/captcha")
+@RequestMapping("/api/captcha")
 public class CaptchaController {
     
     @Autowired
@@ -32,9 +32,9 @@ public class CaptchaController {
     
     @ApiOperation("英数验证")
     @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "width", value = "图片宽度", defaultValue = "150"),
-            @ApiImplicitParam(name = "height", value = "图片高度", defaultValue = "50"),
-            @ApiImplicitParam(name = "len", value = "验证码长度", defaultValue = "4"),
+            @ApiImplicitParam(name = "width", dataType = "Integer", dataTypeClass = Integer.class, value = "图片宽度", defaultValue = "150"),
+            @ApiImplicitParam(name = "height", dataType = "Integer", dataTypeClass = Integer.class, value = "图片高度", defaultValue = "50"),
+            @ApiImplicitParam(name = "len", dataType = "Integer", dataTypeClass = Integer.class, value = "验证码长度", defaultValue = "4"),
     })
     @GetMapping("/png")
     public R SpecCaptcha(@RequestParam(value = "width", defaultValue = "140") int width,
@@ -56,9 +56,9 @@ public class CaptchaController {
     
     @ApiOperation("算数验证")
     @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "width", dataType = "Integer", value = "图片宽度", defaultValue = "150"),
-            @ApiImplicitParam(name = "height", value = "图片高度", defaultValue = "50"),
-            @ApiImplicitParam(name = "len", value = "验证码长度", defaultValue = "2"),
+            @ApiImplicitParam(name = "width", dataType = "Integer", dataTypeClass = Integer.class, value = "图片宽度", defaultValue = "150"),
+            @ApiImplicitParam(name = "height", dataType = "Integer", dataTypeClass = Integer.class, value = "图片高度", defaultValue = "50"),
+            @ApiImplicitParam(name = "len", dataType = "Integer", dataTypeClass = Integer.class, value = "验证码长度", defaultValue = "2"),
     })
     @GetMapping("/arithmetic")
     public R ArithmeticCaptcha(@RequestParam(value = "width", defaultValue = "140") int width,
@@ -83,9 +83,9 @@ public class CaptchaController {
     
     @ApiOperation("中文验证")
     @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "width", value = "图片宽度", defaultValue = "150"),
-            @ApiImplicitParam(name = "height", value = "图片高度", defaultValue = "50"),
-            @ApiImplicitParam(name = "len", value = "验证码长度", defaultValue = "4"),
+            @ApiImplicitParam(name = "width", dataType = "Integer", dataTypeClass = Integer.class, value = "图片宽度", defaultValue = "150"),
+            @ApiImplicitParam(name = "height", dataType = "Integer", dataTypeClass = Integer.class, value = "图片高度", defaultValue = "50"),
+            @ApiImplicitParam(name = "len", dataType = "Integer", dataTypeClass = Integer.class, value = "验证码长度", defaultValue = "4"),
     })
     @GetMapping("/chinese")
     public R ChineseCaptcha(@RequestParam(value = "width", defaultValue = "140") int width,

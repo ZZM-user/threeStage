@@ -1,23 +1,25 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
+    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" auto-complete="on" class="login-form"
+             label-position="left"
+    >
 
       <div class="title-container">
-        <h3 class="title">Login Form</h3>
+        <h3 class="title">Login Form Of Data</h3>
       </div>
 
       <el-form-item prop="username">
         <span class="svg-container">
-          <svg-icon icon-class="user" />
+          <svg-icon icon-class="user"/>
         </span>
         <el-input
           ref="username"
           v-model="loginForm.username"
-          placeholder="Username"
-          name="username"
-          type="text"
-          tabindex="1"
           auto-complete="on"
+          name="username"
+          placeholder="Username"
+          tabindex="1"
+          type="text"
         />
       </el-form-item>
 
@@ -30,18 +32,43 @@
           ref="password"
           v-model="loginForm.password"
           :type="passwordType"
-          placeholder="Password"
-          name="password"
-          tabindex="2"
           auto-complete="on"
+          name="password"
+          placeholder="Password"
+          tabindex="2"
           @keyup.enter.native="handleLogin"
         />
         <span class="show-pwd" @click="showPwd">
-          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"/>
         </span>
       </el-form-item>
-
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
+      <el-form-item prop="code">
+        <span class="svg-container">
+            <svg-icon class="el-input__icon input-icon" icon-class="code"/>
+        </span>
+        <el-input
+          v-model="loginForm.code"
+          auto-complete="off"
+          placeholder="验证码"
+          style="width: 63%;"
+          tabindex="3"
+          @keyup.enter.native="handleLogin"
+        >
+        </el-input>
+        <div class="login-code">
+          <el-image
+            :src="base64Image" alt="看不清，就用莎普爱思！" class="login-code-img" @click="getCode"
+          >
+            <div slot="error" class="image-slot">
+              <i class="el-icon-picture-outline"></i>
+            </div>
+          </el-image>
+        </div>
+      </el-form-item>
+      <el-button :loading="loading" style="width:100%;margin-bottom:30px;" type="primary"
+                 @click.native.prevent="handleLogin"
+      >Login
+      </el-button>
 
       <div class="tips">
         <span style="margin-right:20px;">username: admin</span>
@@ -54,6 +81,7 @@
 
 <script>
 import { validUsername } from '@/utils/validate'
+import { getCaptcha } from '@/api/user'
 
 export default {
   name: 'Login',
@@ -67,19 +95,23 @@ export default {
     }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
+        callback(new Error('密码至少由6位数字组成'))
       } else {
         callback()
       }
     }
     return {
+      base64Image: undefined,
       loginForm: {
-        username: 'admin',
-        password: '111111'
+        username: '123456',
+        password: '123456',
+        code: undefined,
+        uuid: undefined
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        username: [{ message: '用户名不能为空', required: true, trigger: 'blur' }],
+        code: [{ message: '验证码不能为空', required: true, trigger: 'blur' }],
+        password: [{ message: '密码不能为空', required: true, trigger: 'blur', validator: validatePassword }]
       },
       loading: false,
       passwordType: 'password',
@@ -94,7 +126,18 @@ export default {
       immediate: true
     }
   },
+  created() {
+    this.getCode()
+  },
   methods: {
+    getCode() {
+      getCaptcha({ width: 150, height: 50 }).then(resp => {
+        if (resp.code === 0) {
+          this.base64Image = resp.data.img
+          this.loginForm.uuid = resp.data.uuid
+        }
+      })
+    },
     showPwd() {
       if (this.passwordType === 'password') {
         this.passwordType = ''
@@ -113,10 +156,12 @@ export default {
             this.$router.push({ path: this.redirect || '/' })
             this.loading = false
           }).catch(() => {
+            this.getCode()
             this.loading = false
           })
         } else {
           console.log('error submit!!')
+          this.getCode()
           return false
         }
       })
@@ -232,6 +277,12 @@ $light_gray:#eee;
     color: $dark_gray;
     cursor: pointer;
     user-select: none;
+  }
+
+  .login-code-img {
+    top: 0;
+    right: 0;
+    position: absolute;
   }
 }
 </style>
