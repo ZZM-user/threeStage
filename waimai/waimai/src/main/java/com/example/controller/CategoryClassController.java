@@ -4,12 +4,16 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.example.common.annon.AdminAccess;
 import com.example.common.domain.R;
 import com.example.common.enums.AckCode;
+import com.example.common.vo.CategoryClassOfEntVo;
+import com.example.common.vo.LoginUserVO;
 import com.example.common.vo.PageVo;
 import com.example.dto.CategoryClassSearchDTO;
 import com.example.entity.CategoryClass;
 import com.example.service.CategoryClassService;
+import com.example.util.ThreadLocalUser;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -33,12 +37,23 @@ public class CategoryClassController {
     @Autowired
     CategoryClassService service;
     
-    @ApiOperation("分页查询")
+    @AdminAccess
+    @ApiOperation("分页查询-管理员")
     @GetMapping("/data")
     public R search(CategoryClassSearchDTO categoryClassSearchDTO) {
-        IPage<CategoryClass> categoryClassIPage = service.search(categoryClassSearchDTO);
-        PageVo<CategoryClass> categoryClassPageVo = PageVo.pageVo(categoryClassIPage);
-        return R.okHasData(categoryClassPageVo);
+        IPage<CategoryClassOfEntVo> categoryClassOfEntVoIPage = service.search(categoryClassSearchDTO);
+        PageVo<CategoryClassOfEntVo> categoryClassOfEntVoPageVo = PageVo.pageVo(categoryClassOfEntVoIPage);
+        return R.okHasData(categoryClassOfEntVoPageVo);
+    }
+    
+    @ApiOperation("分页查询-商家版")
+    @GetMapping("/byself")
+    public R byself(CategoryClassSearchDTO categoryClassSearchDTO) {
+        LoginUserVO loginUserVO = ThreadLocalUser.loginThreadLocal.get();
+        categoryClassSearchDTO.setEid(loginUserVO.getId().intValue());
+        IPage<CategoryClassOfEntVo> categoryClassOfEntVoIPage = service.search(categoryClassSearchDTO);
+        PageVo<CategoryClassOfEntVo> categoryClassOfEntVoPageVo = PageVo.pageVo(categoryClassOfEntVoIPage);
+        return R.okHasData(categoryClassOfEntVoPageVo);
     }
     
     @ApiOperation("插入分类信息")
@@ -92,7 +107,7 @@ public class CategoryClassController {
     public R searchAllEnterprise(String categoryName) {
         LambdaQueryWrapper<CategoryClass> queryWrapper = new LambdaQueryWrapper<>();
         if (StrUtil.isNotBlank(categoryName)) {
-            queryWrapper.like(CategoryClass::getName, "%" + categoryName + "%");
+            queryWrapper.like(CategoryClass::getName, categoryName);
         }
         queryWrapper.select(CategoryClass::getId, CategoryClass::getName);
         List<CategoryClass> categoryClassList = service.list(queryWrapper);

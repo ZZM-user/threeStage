@@ -1,6 +1,8 @@
 <template>
   <div id="main">
-    <el-form :inline="true" :model="queryFrom" class="demo-form-inline" size="small">
+    <el-form v-admin :inline="true" :model="queryFrom" class="demo-form-inline"
+             size="small"
+    >
       <el-form-item label="商家名称">
         <el-input v-model="queryFrom.name" clearable placeholder="商家名称" size="small"></el-input>
       </el-form-item>
@@ -43,6 +45,7 @@
           </el-button>
         </el-col>
       </el-row>
+    </el-form>
       <!--    dialog弹框-->
       <el-dialog :closed="closeDialog" :title="dialogTitle" :visible.sync="dialogVisible" width="62%">
         <el-form ref="dialogForm" :model="dialogForm" :rules="rules" class="demo-ruleForm" label-width="100px">
@@ -93,7 +96,7 @@
                 </el-upload>
               </el-form-item>
             </el-col>
-            <el-col :span="12">
+            <el-col v-if="this.$store.getters.loginType===1" :span="12">
               <el-form-item label="状态" prop="status">
                 <el-select v-model="dialogForm.status" placeholder="请选择状态">
                   <el-option
@@ -159,7 +162,7 @@
         <el-table-column label="修改人" prop="update_by" width="80px"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <span v-if="scope.row.status ===2">
+            <span v-if="scope.row.status ===2" v-admin>
               <el-popconfirm
                 cancel-button-text="不了"
                 confirm-button-text="是的"
@@ -168,18 +171,20 @@
                 title="是否通过该商家的审核？"
                 @onConfirm="submitCheck(scope.row)"
               >
-            <el-link slot="reference" icon="el-icon-check" type="success">审核通过</el-link>
-              |</el-popconfirm>
+                <el-link slot="reference" icon="el-icon-check" type="success">审核通过</el-link>
+              </el-popconfirm>
+              |
             </span>
             <el-link icon="el-icon-edit" type="primary" @click="openDialog(2,scope.row)">编辑</el-link>
             |
-            <el-link v-if="scope.row.status!==1" icon="el-icon-delete" type="danger" @click="submitDelete(scope.row)">
+            <el-link v-if="scope.row.status!==1" v-admin icon="el-icon-delete" type="danger"
+                     @click="submitDelete(scope.row)"
+            >
               删除
             </el-link>
           </template>
         </el-table-column>
       </el-table>
-    </el-form>
 
     <el-pagination
       :current-page.sync="queryFrom.page"
@@ -201,6 +206,7 @@ import {
   delEnterpriseData,
   editEnterpriseData,
   EnterpriseStatus,
+  fetchEnterprise,
   fetchEnterpriseData,
   findEnterpriseData
 } from '@/api/enterprise'
@@ -277,7 +283,10 @@ export default {
       this.dialogMapVisible = false
     },
     fetchDataHook() {
-      return fetchEnterpriseData
+      if (this.$store.getters.loginType === 1) {
+        return fetchEnterpriseData
+      }
+      return fetchEnterprise
     },
     addDataHooK() {
       return addEnterpriseData

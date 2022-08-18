@@ -2,6 +2,7 @@ package com.example.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.example.common.vo.CategoryClassOfEntVo;
 import com.example.dto.CategoryClassSearchDTO;
 import com.example.entity.CategoryClass;
 
@@ -21,7 +22,7 @@ public interface CategoryClassService extends IService<CategoryClass> {
      *
      * @return
      */
-    IPage<CategoryClass> search(CategoryClassSearchDTO categoryClassSearchDTO);
+    IPage<CategoryClassOfEntVo> search(CategoryClassSearchDTO categoryClassSearchDTO);
     
     /**
      * 判断是否包含重复
@@ -31,4 +32,6 @@ public interface CategoryClassService extends IService<CategoryClass> {
      * @return
      */
     List<CategoryClass> hasRepeat(CategoryClass categoryClass);
+    
+    IPage<CategoryClass> searchCategory(CategoryClassSearchDTO categoryClassSearchDTO);
 }

@@ -1,9 +1,10 @@
 package com.example.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.example.common.vo.MerchandiseOfEnpVo;
 import com.example.dto.MerchandiseSearchDTO;
 import com.example.entity.Merchandise;
+import com.github.yulichang.base.MPJBaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -14,7 +15,7 @@ import org.apache.ibatis.annotations.Param;
  * @Entity com.example.entity.Merchandise
  */
 @Mapper
-public interface MerchandiseMapper extends BaseMapper<Merchandise> {
+public interface MerchandiseMapper extends MPJBaseMapper<Merchandise> {
     
     /**
      * 分页查询
@@ -24,5 +25,6 @@ public interface MerchandiseMapper extends BaseMapper<Merchandise> {
      *
      * @return
      */
-    IPage<Merchandise> search(IPage<?> page, @Param("mer") MerchandiseSearchDTO merchandiseSearchDTO);
+    IPage<MerchandiseOfEnpVo> search(IPage<?> page, @Param("mer") MerchandiseSearchDTO merchandiseSearchDTO);
+    
 }

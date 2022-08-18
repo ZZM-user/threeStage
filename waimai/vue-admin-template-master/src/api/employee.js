@@ -7,7 +7,7 @@ import request from '@/utils/request'
  */
 export function fetchEmployeeData(params) {
   return request({
-    url: 'http://localhost:8080/api/employee/data',
+    url: '/api/employee/data',
     method: 'GET',
     params
   })
@@ -20,7 +20,7 @@ export function fetchEmployeeData(params) {
  */
 export function findEmployeeData(id) {
   return request({
-    url: 'http://localhost:8080/api/employee/' + id,
+    url: '/api/employee/' + id,
     method: 'GET'
   })
 }
@@ -32,7 +32,7 @@ export function findEmployeeData(id) {
  */
 export function changeEmployeeState(data) {
   return request({
-    url: 'http://localhost:8080/api/employee/changeStatus',
+    url: '/api/employee/changeStatus',
     method: 'POST',
     data
   })
@@ -45,7 +45,7 @@ export function changeEmployeeState(data) {
  */
 export function checkLoginNameIsExists(params) {
   return request({
-    url: 'http://localhost:8080/api/employee/exists/',
+    url: '/api/employee/exists/',
     method: 'GET',
     params
   })
@@ -58,7 +58,7 @@ export function checkLoginNameIsExists(params) {
  */
 export function addEmployeeData(data) {
   return request({
-    url: 'http://localhost:8080/api/employee/add',
+    url: '/api/employee/add',
     method: 'POST',
     data
   })
@@ -71,7 +71,7 @@ export function addEmployeeData(data) {
  */
 export function editEmployeeData(data) {
   return request({
-    url: 'http://localhost:8080/api/employee/update',
+    url: '/api/employee/update',
     method: 'POST',
     data
   })
@@ -84,7 +84,7 @@ export function editEmployeeData(data) {
  */
 export function delEmployeeData(data) {
   return request({
-    url: 'http://localhost:8080/api/employee/del',
+    url: '/api/employee/del',
     method: 'POST',
     data
   })

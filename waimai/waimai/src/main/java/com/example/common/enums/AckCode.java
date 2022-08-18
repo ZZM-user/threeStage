@@ -35,6 +35,7 @@ public enum AckCode {
     SYSTEM_SERVER_BUSY(501, "服务器繁忙"),
     SYSTEM_SERVER_MAINTAINING(503, "系统维护中"),
     NOT_FOUND_DATA(504, "访问不到数据"),
+    NOT_PERMISSION_TO_ACCESS(505, "没有权限操作"),
     
     
     /*-------------------登录-------------------*/

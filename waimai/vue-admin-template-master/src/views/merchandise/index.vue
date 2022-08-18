@@ -1,6 +1,6 @@
 <template>
   <div id="main">
-    <el-form :inline="true" :model="queryFrom" class="demo-form-inline">
+    <el-form v-admin :inline="true" :model="queryFrom" class="demo-form-inline">
       <el-form-item label="商家ID">
         <el-input v-model="queryFrom.eid" clearable placeholder="商家ID" size="small"></el-input>
       </el-form-item>
@@ -42,7 +42,7 @@
               <el-input v-model="dialogForm.name" placeholder="请输入商品名称"/>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col v-admin :span="12">
             <el-form-item label="所属商家" prop="b_id">
               <el-select v-model="dialogForm.b_id" :loading="loading" clearable
                          filterable placeholder="请选择商家"
@@ -140,8 +140,8 @@
     <!--    信息展示-->
     <el-table :data="totalData.records" style="width: 100%" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55"/>
-      <el-table-column align="center" label="编号" prop="id" width="80"></el-table-column>
-      <el-table-column :show-overflow-tooltip="true" label="名称" prop="name" width="120"></el-table-column>
+      <el-table-column align="center" label="编号" prop="id" width="80"/>
+      <el-table-column :show-overflow-tooltip="true" label="名称" prop="name" width="120"/>
       <el-table-column label="图片" prop="picture" width="100">
         <template slot-scope="scope">
           <el-image
@@ -157,19 +157,19 @@
           ￥{{ scope.row.price }}
         </template>
       </el-table-column>
-      <el-table-column :show-overflow-tooltip="true" label="描述" prop="description" width="100"></el-table-column>
+      <el-table-column :show-overflow-tooltip="true" label="描述" prop="description" width="100"/>
       <el-table-column label="状态" prop="isgrounding" width="80">
         <template slot-scope="scope">
           <el-tag v-if="scope.row.isgrounding===0" effect="dark" type="danger">未上架</el-tag>
           <el-tag v-if="scope.row.isgrounding===1" effect="dark" type="success">已上架</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="所属商家" prop="b_id" width="60"></el-table-column>
-      <el-table-column label="所属分类" prop="m_id" width="60"></el-table-column>
-      <el-table-column label="创建时间" prop="create_time" width="150"></el-table-column>
-      <el-table-column label="创建人" prop="create_by" width="80"></el-table-column>
-      <el-table-column label="修改时间" prop="update_time" width="150"></el-table-column>
-      <el-table-column label="修改人" prop="update_by" width="80"></el-table-column>
+      <el-table-column label="所属商家" prop="enterprise_name" width="60"/>
+      <el-table-column label="所属分类" prop="category_name" width="60"/>
+      <el-table-column label="创建时间" prop="create_time" width="150"/>
+      <el-table-column label="创建人" prop="create_by" width="80"/>
+      <el-table-column label="修改时间" prop="update_time" width="150"/>
+      <el-table-column label="修改人" prop="update_by" width="80"/>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-link v-if="scope.row.isgrounding===0" icon="el-icon-check" type="success"
@@ -203,6 +203,7 @@ import {
   changeMerchandiseState,
   delMerchandiseData,
   editMerchandiseData,
+  fetchMerchandise,
   fetchMerchandiseData,
   findMerchandiseData,
   MerchandiseStatus
@@ -259,6 +260,9 @@ export default {
     }
   }, methods: {
     fetchDataHook() {
+      if (this.$store.getters.loginType !== 1) {
+        return fetchMerchandise
+      }
       return fetchMerchandiseData
     },
     addDataHooK() {

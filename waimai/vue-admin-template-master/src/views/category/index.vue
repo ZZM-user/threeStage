@@ -1,6 +1,6 @@
 <template>
   <div id="main">
-    <el-form :inline="true" :model="queryFrom" class="demo-form-inline">
+    <el-form v-admin :inline="true" :model="queryFrom" class="demo-form-inline">
       <el-form-item label="商家ID">
         <el-input v-model="queryFrom.eid" clearable placeholder="商家id" size="small"></el-input>
       </el-form-item>
@@ -31,7 +31,7 @@
               <el-input v-model="dialogForm.name"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col v-admin :span="12">
             <el-form-item label="所属商家" prop="enterprise_id">
               <el-select v-model="dialogForm.enterprise_id" :loading="loading" clearable
                          filterable placeholder="请选择商家"
@@ -87,7 +87,10 @@
     <el-table :data="totalData.records" style="width: 100%" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55"/>
       <el-table-column label="编号" prop="id" width="80"></el-table-column>
-      <el-table-column :show-overflow-tooltip="true" label="所属商户" prop="enterprise_id" width="80"></el-table-column>
+      <el-table-column :show-overflow-tooltip="true" :show-tooltip-when-overflow="true" label="所属商户"
+                       prop="enterprise_name"
+                       width="100"
+      ></el-table-column>
       <el-table-column :show-overflow-tooltip="true" label="名称" prop="name" width="180"></el-table-column>
       <el-table-column label="图片" prop="picture" width="150">
         <template slot-scope="scope">
@@ -125,7 +128,14 @@
 
 <script>
 import PageMixin from '@/mixin/PageMixin'
-import { addCategoryData, delCategoryData, editCategoryData, fetchCategoryData, findCategoryData } from '@/api/category'
+import {
+  addCategoryData,
+  delCategoryData,
+  editCategoryData,
+  fetchCategory,
+  fetchCategoryData,
+  findCategoryData
+} from '@/api/category'
 import { findEnterprisesData } from '@/api/enterprise'
 
 export default {
@@ -151,6 +161,9 @@ export default {
     }
   }, methods: {
     fetchDataHook() {
+      if (this.$store.getters.loginType !== 1) {
+        return fetchCategory
+      }
       return fetchCategoryData
     },
     addDataHooK() {

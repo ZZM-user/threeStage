@@ -14,18 +14,34 @@
         <result property="update_time" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="update_by" column="update_by" jdbcType="VARCHAR"/>
     </resultMap>
-
+    <resultMap id="EnpResultMap" type="com.example.common.vo.CategoryClassOfEntVo">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="enterprise_id" column="enterprise_id" jdbcType="BIGINT"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="picture" column="picture" jdbcType="VARCHAR"/>
+        <result property="create_time" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="create_by" column="create_by" jdbcType="VARCHAR"/>
+        <result property="update_time" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="update_by" column="update_by" jdbcType="VARCHAR"/>
+        <result property="enterprise_name" column="enterprise_name" jdbcType="VARCHAR"/>
+    </resultMap>
     <sql id="Base_Column_List">
         id,enterprise_id,name,
         picture,create_time,create_by,
         update_time,update_by
     </sql>
-    <select id="search" resultType="com.example.entity.CategoryClass">
-        select
-        <include refid="Base_Column_List"/>
-        from category_class
+    <select id="search" resultMap="EnpResultMap">
+        SELECT
+        enterprise.`name` AS enterprise_name,
+        category_class.*
+        FROM
+        category_class
+        LEFT JOIN
+        enterprise
+        ON
+        enterprise.id = category_class.enterprise_id
         <where>
-            <if test="cate.accountType==1 and cate.eid!=null">
+            <if test="cate.eid!=null">
                 enterprise_id = #{cate.eid}
             </if>
             <if test="cate.name!=null and cate.name !=''">

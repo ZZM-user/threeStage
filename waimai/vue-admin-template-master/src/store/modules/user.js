@@ -61,7 +61,6 @@ const actions = {
           return reject('身份验证失败，请重新登录！')
         }
         const { account, avatar, loginType } = data
-
         commit('SET_NAME', account)
         commit('SET_AVATAR', avatar)
         commit('SET_LOGIN_TYPE', loginType)
@@ -75,7 +74,7 @@ const actions = {
   // user logout
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
+      logout().then(() => {
         removeToken() // must remove  token  first
         resetRouter()
         commit('RESET_STATE')

@@ -24,4 +24,8 @@ public class LoginUserVO {
      * 2、商家
      */
     private Integer loginType;
+    /**
+     * 登录令牌
+     */
+    private String token;
 }

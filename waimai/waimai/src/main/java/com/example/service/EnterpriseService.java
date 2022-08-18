@@ -20,14 +20,6 @@ public interface EnterpriseService extends IService<Enterprise> {
      */
     IPage<Enterprise> search(EnterpriseSearchDTO enterpriseSearchDTO);
     
-    /**
-     * plus
-     *
-     * @param enterpriseSearchDTO
-     *
-     * @return
-     */
-    IPage<Enterprise> searchPlus(EnterpriseSearchDTO enterpriseSearchDTO);
     
     /**
      * 验证电话是否被使用
@@ -38,4 +30,6 @@ public interface EnterpriseService extends IService<Enterprise> {
      * @return
      */
     int checkPhoneExists(Long id, String phone);
+    
+    IPage<Enterprise> searchByEnterprise();
 }

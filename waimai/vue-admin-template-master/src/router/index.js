@@ -75,8 +75,6 @@ export const constantRoutes = [
     ]
   },
 
-  // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
 ]
 // 管理员路由
 export const adminRotes = [
@@ -139,7 +137,10 @@ export const adminRotes = [
         component: () => import('@/views/contamer/index'),
         meta: { title: '会员管理', icon: 'el-icon-user' }
       }]
-  }
+  },
+
+  // 404 page must be placed at the end !!!
+  { path: '*', redirect: '/404', hidden: true }
 ]
 export const enterpriseRotes = [
   {
@@ -177,7 +178,10 @@ export const enterpriseRotes = [
         component: () => import('@/views/merchandise/index'),
         meta: { title: '菜品管理', icon: 'el-icon-goods' }
       }]
-  }
+  },
+
+  // 404 page must be placed at the end !!!
+  { path: '*', redirect: '/404', hidden: true }
 ]
 const createRouter = () => new Router({
   // mode: 'history', // require service support

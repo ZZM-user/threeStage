@@ -7,7 +7,7 @@ import request from '@/utils/request'
  */
 export function fetchContamerData(params) {
   return request({
-    url: 'http://localhost:8080/api/contamer/data',
+    url: '/api/contamer/data',
     method: 'GET',
     params
   })
@@ -20,7 +20,7 @@ export function fetchContamerData(params) {
  */
 export function findContamerData(id) {
   return request({
-    url: 'http://localhost:8080/api/contamer/' + id,
+    url: '/api/contamer/' + id,
     method: 'GET'
   })
 }
@@ -32,7 +32,7 @@ export function findContamerData(id) {
  */
 export function addContamerData(data) {
   return request({
-    url: 'http://localhost:8080/api/contamer/add',
+    url: '/api/contamer/add',
     method: 'POST',
     data
   })
@@ -45,7 +45,7 @@ export function addContamerData(data) {
  */
 export function changeContamerState(data) {
   return request({
-    url: 'http://localhost:8080/api/contamer/changeState',
+    url: '/api/contamer/changeState',
     method: 'POST',
     data
   })
@@ -58,7 +58,7 @@ export function changeContamerState(data) {
  */
 export function checkLoginIdIsExists(params) {
   return request({
-    url: 'http://localhost:8080/api/contamer/exists/',
+    url: '/api/contamer/exists/',
     method: 'GET',
     params
   })
@@ -71,7 +71,7 @@ export function checkLoginIdIsExists(params) {
  */
 export function editContamerData(data) {
   return request({
-    url: 'http://localhost:8080/api/contamer/update',
+    url: '/api/contamer/update',
     method: 'POST',
     data
   })
@@ -84,7 +84,7 @@ export function editContamerData(data) {
  */
 export function delContamerData(data) {
   return request({
-    url: 'http://localhost:8080/api/contamer/del',
+    url: '/api/contamer/del',
     method: 'POST',
     data
   })

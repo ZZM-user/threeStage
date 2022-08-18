@@ -2,6 +2,7 @@ package com.example.controller;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.example.common.annon.AdminAccess;
 import com.example.common.domain.R;
 import com.example.common.enums.AckCode;
 import com.example.common.vo.PageVo;
@@ -56,6 +57,7 @@ public class ContamerController {
         return count == 0 ? R.ok() : R.build(AckCode.VALUE_IS_USED);
     }
     
+    @AdminAccess
     @ApiOperation("增加会员信息")
     @PostMapping("/add")
     public R addContamer(@RequestBody @Valid Contamer contamer) {
@@ -93,6 +95,7 @@ public class ContamerController {
      *
      * @return
      */
+    @AdminAccess
     @ApiOperation("编辑商家信息")
     @PostMapping("/update")
     public R update(@RequestBody Contamer contamer) {
@@ -112,6 +115,7 @@ public class ContamerController {
      *
      * @return
      */
+    @AdminAccess
     @ApiOperation("移除会员信息")
     @PostMapping("/del")
     public R delete(@RequestBody List<Integer> ids) {

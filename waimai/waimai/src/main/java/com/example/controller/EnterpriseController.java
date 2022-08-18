@@ -4,6 +4,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.example.common.annon.AdminAccess;
 import com.example.common.domain.R;
 import com.example.common.enums.AckCode;
 import com.example.common.validtor.AddValidator;
@@ -47,7 +48,8 @@ public class EnterpriseController {
      *
      * @return
      */
-    @ApiOperation("商家分页查询")
+    @AdminAccess
+    @ApiOperation("管理员-商家分页查询")
     @GetMapping("/data")
     public R search(EnterpriseSearchDTO enterpriseSearchDTO) {
         IPage<Enterprise> search = service.search(enterpriseSearchDTO);
@@ -55,6 +57,13 @@ public class EnterpriseController {
         return R.okHasData(enterprisePageVo);
     }
     
+    @ApiOperation("商家分页查询")
+    @GetMapping("/byself")
+    public R search() {
+        IPage<Enterprise> search = service.searchByEnterprise();
+        PageVo<Enterprise> enterprisePageVo = PageVo.pageVo(search);
+        return R.okHasData(enterprisePageVo);
+    }
     
     @ApiOperation("检查电话是否存在")
     @ApiImplicitParams(value = {
@@ -69,6 +78,7 @@ public class EnterpriseController {
         return count == 0 ? R.ok() : R.build(AckCode.VALUE_IS_USED);
     }
     
+    @AdminAccess
     @PostMapping("/add")
     public R addEnterprise(@RequestBody @Validated(value = AddValidator.class) Enterprise enterprise) {
         Enterprise hasEnterprise = hasEnterprise(enterprise);
@@ -84,6 +94,7 @@ public class EnterpriseController {
         return save ? R.ok() : R.build(AckCode.FAIL);
     }
     
+    @AdminAccess
     @ApiOperation("通过审核")
     @ApiImplicitParam(name = "id", value = "商家", required = true, example = "1")
     @PostMapping("/approved")
@@ -119,6 +130,7 @@ public class EnterpriseController {
      *
      * @return
      */
+    @AdminAccess
     @ApiOperation("编辑商家信息")
     @PostMapping("/update")
     public R update(@RequestBody @Validated(value = {EditValidator.class}) Enterprise enterprise) {
@@ -141,6 +153,7 @@ public class EnterpriseController {
      *
      * @return
      */
+    @AdminAccess
     @ApiOperation("移除商家信息")
     @PostMapping("/del")
     public R delete(@RequestBody List<Integer> ids) {

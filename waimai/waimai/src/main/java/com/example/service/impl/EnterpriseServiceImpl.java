@@ -1,16 +1,15 @@
 package com.example.service.impl;
 
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.common.vo.LoginUserVO;
 import com.example.dto.EnterpriseSearchDTO;
 import com.example.entity.Enterprise;
 import com.example.mapper.EnterpriseMapper;
 import com.example.service.EnterpriseService;
+import com.example.util.ThreadLocalUser;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -36,24 +35,13 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
         return super.baseMapper.search(enterprisePage, enterpriseSearchDTO);
     }
     
-    /**
-     * plus
-     *
-     * @param enterpriseSearchDTO
-     *
-     * @return
-     */
     @Override
-    public IPage<Enterprise> searchPlus(EnterpriseSearchDTO enterpriseSearchDTO) {
+    public IPage<Enterprise> searchByEnterprise() {
+        Page<Enterprise> enterprisePage = new Page<>(1, 10);
         QueryWrapper<Enterprise> wrapper = new QueryWrapper<>();
-        if (StrUtil.isNotBlank(enterpriseSearchDTO.getName())) {
-            wrapper.like("name", enterpriseSearchDTO.getName());
-        }
-        if (ObjectUtil.isNotNull(enterpriseSearchDTO.getStartDate()) && ObjectUtil.isNotNull(enterpriseSearchDTO.getEndDate())) {
-            enterpriseSearchDTO.setEndDate(DateUtil.offsetDay(enterpriseSearchDTO.getEndDate(), 1));
-            wrapper.between("create_time", enterpriseSearchDTO.getStartDate(), enterpriseSearchDTO.getEndDate());
-        }
-        return null;
+        LoginUserVO loginUserVO = ThreadLocalUser.loginThreadLocal.get();
+        wrapper.eq("phone", loginUserVO.getAccount());
+        return super.baseMapper.selectPage(enterprisePage, wrapper);
     }
     
     /**

@@ -70,6 +70,7 @@ public class LoginController {
         // 拿令牌，必须唯一
         // 不带-的uuid
         String uuid = IdUtil.simpleUUID();
+        dbUser.setToken(uuid);
     
         String[] redisLoginKey = Waimai.getRedisLoginKey(uuid);
         this.redisTemplate.opsForValue().set(redisLoginKey[1], dbUser, Waimai.REDIS_CAPTCHA_LOGIN_MINUTES, TimeUnit.MINUTES);
@@ -79,6 +80,7 @@ public class LoginController {
         map.put("uuid", redisLoginKey[0]);
         String token = JWTUtil.createToken(map, jwtSinger.getBytes(StandardCharsets.UTF_8));
     
+        ThreadLocalUser.loginThreadLocal.set(dbUser);
         log.info(loginDTO.getAccount() + "\t登录成功！");
         return R.okHasData(token);
     }
@@ -89,5 +91,18 @@ public class LoginController {
         LoginUserVO loginUserVO = ThreadLocalUser.loginThreadLocal.get();
         log.info("获取用户信息：" + loginUserVO);
         return R.okHasData(loginUserVO);
+    }
+    
+    @ApiOperation("退出当前用户")
+    @PostMapping("/logout")
+    public R logout() {
+        // 取得当前用户登录信息
+        LoginUserVO loginUserVO = ThreadLocalUser.loginThreadLocal.get();
+        String token = loginUserVO.getToken();
+        String[] redisLoginKey = Waimai.getRedisLoginKey(token);
+        
+        this.redisTemplate.delete(redisLoginKey[1]);
+        log.info("发现用户退出账号：" + loginUserVO);
+        return R.ok();
     }
 }

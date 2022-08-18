@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function login(data) {
   return request({
-    url: 'http://localhost:8080/api/login',
+    url: '/api/login',
     method: 'post',
     data
   })
@@ -10,7 +10,7 @@ export function login(data) {
 
 export function getInfo(params) {
   return request({
-    url: 'http://localhost:8080/api/user/info',
+    url: '/api/user/info',
     method: 'get',
     params
   })
@@ -18,14 +18,14 @@ export function getInfo(params) {
 
 export function logout() {
   return request({
-    url: '/vue-admin-template/user/logout',
+    url: '/api/logout',
     method: 'post'
   })
 }
 
 export function getCaptcha(params) {
   return request({
-    url: 'http://localhost:8080/api/captcha/arithmetic',
+    url: '/api/captcha/arithmetic',
     method: 'GET',
     params
   })

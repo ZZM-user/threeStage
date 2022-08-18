@@ -2,6 +2,7 @@ package com.example.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.example.common.vo.CategoryClassOfEntVo;
 import com.example.dto.CategoryClassSearchDTO;
 import com.example.entity.CategoryClass;
 import org.apache.ibatis.annotations.Mapper;
@@ -26,7 +27,7 @@ public interface CategoryClassMapper extends BaseMapper<CategoryClass> {
      *
      * @return
      */
-    IPage<CategoryClass> search(IPage<?> page, @Param("cate") CategoryClassSearchDTO categoryClassSearchDTO);
+    IPage<CategoryClassOfEntVo> search(IPage<?> page, @Param("cate") CategoryClassSearchDTO categoryClassSearchDTO);
     
     /**
      * 判断是否包含重复

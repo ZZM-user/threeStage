@@ -7,9 +7,20 @@ import request from '@/utils/request'
  */
 export function fetchEnterpriseData(params) {
   return request({
-    url: 'http://localhost:8080/api/enterprise/data',
+    url: '/api/enterprise/data',
     method: 'GET',
     params
+  })
+}
+
+/**
+ * 商家版
+ * @returns {*}
+ */
+export function fetchEnterprise() {
+  return request({
+    url: '/api/enterprise/byself',
+    method: 'GET'
   })
 }
 
@@ -20,7 +31,7 @@ export function fetchEnterpriseData(params) {
  */
 export function findEnterpriseData(id) {
   return request({
-    url: 'http://localhost:8080/api/enterprise/' + id,
+    url: '/api/enterprise/' + id,
     method: 'GET'
   })
 }
@@ -32,7 +43,7 @@ export function findEnterpriseData(id) {
  */
 export function findEnterprisesData(params) {
   return request({
-    url: 'http://localhost:8080/api/enterprise/enterprises',
+    url: '/api/enterprise/enterprises',
     method: 'GET',
     params
   })
@@ -45,7 +56,7 @@ export function findEnterprisesData(params) {
  */
 export function changeEnterpriseState(data) {
   return request({
-    url: 'http://localhost:8080/api/enterprise/approved',
+    url: '/api/enterprise/approved',
     method: 'POST',
     data
   })
@@ -58,7 +69,7 @@ export function changeEnterpriseState(data) {
  */
 export function checkPhoneIsExists(params) {
   return request({
-    url: 'http://localhost:8080/api/enterprise/exists/',
+    url: '/api/enterprise/exists/',
     method: 'GET',
     params
   })
@@ -71,7 +82,7 @@ export function checkPhoneIsExists(params) {
  */
 export function addEnterpriseData(data) {
   return request({
-    url: 'http://localhost:8080/api/enterprise/add',
+    url: '/api/enterprise/add',
     method: 'POST',
     data
   })
@@ -84,7 +95,7 @@ export function addEnterpriseData(data) {
  */
 export function editEnterpriseData(data) {
   return request({
-    url: 'http://localhost:8080/api/enterprise/update',
+    url: '/api/enterprise/update',
     method: 'POST',
     data
   })
@@ -97,7 +108,7 @@ export function editEnterpriseData(data) {
  */
 export function delEnterpriseData(data) {
   return request({
-    url: 'http://localhost:8080/api/enterprise/del',
+    url: '/api/enterprise/del',
     method: 'POST',
     data
   })

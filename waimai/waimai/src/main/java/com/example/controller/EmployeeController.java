@@ -4,6 +4,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.example.common.annon.AdminAccess;
 import com.example.common.domain.R;
 import com.example.common.enums.AckCode;
 import com.example.common.vo.PageVo;
@@ -44,6 +45,7 @@ public class EmployeeController {
      *
      * @return
      */
+    @AdminAccess
     @ApiOperation("员工分页查询")
     @GetMapping("/data")
     public R search(EmployeeSearchDTO employeeSearchDTO) {
@@ -59,6 +61,7 @@ public class EmployeeController {
      *
      * @return
      */
+    @AdminAccess
     @ApiOperation("新增员工信息")
     @PostMapping("/add")
     public R add(@RequestBody Employee employee) {
@@ -75,6 +78,7 @@ public class EmployeeController {
         return save ? R.ok() : R.build(AckCode.FAIL);
     }
     
+    @AdminAccess
     @ApiOperation("查询主键获取员工数据")
     @ApiImplicitParam(name = "id", value = "主键", example = "1")
     @GetMapping("/{id}")
@@ -96,6 +100,7 @@ public class EmployeeController {
      *
      * @return
      */
+    @AdminAccess
     @ApiOperation("检查登录名是否存在")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "id", value = "id为null代表新增", required = false),
@@ -113,6 +118,7 @@ public class EmployeeController {
     }
     
     
+    @AdminAccess
     @ApiOperation("切换员工账号状态")
     @ApiImplicitParam(name = "id", value = "主键", example = "1")
     @PostMapping("/changeStatus")
@@ -136,6 +142,7 @@ public class EmployeeController {
      *
      * @return
      */
+    @AdminAccess
     @ApiOperation("编辑员工信息")
     @PostMapping("/update")
     public R update(@RequestBody Employee employee) {
@@ -155,6 +162,7 @@ public class EmployeeController {
      *
      * @return
      */
+    @AdminAccess
     @ApiOperation("移除员工信息")
     @PostMapping("/del")
     public R delete(@RequestBody List<Integer> ids) {

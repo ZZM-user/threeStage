@@ -44,7 +44,7 @@ public class JwtValidInterceptor implements HandlerInterceptor {
     @Override
     
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        log.info("校验请求" + request.getRequestURI());
+        log.info("校验请求：" + request.getRequestURI());
         // Authorization
         // 取出请求头中的验证token
         String authorization = request.getHeader(jwtHeader);

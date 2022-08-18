@@ -2,7 +2,15 @@ import request from '@/utils/request'
 
 export function fetchCategoryData(params) {
   return request({
-    url: 'http://localhost:8080/api/category/data',
+    url: '/api/category/data',
+    method: 'GET',
+    params
+  })
+}
+
+export function fetchCategory(params) {
+  return request({
+    url: '/api/category/byself',
     method: 'GET',
     params
   })
@@ -15,7 +23,7 @@ export function fetchCategoryData(params) {
  */
 export function findCategorysData(params) {
   return request({
-    url: 'http://localhost:8080/api/category/categorys',
+    url: '/api/category/categorys',
     method: 'GET',
     params
   })
@@ -28,7 +36,7 @@ export function findCategorysData(params) {
  */
 export function findCategoryData(id) {
   return request({
-    url: 'http://localhost:8080/api/category/' + id,
+    url: '/api/category/' + id,
     method: 'GET'
   })
 }
@@ -40,7 +48,7 @@ export function findCategoryData(id) {
  */
 export function addCategoryData(data) {
   return request({
-    url: 'http://localhost:8080/api/category/add',
+    url: '/api/category/add',
     method: 'POST',
     data
   })
@@ -53,7 +61,7 @@ export function addCategoryData(data) {
  */
 export function editCategoryData(data) {
   return request({
-    url: 'http://localhost:8080/api/category/update',
+    url: '/api/category/update',
     method: 'POST',
     data
   })
@@ -66,7 +74,7 @@ export function editCategoryData(data) {
  */
 export function delCategoryData(data) {
   return request({
-    url: 'http://localhost:8080/api/category/del',
+    url: '/api/category/del',
     method: 'POST',
     data
   })

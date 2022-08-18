@@ -2,6 +2,7 @@ package com.example.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.example.common.vo.MerchandiseOfEnpVo;
 import com.example.dto.MerchandiseSearchDTO;
 import com.example.entity.Merchandise;
 
@@ -18,5 +19,5 @@ public interface MerchandiseService extends IService<Merchandise> {
      *
      * @return
      */
-    IPage<Merchandise> search(MerchandiseSearchDTO merchandiseSearchDTO);
+    IPage<MerchandiseOfEnpVo> search(MerchandiseSearchDTO merchandiseSearchDTO);
 }

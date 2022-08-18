@@ -57,7 +57,8 @@
         </el-input>
         <div class="login-code">
           <el-image
-            :src="base64Image" alt="看不清，就用莎普爱思！" class="login-code-img" @click="getCode"
+            :src="base64Image" alt="看不清，就用莎普爱思！" class="login-code-img"
+            @click.native="getCode"
           >
             <div slot="error" class="image-slot">
               <i class="el-icon-picture-outline"></i>
@@ -67,7 +68,7 @@
       </el-form-item>
       <el-button :loading="loading" style="width:100%;margin-bottom:30px;" type="primary"
                  @click.native.prevent="handleLogin"
-      >Login
+      >登录
       </el-button>
 
       <div class="tips">

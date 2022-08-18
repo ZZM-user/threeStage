@@ -7,7 +7,20 @@ import request from '@/utils/request'
  */
 export function fetchMerchandiseData(params) {
   return request({
-    url: 'http://localhost:8080/api/merchandise/data',
+    url: '/api/merchandise/data',
+    method: 'GET',
+    params
+  })
+}
+
+/**
+ * 商家版
+ * @param params
+ * @returns {*}
+ */
+export function fetchMerchandise(params) {
+  return request({
+    url: '/api/merchandise/byself',
     method: 'GET',
     params
   })
@@ -20,7 +33,7 @@ export function fetchMerchandiseData(params) {
  */
 export function findMerchandiseData(id) {
   return request({
-    url: 'http://localhost:8080/api/merchandise/' + id,
+    url: '/api/merchandise/' + id,
     method: 'GET'
   })
 }
@@ -32,7 +45,7 @@ export function findMerchandiseData(id) {
  */
 export function addMerchandiseData(data) {
   return request({
-    url: 'http://localhost:8080/api/merchandise/add',
+    url: '/api/merchandise/add',
     method: 'POST',
     data
   })
@@ -45,7 +58,7 @@ export function addMerchandiseData(data) {
  */
 export function changeMerchandiseState(data) {
   return request({
-    url: 'http://localhost:8080/api/merchandise/changeState',
+    url: '/api/merchandise/changeState',
     method: 'POST',
     data
   })
@@ -58,7 +71,7 @@ export function changeMerchandiseState(data) {
  */
 export function editMerchandiseData(data) {
   return request({
-    url: 'http://localhost:8080/api/merchandise/update',
+    url: '/api/merchandise/update',
     method: 'POST',
     data
   })
@@ -71,7 +84,7 @@ export function editMerchandiseData(data) {
  */
 export function delMerchandiseData(data) {
   return request({
-    url: 'http://localhost:8080/api/merchandise/del',
+    url: '/api/merchandise/del',
     method: 'POST',
     data
   })
