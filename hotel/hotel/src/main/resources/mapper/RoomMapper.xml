@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.RoomMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.entity.Room">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="room" column="room" jdbcType="VARCHAR"/>
+        <result property="totalPeople" column="total_people" jdbcType="INTEGER"/>
+        <result property="priceOfDay" column="price_of_day" jdbcType="DECIMAL"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,room,total_people,
+        price_of_day
+    </sql>
+    <select id="search" resultType="com.example.common.vo.RoomVo">
+        SELECT *,
+        (SELECT count(*)
+        from record
+        WHERE r_id = r.id
+        and reality_date is null) as hasEmployee
+        from room as r
+        <where>
+            <if test="rdt.room!=null and rdt.room!=''">
+                r.id like concat('%',#{rdt.room},'%')
+            </if>
+        </where>
+    </select>
+</mapper>
