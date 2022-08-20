@@ -15,4 +15,7 @@
         id,e_id,money,
         payment_date
     </sql>
+    <update id="pay" parameterType="com.example.dto.PaymentSearchDTO" statementType="CALLABLE">
+
+    </update>
 </mapper>
