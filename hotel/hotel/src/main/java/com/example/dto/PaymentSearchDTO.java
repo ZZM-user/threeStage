@@ -1,26 +1,37 @@
 package com.example.dto;
 
-import java.util.List;
+import lombok.*;
+
+import java.math.BigDecimal;
 
 /**
  * @Author： 17602
  * @Date： 2022/8/20 21:46
  * @Desc：
  **/
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class PaymentSearchDTO extends PageDTO {
     
     /**
      * 结账人id
      */
-    List<Integer> ids;
+    Integer id;
     
     /**
      * 结账年
      */
-    Integer year;
+    Integer endYear;
     
     /**
      * 结账月
      */
-    Integer month;
+    Integer endMonth;
+    /**
+     * 总价
+     */
+    BigDecimal totalPrice;
 }
