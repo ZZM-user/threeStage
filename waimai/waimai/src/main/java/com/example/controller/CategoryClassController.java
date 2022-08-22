@@ -11,6 +11,7 @@ import com.example.common.vo.CategoryClassOfEntVo;
 import com.example.common.vo.LoginUserVO;
 import com.example.common.vo.PageVo;
 import com.example.dto.CategoryClassSearchDTO;
+import com.example.dto.PageDTO;
 import com.example.entity.CategoryClass;
 import com.example.service.CategoryClassService;
 import com.example.util.ThreadLocalUser;
@@ -48,7 +49,11 @@ public class CategoryClassController {
     
     @ApiOperation("分页查询-商家版")
     @GetMapping("/byself")
-    public R byself(CategoryClassSearchDTO categoryClassSearchDTO) {
+    public R byself(PageDTO pageDTO) {
+        CategoryClassSearchDTO categoryClassSearchDTO = new CategoryClassSearchDTO();
+        categoryClassSearchDTO.setPage(pageDTO.getPage());
+        categoryClassSearchDTO.setSize(pageDTO.getSize());
+        
         LoginUserVO loginUserVO = ThreadLocalUser.loginThreadLocal.get();
         categoryClassSearchDTO.setEid(loginUserVO.getId().intValue());
         IPage<CategoryClassOfEntVo> categoryClassOfEntVoIPage = service.search(categoryClassSearchDTO);

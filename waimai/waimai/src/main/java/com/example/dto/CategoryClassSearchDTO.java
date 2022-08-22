@@ -10,7 +10,7 @@ import lombok.Setter;
  * @Date： 2022/8/2 13:27
  * @Desc： 菜单分类
  **/
-@ApiModel(value = "菜单信息对象")
+@ApiModel(value = "商家分类查询对象")
 @Getter
 @Setter
 public class CategoryClassSearchDTO extends PageDTO {

@@ -13,41 +13,33 @@
         <result property="create_by" column="create_by" jdbcType="VARCHAR"/>
         <result property="update_time" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="update_by" column="update_by" jdbcType="VARCHAR"/>
+
+        <association property="enterprise" javaType="com.example.entity.Enterprise">
+            <id column="enterprise_id" jdbcType="BIGINT" property="id"/>
+            <result column="enterprise_name" jdbcType="VARCHAR" property="name"/>
+        </association>
+
     </resultMap>
-    <resultMap id="EnpResultMap" type="com.example.common.vo.CategoryClassOfEntVo">
-        <id property="id" column="id" jdbcType="BIGINT"/>
-        <result property="enterprise_id" column="enterprise_id" jdbcType="BIGINT"/>
-        <result property="name" column="name" jdbcType="VARCHAR"/>
-        <result property="picture" column="picture" jdbcType="VARCHAR"/>
-        <result property="create_time" column="create_time" jdbcType="TIMESTAMP"/>
-        <result property="create_by" column="create_by" jdbcType="VARCHAR"/>
-        <result property="update_time" column="update_time" jdbcType="TIMESTAMP"/>
-        <result property="update_by" column="update_by" jdbcType="VARCHAR"/>
-        <result property="enterprise_name" column="enterprise_name" jdbcType="VARCHAR"/>
-    </resultMap>
+
     <sql id="Base_Column_List">
         id,enterprise_id,name,
         picture,create_time,create_by,
         update_time,update_by
     </sql>
-    <select id="search" resultMap="EnpResultMap">
+    <select id="search" resultMap="BaseResultMap">
         SELECT
-        enterprise.`name` AS enterprise_name,
-        category_class.*
+        c.*,e.`name` as enterprise_name
         FROM
-        category_class
-        LEFT JOIN
-        enterprise
-        ON
-        enterprise.id = category_class.enterprise_id
+        category_class c INNER JOIN enterprise e on c.enterprise_id = e.id
         <where>
             <if test="cate.eid!=null">
-                enterprise_id = #{cate.eid}
+                c.enterprise_id = #{cate.eid}
             </if>
             <if test="cate.name!=null and cate.name !=''">
-                and name like concat('%',#{cate.name},'%')
+                and c.name like concat('%',#{cate.name},'%')
             </if>
         </where>
+        order by c.enterprise_id, c.create_time
     </select>
     <select id="hasRepeat" resultType="com.example.entity.CategoryClass">
         select

@@ -85,10 +85,10 @@
     </el-dialog>
     <!--    信息展示-->
     <el-table :data="totalData.records" style="width: 100%" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55"/>
-      <el-table-column label="编号" prop="id" width="80"></el-table-column>
+      <el-table-column type="selection" width="30"/>
+      <el-table-column label="编号" prop="id" width="50"></el-table-column>
       <el-table-column :show-overflow-tooltip="true" :show-tooltip-when-overflow="true" label="所属商户"
-                       prop="enterprise_name"
+                       prop="enterprise.name"
                        width="100"
       ></el-table-column>
       <el-table-column :show-overflow-tooltip="true" label="名称" prop="name" width="180"></el-table-column>

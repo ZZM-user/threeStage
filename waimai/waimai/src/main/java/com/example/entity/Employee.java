@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
@@ -17,6 +18,7 @@ import java.util.Date;
  * @TableName employee
  */
 @Data
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class Employee implements Serializable {
     /**
      * 主键

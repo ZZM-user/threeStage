@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.example.common.validtor.EditValidator;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
@@ -20,6 +21,8 @@ import java.util.Date;
  * @TableName enterprise
  */
 @Data
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
+
 public class Enterprise implements Serializable {
     /**
      * 

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
@@ -16,25 +17,30 @@ import java.util.Date;
  * @TableName category_class
  */
 @Data
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class CategoryClass implements Serializable {
     /**
      * 主键
      */
     @TableId(type = IdType.AUTO)
     private Long id;
-
+    
     /**
      * 商家id
      */
     @NotNull(message = "分类不能没有所属商家")
     private Long enterprise_id;
-
+    
+    /**
+     * 商家
+     */
+    private Enterprise enterprise;
     /**
      * 类别名称
      */
     @NotNull(message = "分类名称不能为空")
     private String name;
-
+    
     /**
      * 口味图片
      */
