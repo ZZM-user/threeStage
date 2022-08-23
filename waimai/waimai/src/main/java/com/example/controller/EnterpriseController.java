@@ -109,6 +109,7 @@ public class EnterpriseController {
         return R.ok();
     }
     
+    @AdminAccess
     @ApiOperation("查询主键获取商家数据")
     @ApiImplicitParam(name = "id", value = "主键", example = "1")
     @GetMapping("/{id}")
@@ -175,14 +176,17 @@ public class EnterpriseController {
     }
     
     
+    @AdminAccess
     @ApiOperation("为分类菜单提供商家查询")
     @GetMapping("/enterprises")
     public R searchAllEnterprise(String enterpriseName) {
         LambdaQueryWrapper<Enterprise> queryWrapper = new LambdaQueryWrapper<>();
         if (StrUtil.isNotBlank(enterpriseName)) {
-            queryWrapper.like(Enterprise::getName, "%" + enterpriseName + "%");
+            queryWrapper.like(Enterprise::getName, enterpriseName);
         }
-        queryWrapper.select(Enterprise::getId, Enterprise::getName);
+        queryWrapper.orderBy(true, true, Enterprise::getStatus);
+        queryWrapper.orderBy(true, true, Enterprise::getCreate_time);
+        queryWrapper.select(Enterprise::getId, Enterprise::getName, Enterprise::getStatus);
         List<Enterprise> enterpriseList = service.list(queryWrapper);
         return R.okHasData(enterpriseList);
     }

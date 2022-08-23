@@ -3,6 +3,7 @@ package com.example.controller;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.common.annon.AdminAccess;
 import com.example.common.domain.R;
@@ -22,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @Author： 17602
@@ -78,12 +78,18 @@ public class CategoryClassController {
     @ApiImplicitParam(name = "id", value = "主键", example = "1")
     @GetMapping("/{id}")
     public R findCategoryById(@PathVariable(value = "id") Long id) {
-        CategoryClass category = service.getById(id);
-        if (Objects.isNull(category)) {
+        QueryWrapper<CategoryClass> queryWrapper = new QueryWrapper<>();
+        if (ObjectUtil.isNull(id)) {
+            return R.build(AckCode.USER_PARAM_IS_NOT_NULL);
+        }
+        queryWrapper.eq("id", id);
+        queryWrapper.select("name", "picture");
+        CategoryClass category = service.getBaseMapper().selectOne(queryWrapper);
+    
+        if (ObjectUtil.isNull(category)) {
             return R.build(AckCode.NOT_FOUND_DATA);
         }
-        category.setCreate_time(null);
-        category.setUpdate_time(null);
+    
         return R.okHasData(category);
     }
     

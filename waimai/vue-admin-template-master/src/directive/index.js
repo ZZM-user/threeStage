@@ -1,11 +1,14 @@
 import Vue from 'vue'
-import adminPermission from './permission/adminPermission'
+import AdminPermission from './permission/AdminPermission'
+import EnterprisePermission from '@/directive/permission/EnterprisePermission'
 
 const install = function(Vue) {
-  Vue.directive('admin', adminPermission)
+  Vue.directive('admin', AdminPermission)
+  Vue.directive('enterprise', EnterprisePermission)
 }
 if (window.Vue) {
-  window['admin'] = adminPermission
+  window['admin'] = AdminPermission
+  window['enterprise'] = EnterprisePermission
   Vue.use(install)
 }
 export default install

@@ -1,8 +1,25 @@
 <template>
   <div id="main">
     <el-form v-admin :inline="true" :model="queryFrom" class="demo-form-inline">
-      <el-form-item label="商家ID">
-        <el-input v-model="queryFrom.eid" clearable placeholder="商家id" size="small"></el-input>
+      <el-form-item label="商家">
+        <el-select v-model="queryFrom.eid" :loading="loading" clearable filterable
+                   placeholder="请选择商家" size="small"
+                   @visible-change="fetchOptions()"
+        >
+          <el-option
+            v-for="item in options"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          >
+            <span style="float: left">{{ item.name }}</span>
+            <span style="float: right; font-size: 13px; font-weight: 600">
+                <span v-if="item.status===0" style="color: #27ae60">正常</span>
+                <span v-if="item.status===1" style="color: #a4b0be">停用</span>
+                <span v-if="item.status===2" style="color: #EBB563">未审核</span>
+            </span>
+          </el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="分类">
         <el-input v-model="queryFrom.name" clearable placeholder="分类名" size="small"></el-input>
@@ -14,11 +31,19 @@
     <!--    工具栏-->
     <el-row>
       <el-col>
-        <el-button icon="el-icon-plus" size="small" type="success" @click="openDialog(1)">新增</el-button>
-        <el-button :disabled="ableEdit" icon="el-icon-edit" size="small" type="warning" @click="openDialog(2)">修改
+        <el-button v-enterprise icon="el-icon-plus" size="small" type="success" @click="openDialog(1)">新增</el-button>
+        <el-button v-enterprise :disabled="ableEdit" icon="el-icon-edit" size="small" type="warning"
+                   @click="openDialog(2)"
+        >修改
         </el-button>
-        <el-button :disabled="ableDelete" icon="el-icon-delete" size="small" type="danger" @click="submitDelete">
+        <el-button v-enterprise :disabled="ableDelete" icon="el-icon-delete" size="small" type="danger"
+                   @click="submitDelete"
+        >
           删除
+        </el-button>
+
+        <el-button icon="el-icon-share" size="small" type="primary" @click="">
+          导出
         </el-button>
       </el-col>
     </el-row>
@@ -43,6 +68,12 @@
                   :label="item.name"
                   :value="item.id"
                 >
+                  <span style="float: left">{{ item.name }}</span>
+                  <span style="float: right; font-size: 13px; font-weight: 600">
+                    <span v-if="item.status===0" style="color: #27ae60">正常</span>
+                    <span v-if="item.status===1" style="color: #a4b0be">停用</span>
+                    <span v-if="item.status===2" style="color: #EBB563">未审核</span>
+                  </span>
                 </el-option>
               </el-select>
             </el-form-item>
@@ -106,9 +137,10 @@
       <el-table-column label="修改人" prop="update_by"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-link icon="el-icon-edit" type="primary" @click="openDialog(2,scope.row)">编辑</el-link>
+          <el-link icon="el-icon-view" type="primary" @click="openDialog(2,scope.row)">详情</el-link>
+          <el-link v-enterprise icon="el-icon-edit" type="primary" @click="openDialog(2,scope.row)">编辑</el-link>
           |
-          <el-link icon="el-icon-delete" type="danger" @click="submitDelete(scope.row)">删除</el-link>
+          <el-link v-enterprise icon="el-icon-delete" type="danger" @click="submitDelete(scope.row)">删除</el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -188,7 +220,7 @@ export default {
       return delCategoryData
     },
     // 搜索商家
-    fetchOptions(query) {
+    fetchOptions() {
       this.loading = true
       findEnterprisesData({ enterpriseName: this.dialogForm.enterprise_id }).then(response => {
         if (response.code === 0) {
