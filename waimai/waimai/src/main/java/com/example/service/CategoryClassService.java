@@ -34,4 +34,5 @@ public interface CategoryClassService extends IService<CategoryClass> {
     List<CategoryClass> hasRepeat(CategoryClass categoryClass);
     
     IPage<CategoryClass> searchCategory(CategoryClassSearchDTO categoryClassSearchDTO);
+    
 }

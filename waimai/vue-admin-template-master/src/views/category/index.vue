@@ -51,12 +51,12 @@
     <el-dialog :closed="closeDialog" :title="dialogTitle" :visible.sync="dialogVisible" width="62%">
       <el-form ref="dialogForm" :model="dialogForm" :rules="rules" class="demo-ruleForm" label-width="100px">
         <el-row>
-          <el-col :span="12">
+          <el-col :span="24">
             <el-form-item label="类别名称" prop="name">
               <el-input v-model="dialogForm.name"></el-input>
             </el-form-item>
           </el-col>
-          <el-col v-admin :span="12">
+          <el-col v-admin :span="24">
             <el-form-item label="所属商家" prop="enterprise_id">
               <el-select v-model="dialogForm.enterprise_id" :loading="loading" clearable
                          filterable placeholder="请选择商家"
@@ -83,7 +83,9 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="口味图片" prop="picture">
-              <el-input v-model="dialogForm.picture" placeholder="请输入口味图片地址" @change="setAlbumOfAvatar"/>
+              <el-input v-if="this.dialogVisible===0" v-model="dialogForm.picture" placeholder="请输入口味图片地址"
+                        @change="setAlbumOfAvatar"
+              />
               <el-upload
                 :before-upload="beforeAvatarUpload"
                 :drag="true"
@@ -104,7 +106,7 @@
           </el-col>
         </el-row>
 
-        <el-row>
+        <el-row v-if="this.dialogVisible===0">
           <el-col :push="12" :span="12">
             <el-form-item>
               <el-button type="primary" @click="submitForm()">确定</el-button>
@@ -138,9 +140,18 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-link icon="el-icon-view" type="primary" @click="openDialog(2,scope.row)">详情</el-link>
+          |
           <el-link v-enterprise icon="el-icon-edit" type="primary" @click="openDialog(2,scope.row)">编辑</el-link>
           |
-          <el-link v-enterprise icon="el-icon-delete" type="danger" @click="submitDelete(scope.row)">删除</el-link>
+          <el-popconfirm
+            title="确定删除吗？"
+          >
+            <el-link slot="reference" v-enterprise icon="el-icon-delete" type="danger"
+                     @confirm="submitDelete(scope.row)"
+            >
+              删除
+            </el-link>
+          </el-popconfirm>
         </template>
       </el-table-column>
     </el-table>
@@ -199,6 +210,10 @@ export default {
       return fetchCategoryData
     },
     addDataHooK() {
+      // 提交新增表单之前，为新增分类赋予当前商家id
+      if (this.$store.getters.loginType !== 1) {
+        this.dialogForm.enterprise_id = this.$store.getters.id
+      }
       return addCategoryData
     },
     // 编辑框打开之前

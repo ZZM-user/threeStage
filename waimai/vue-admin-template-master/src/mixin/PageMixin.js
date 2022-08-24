@@ -80,9 +80,15 @@ export default {
         }
         this.dialogTitle = '修改'
         this.dialogVisible = true
-      } else {
+      } else if (type === 1) {
         this.dialogTitle = '新增'
         this.dialogForm = {}
+        this.dialogVisible = true
+      } else {
+        if (this.beforeEditDataHook && this.beforeEditDataHook instanceof Function) {
+          this.beforeEditDataHook(row)
+        }
+        this.dialogTitle = '详情'
         this.dialogVisible = true
       }
       this.fetchData()
@@ -126,6 +132,7 @@ export default {
             type: 'danger'
           })
         }
+        this.dialogVisible = false
         this.fetchData()
       }).catch(error => {
         console.log(error)

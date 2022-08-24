@@ -37,4 +37,5 @@ public interface CategoryClassMapper extends BaseMapper<CategoryClass> {
      * @return
      */
     List<CategoryClass> hasRepeat(CategoryClass categoryClass);
+    
 }

@@ -82,6 +82,7 @@ public class CategoryClassController {
         if (ObjectUtil.isNull(id)) {
             return R.build(AckCode.USER_PARAM_IS_NOT_NULL);
         }
+    
         queryWrapper.eq("id", id);
         queryWrapper.select("name", "picture");
         CategoryClass category = service.getBaseMapper().selectOne(queryWrapper);

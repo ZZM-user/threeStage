@@ -8,7 +8,8 @@ const getDefaultState = () => {
     name: '',
     avatar: '',
     // 1、管理员 2、商家
-    loginType: 2
+    loginType: 2,
+    id: undefined
   }
 }
 
@@ -29,6 +30,9 @@ const mutations = {
   },
   SET_LOGIN_TYPE: (state, loginType) => {
     state.loginType = loginType
+  },
+  SET_ID: (state, id) => {
+    state.id = id
   }
 }
 
@@ -60,10 +64,11 @@ const actions = {
         if (!data) {
           return reject('身份验证失败，请重新登录！')
         }
-        const { account, avatar, loginType } = data
+        const { id, account, avatar, loginType } = data
         commit('SET_NAME', account)
         commit('SET_AVATAR', avatar)
         commit('SET_LOGIN_TYPE', loginType)
+        commit('SET_ID', id)
         resolve(data)
       }).catch(error => {
         reject(error)

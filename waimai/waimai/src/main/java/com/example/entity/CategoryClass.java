@@ -34,6 +34,7 @@ public class CategoryClass implements Serializable {
     /**
      * 商家
      */
+    @TableField(exist = false)
     private Enterprise enterprise;
     /**
      * 类别名称
