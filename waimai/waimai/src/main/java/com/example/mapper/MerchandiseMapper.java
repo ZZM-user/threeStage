@@ -1,7 +1,6 @@
 package com.example.mapper;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.example.common.vo.MerchandiseOfEnpVo;
 import com.example.dto.MerchandiseSearchDTO;
 import com.example.entity.Merchandise;
 import com.github.yulichang.base.MPJBaseMapper;
@@ -25,6 +24,6 @@ public interface MerchandiseMapper extends MPJBaseMapper<Merchandise> {
      *
      * @return
      */
-    IPage<MerchandiseOfEnpVo> search(IPage<?> page, @Param("mer") MerchandiseSearchDTO merchandiseSearchDTO);
+    IPage<Merchandise> search(IPage<?> page, @Param("mer") MerchandiseSearchDTO merchandiseSearchDTO);
     
 }

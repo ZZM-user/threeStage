@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -15,6 +16,7 @@ import java.util.Date;
  * @TableName merchandise
  */
 @Data
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class Merchandise implements Serializable {
     /**
      * 主键
@@ -36,27 +38,31 @@ public class Merchandise implements Serializable {
      * 商品图片
      */
     private String picture;
-
+    
     /**
      * 商品描述
      */
     private String description;
-
+    
     /**
      * 商品综合评分
      */
     private Integer score;
-
+    
+    @TableField(exist = false)
+    private Enterprise enterprise;
     /**
      * 商家id
      */
     private Long b_id;
-
+    
+    @TableField(exist = false)
+    private CategoryClass categoryClass;
     /**
      * 商品分类
      */
     private Long m_id;
-
+    
     /**
      * 是否上架 1：上架 ，0：没上架
      */

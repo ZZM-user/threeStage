@@ -6,7 +6,6 @@ import com.example.common.annon.AdminAccess;
 import com.example.common.domain.R;
 import com.example.common.enums.AckCode;
 import com.example.common.vo.LoginUserVO;
-import com.example.common.vo.MerchandiseOfEnpVo;
 import com.example.common.vo.PageVo;
 import com.example.dto.MerchandiseSearchDTO;
 import com.example.entity.Merchandise;
@@ -40,8 +39,8 @@ public class MerchandiseController {
     @ApiOperation("分页查询-管理员版")
     @GetMapping("/data")
     public R search(MerchandiseSearchDTO merchandiseSearchDTO) {
-        IPage<MerchandiseOfEnpVo> search = service.search(merchandiseSearchDTO);
-        PageVo<MerchandiseOfEnpVo> merchandiseOfEnpVoPageVo = PageVo.pageVo(search);
+        IPage<Merchandise> search = service.search(merchandiseSearchDTO);
+        PageVo<Merchandise> merchandiseOfEnpVoPageVo = PageVo.pageVo(search);
         return R.okHasData(merchandiseOfEnpVoPageVo);
     }
     
@@ -49,10 +48,10 @@ public class MerchandiseController {
     @GetMapping("/byself")
     public R byself(MerchandiseSearchDTO merchandiseSearchDTO) {
         LoginUserVO loginUserVO = ThreadLocalUser.loginThreadLocal.get();
-        merchandiseSearchDTO.setEid(loginUserVO.getId().intValue());
-        
-        IPage<MerchandiseOfEnpVo> search = service.search(merchandiseSearchDTO);
-        PageVo<MerchandiseOfEnpVo> merchandiseOfEnpVoPageVo = PageVo.pageVo(search);
+        merchandiseSearchDTO.setEnterpriseId(loginUserVO.getId());
+        merchandiseSearchDTO.setEnterpriseName(null);
+        IPage<Merchandise> search = service.search(merchandiseSearchDTO);
+        PageVo<Merchandise> merchandiseOfEnpVoPageVo = PageVo.pageVo(search);
         return R.okHasData(merchandiseOfEnpVoPageVo);
     }
     

@@ -8,7 +8,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.common.annon.AdminAccess;
 import com.example.common.domain.R;
 import com.example.common.enums.AckCode;
-import com.example.common.vo.CategoryClassOfEntVo;
 import com.example.common.vo.LoginUserVO;
 import com.example.common.vo.PageVo;
 import com.example.dto.CategoryClassSearchDTO;
@@ -42,8 +41,8 @@ public class CategoryClassController {
     @ApiOperation("分页查询-管理员")
     @GetMapping("/data")
     public R search(CategoryClassSearchDTO categoryClassSearchDTO) {
-        IPage<CategoryClassOfEntVo> categoryClassOfEntVoIPage = service.search(categoryClassSearchDTO);
-        PageVo<CategoryClassOfEntVo> categoryClassOfEntVoPageVo = PageVo.pageVo(categoryClassOfEntVoIPage);
+        IPage<CategoryClass> categoryClassOfEntVoIPage = service.search(categoryClassSearchDTO);
+        PageVo<CategoryClass> categoryClassOfEntVoPageVo = PageVo.pageVo(categoryClassOfEntVoIPage);
         return R.okHasData(categoryClassOfEntVoPageVo);
     }
     
@@ -53,11 +52,11 @@ public class CategoryClassController {
         CategoryClassSearchDTO categoryClassSearchDTO = new CategoryClassSearchDTO();
         categoryClassSearchDTO.setPage(pageDTO.getPage());
         categoryClassSearchDTO.setSize(pageDTO.getSize());
-        
+    
         LoginUserVO loginUserVO = ThreadLocalUser.loginThreadLocal.get();
         categoryClassSearchDTO.setEid(loginUserVO.getId().intValue());
-        IPage<CategoryClassOfEntVo> categoryClassOfEntVoIPage = service.search(categoryClassSearchDTO);
-        PageVo<CategoryClassOfEntVo> categoryClassOfEntVoPageVo = PageVo.pageVo(categoryClassOfEntVoIPage);
+        IPage<CategoryClass> categoryClassOfEntVoIPage = service.search(categoryClassSearchDTO);
+        PageVo<CategoryClass> categoryClassOfEntVoPageVo = PageVo.pageVo(categoryClassOfEntVoIPage);
         return R.okHasData(categoryClassOfEntVoPageVo);
     }
     
@@ -84,7 +83,7 @@ public class CategoryClassController {
         }
     
         queryWrapper.eq("id", id);
-        queryWrapper.select("name", "picture");
+        queryWrapper.select("name", "enterprise_id", "picture");
         CategoryClass category = service.getBaseMapper().selectOne(queryWrapper);
     
         if (ObjectUtil.isNull(category)) {

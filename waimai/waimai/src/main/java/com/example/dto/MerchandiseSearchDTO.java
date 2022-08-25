@@ -14,12 +14,13 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MerchandiseSearchDTO extends PageDTO {
-    @ApiModelProperty(value = "商家id", example = "1")
-    private Integer eid;
+    @ApiModelProperty(value = "商家名称", example = "蜜雪冰城")
+    private String enterpriseName;
+    @ApiModelProperty(value = "商家id", hidden = true)
+    private Long enterpriseId;
     @ApiModelProperty(value = "商品名称", example = "宫保鸡丁")
     private String name;
     @ApiModelProperty(value = "是否上架 1：上架 ，0：没上架", example = "0")
     private Byte isgrounding;
-    @ApiModelProperty(value = "账号类型(普通用户：0,管理员：1)", example = "1")
-    private Integer accountType;
+    
 }

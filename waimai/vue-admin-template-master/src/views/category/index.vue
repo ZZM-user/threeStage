@@ -51,6 +51,11 @@
     <el-dialog :closed="closeDialog" :title="dialogTitle" :visible.sync="dialogVisible" width="62%">
       <el-form ref="dialogForm" :model="dialogForm" :rules="rules" class="demo-ruleForm" label-width="100px">
         <el-row>
+          <el-col v-enterprise :span="24">
+            <el-form-item label="所属商家">
+              {{ this.$store.getters.name }}
+            </el-form-item>
+          </el-col>
           <el-col :span="24">
             <el-form-item label="类别名称" prop="name">
               <el-input v-model="dialogForm.name"></el-input>
@@ -140,9 +145,8 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-link icon="el-icon-view" type="primary" @click="openDialog(2,scope.row)">详情</el-link>
-          |
+
           <el-link v-enterprise icon="el-icon-edit" type="primary" @click="openDialog(2,scope.row)">编辑</el-link>
-          |
           <el-popconfirm
             title="确定删除吗？"
           >

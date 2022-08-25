@@ -17,6 +17,7 @@ public class LoginUserVO {
     private Long id;
     private String account;
     private String loginPwd;
+    private String name;
     private String avatar;
     private Integer status;
     /**

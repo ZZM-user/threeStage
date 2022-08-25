@@ -5,11 +5,13 @@ import { resetRouter } from '@/router'
 const getDefaultState = () => {
   return {
     token: getToken(),
-    name: '',
+    account: '',
     avatar: '',
     // 1、管理员 2、商家
     loginType: 2,
-    id: undefined
+    id: undefined,
+    // 后台管理员 or 商家名称
+    name: ''
   }
 }
 
@@ -22,8 +24,8 @@ const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
   },
-  SET_NAME: (state, name) => {
-    state.name = name
+  SET_ACCOUNT: (state, account) => {
+    state.account = account
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
@@ -33,6 +35,9 @@ const mutations = {
   },
   SET_ID: (state, id) => {
     state.id = id
+  },
+  SET_NAME: (state, name) => {
+    state.name = name
   }
 }
 
@@ -64,11 +69,12 @@ const actions = {
         if (!data) {
           return reject('身份验证失败，请重新登录！')
         }
-        const { id, account, avatar, loginType } = data
-        commit('SET_NAME', account)
+        const { id, name, account, avatar, loginType } = data
+        commit('SET_ACCOUNT', account)
         commit('SET_AVATAR', avatar)
         commit('SET_LOGIN_TYPE', loginType)
         commit('SET_ID', id)
+        commit('SET_NAME', name)
         resolve(data)
       }).catch(error => {
         reject(error)

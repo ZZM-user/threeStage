@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.example.common.vo.CategoryClassOfEntVo;
 import com.example.common.vo.LoginUserVO;
 import com.example.dto.CategoryClassSearchDTO;
 import com.example.entity.CategoryClass;
@@ -37,7 +36,7 @@ public class CategoryClassServiceImpl extends ServiceImpl<CategoryClassMapper, C
      * @return
      */
     @Override
-    public IPage<CategoryClassOfEntVo> search(CategoryClassSearchDTO categoryClassSearchDTO) {
+    public IPage<CategoryClass> search(CategoryClassSearchDTO categoryClassSearchDTO) {
         Page<CategoryClass> categoryClassPage = new Page<>(categoryClassSearchDTO.getPage(), categoryClassSearchDTO.getSize());
         return super.baseMapper.search(categoryClassPage, categoryClassSearchDTO);
     }

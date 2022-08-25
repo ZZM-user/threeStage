@@ -3,7 +3,6 @@ package com.example.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.example.common.vo.MerchandiseOfEnpVo;
 import com.example.dto.MerchandiseSearchDTO;
 import com.example.entity.Merchandise;
 import com.example.mapper.MerchandiseMapper;
@@ -30,7 +29,7 @@ public class MerchandiseServiceImpl extends ServiceImpl<MerchandiseMapper, Merch
      * @return
      */
     @Override
-    public IPage<MerchandiseOfEnpVo> search(MerchandiseSearchDTO merchandiseSearchDTO) {
+    public IPage<Merchandise> search(MerchandiseSearchDTO merchandiseSearchDTO) {
         Page<Merchandise> page = new Page<>(merchandiseSearchDTO.getPage(), merchandiseSearchDTO.getSize());
         return mapper.search(page, merchandiseSearchDTO);
     }

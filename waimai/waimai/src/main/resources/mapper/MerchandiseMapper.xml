@@ -18,26 +18,18 @@
         <result property="create_by" column="create_by" jdbcType="VARCHAR"/>
         <result property="update_time" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="update_by" column="update_by" jdbcType="VARCHAR"/>
-    </resultMap>
-    <resultMap id="EnpResultMap" type="com.example.common.vo.MerchandiseOfEnpVo">
-        <id property="id" column="id" jdbcType="BIGINT"/>
-        <result property="name" column="name" jdbcType="VARCHAR"/>
-        <result property="price" column="price" jdbcType="FLOAT"/>
-        <result property="picture" column="picture" jdbcType="VARCHAR"/>
-        <result property="description" column="description" jdbcType="VARCHAR"/>
-        <result property="score" column="score" jdbcType="INTEGER"/>
-        <result property="b_id" column="b_id" jdbcType="BIGINT"/>
-        <result property="m_id" column="m_id" jdbcType="BIGINT"/>
-        <result property="isgrounding" column="isgrounding" jdbcType="INTEGER"/>
-        <result property="create_time" column="create_time" jdbcType="TIMESTAMP"/>
-        <result property="create_by" column="create_by" jdbcType="VARCHAR"/>
-        <result property="update_time" column="update_time" jdbcType="TIMESTAMP"/>
-        <result property="update_by" column="update_by" jdbcType="VARCHAR"/>
-        <result property="update_by" column="update_by" jdbcType="VARCHAR"/>
-        <result property="enterprise_name" column="enterprise_name" jdbcType="VARCHAR"/>
-        <result property="category_name" column="category_name" jdbcType="VARCHAR"/>
 
+        <association property="enterprise" javaType="com.example.entity.Enterprise">
+            <id column="b_id" jdbcType="BIGINT" property="id"/>
+            <result column="enterprise_name" jdbcType="VARCHAR" property="name"/>
+        </association>
+
+        <association property="categoryClass" javaType="com.example.entity.CategoryClass">
+            <id column="m_id" jdbcType="BIGINT" property="id"/>
+            <result column="category_name" jdbcType="VARCHAR" property="name"/>
+        </association>
     </resultMap>
+
     <sql id="Base_Column_List">
         id,name,price,
         picture,description,score,
@@ -45,7 +37,7 @@
         create_time,create_by,update_time,
         update_by
     </sql>
-    <select id="search" resultMap="EnpResultMap">
+    <select id="search" resultMap="BaseResultMap">
         SELECT
         merchandise.*,
         enterprise.`name` AS enterprise_name,
@@ -61,8 +53,11 @@
         ON
         merchandise.m_id = category_class.id
         <where>
-            <if test="mer.eid!=null">
-                b_id = #{mer.eid}
+            <if test="mer.enterpriseId!=null">
+                enterprise.id =#{mer.enterpriseId}
+            </if>
+            <if test="mer.enterpriseName!=null and mer.enterpriseName!=''">
+                enterprise.`name` like concat('%',#{mer.enterpriseName},'%')
             </if>
             <if test="mer.name!=null and mer.name!=''">
                 and name like concat('%',#{mer.name},'%')
@@ -71,5 +66,6 @@
                 and isgrounding = #{mer.isgrounding}
             </if>
         </where>
+        order by merchandise.b_id, merchandise.create_time desc
     </select>
 </mapper>

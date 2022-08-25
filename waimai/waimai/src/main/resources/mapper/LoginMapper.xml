@@ -9,7 +9,8 @@
                employee.login_pwd  as loginPwd,
                employee.`status`,
                employee.avatar,
-               '1'                 as loginType
+               '1'                 as loginType,
+               '后台管理员'        as name
         FROM employee
         WHERE employee.login_name = #{account}
         UNION ALL
@@ -18,7 +19,9 @@
                enterprise.login_pwd as loginPwd,
                enterprise.`status`,
                enterprise.album     as avatar,
-               '2'                  as loginType
+               '2'                  as loginType,
+               enterprise.name      as name
+
         FROM enterprise
         WHERE enterprise.phone = #{account}
     </select>

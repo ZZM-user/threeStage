@@ -1,7 +1,7 @@
 <template>
   <div id="main">
-    <el-form v-admin :inline="true" :model="queryFrom" class="demo-form-inline">
-      <el-form-item label="商家ID">
+    <el-form :inline="true" :model="queryFrom" class="demo-form-inline">
+      <el-form-item v-admin label="商家ID">
         <el-input v-model="queryFrom.eid" clearable placeholder="商家ID" size="small"></el-input>
       </el-form-item>
       <el-form-item label="商品名">
@@ -19,17 +19,24 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button size="small" type="primary" @click="fetchData">查询</el-button>
+        <el-button icon="el-icon-search" size="small" type="primary" @click="fetchData">查询</el-button>
       </el-form-item>
     </el-form>
     <!--    工具栏-->
     <el-row>
       <el-col>
-        <el-button icon="el-icon-plus" size="small" type="success" @click="openDialog(1)">新增</el-button>
-        <el-button :disabled="ableEdit" icon="el-icon-edit" size="small" type="warning" @click="openDialog(2)">修改
+        <el-button v-enterprise icon="el-icon-plus" size="small" type="success" @click="openDialog(1)">新增</el-button>
+        <el-button v-enterprise :disabled="ableEdit" icon="el-icon-edit" size="small" type="warning"
+                   @click="openDialog(2)"
+        >修改
         </el-button>
-        <el-button :disabled="ableDelete" icon="el-icon-delete" size="small" type="danger" @click="submitDelete">
+        <el-button v-enterprise :disabled="ableDelete" icon="el-icon-delete" size="small" type="danger"
+                   @click="submitDelete"
+        >
           删除
+        </el-button>
+        <el-button icon="el-icon-share" size="small" type="primary" @click="">
+          导出
         </el-button>
       </el-col>
     </el-row>
@@ -119,7 +126,10 @@
               <el-input
                 v-model="dialogForm.description"
                 :rows="2"
+                maxlength="100"
+                minlength="10"
                 placeholder="请输入商品描述信息"
+                show-word-limit
                 type="textarea"
               >
               </el-input>
@@ -127,7 +137,7 @@
           </el-col>
         </el-row>
 
-        <el-row>
+        <el-row v-if="dialogType!==0">
           <el-col :push="12" :span="12">
             <el-form-item>
               <el-button type="primary" @click="submitForm()">确定</el-button>
@@ -164,23 +174,23 @@
           <el-tag v-if="scope.row.isgrounding===1" effect="dark" type="success">已上架</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="所属商家" prop="enterprise_name" width="60"/>
-      <el-table-column label="所属分类" prop="category_name" width="60"/>
+      <el-table-column label="所属商家" prop="enterprise.name" width="60"/>
+      <el-table-column :show-tooltip-when-overflow="true" label="所属分类" prop="categoryClass.name" width="60"/>
       <el-table-column label="创建时间" prop="create_time" width="150"/>
       <el-table-column label="创建人" prop="create_by" width="80"/>
       <el-table-column label="修改时间" prop="update_time" width="150"/>
       <el-table-column label="修改人" prop="update_by" width="80"/>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-link v-if="scope.row.isgrounding===0" icon="el-icon-check" type="success"
+          <el-link v-if="scope.row.isgrounding===0" v-enterprise icon="el-icon-check" type="success"
                    @click="changeState(scope.row)"
           >上架
           </el-link>
-          <el-link v-else icon="el-icon-check" type="warning" @click="changeState(scope.row)">下架</el-link>
-          |
-          <el-link icon="el-icon-edit" type="primary" @click="openDialog(2,scope.row)">编辑</el-link>
-          |
-          <el-link icon="el-icon-delete" type="danger" @click="submitDelete(scope.row)">删除</el-link>
+          <el-link v-else v-enterprise icon="el-icon-check" type="warning" @click="changeState(scope.row)">下架
+          </el-link>
+          <el-link icon="el-icon-view" type="primary" @click="openDialog(0,scope.row)">详情</el-link>
+          <el-link v-enterprise icon="el-icon-edit" type="primary" @click="openDialog(2,scope.row)">编辑</el-link>
+          <el-link v-enterprise icon="el-icon-delete" type="danger" @click="submitDelete(scope.row)">删除</el-link>
         </template>
       </el-table-column>
     </el-table>
