@@ -115,10 +115,13 @@ public class CategoryClassController {
     
     @ApiOperation("为商品菜单提供菜单查询")
     @GetMapping("/categorys")
-    public R searchAllEnterprise(String categoryName) {
+    public R searchAllEnterprise(CategoryClass categoryClass) {
         LambdaQueryWrapper<CategoryClass> queryWrapper = new LambdaQueryWrapper<>();
-        if (StrUtil.isNotBlank(categoryName)) {
-            queryWrapper.like(CategoryClass::getName, categoryName);
+        if (StrUtil.isNotBlank(categoryClass.getName())) {
+            queryWrapper.like(CategoryClass::getName, categoryClass.getName());
+        }
+        if (ObjectUtil.isNotNull(categoryClass.getEnterprise_id())) {
+            queryWrapper.eq(CategoryClass::getEnterprise_id, categoryClass.getEnterprise_id());
         }
         queryWrapper.select(CategoryClass::getId, CategoryClass::getName);
         List<CategoryClass> categoryClassList = service.list(queryWrapper);

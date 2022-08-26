@@ -100,3 +100,27 @@ export function MerchandiseStatus() {
     { label: '未上架', value: 0 }
   ]
 }
+
+/**
+ * 口味推荐
+ * @returns {[{name: string, value: string[]},{name: string, value: string[]},{name: string, value: string[]}]}
+ */
+export function flavorsListApi() {
+  return [
+    {
+      name: '甜度',
+      value: '甜度',
+      tags: ['无糖', '少糖', '半糖', '多糖', '全糖']
+    },
+    {
+      name: '辣度',
+      value: '辣度',
+      tags: ['不辣', '微辣', '中辣', '重辣']
+    },
+    {
+      name: '温度',
+      value: '温度',
+      tags: ['常温', '加冰', '加热']
+    }
+  ]
+}

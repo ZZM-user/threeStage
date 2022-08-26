@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -27,11 +28,13 @@ public class Merchandise implements Serializable {
     /**
      * 商品名称
      */
+    @NotBlank(message = "菜品不能为空")
     private String name;
 
     /**
      * 商品价格
      */
+    @NotBlank(message = "菜品价格不能为空")
     private Double price;
 
     /**
@@ -54,6 +57,7 @@ public class Merchandise implements Serializable {
     /**
      * 商家id
      */
+    @NotBlank(message = "菜品所属商家id不能为空")
     private Long b_id;
     
     @TableField(exist = false)
@@ -61,6 +65,7 @@ public class Merchandise implements Serializable {
     /**
      * 商品分类
      */
+    @NotBlank(message = "菜品所属分类id不能为空")
     private Long m_id;
     
     /**

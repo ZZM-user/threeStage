@@ -17,7 +17,7 @@ export function fetchCategory(params) {
 }
 
 /**
- * 查询商家信息（主要是为了分类）
+ * 查询分类信息（主要是为了菜品）
  * @returns {*}
  * @param params
  */

@@ -1,22 +1,30 @@
 package com.example.controller;
 
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.common.annon.AdminAccess;
 import com.example.common.domain.R;
 import com.example.common.enums.AckCode;
 import com.example.common.vo.LoginUserVO;
 import com.example.common.vo.PageVo;
+import com.example.dto.DishFlavorsDTO;
+import com.example.dto.MerchandiseDataDTO;
 import com.example.dto.MerchandiseSearchDTO;
+import com.example.entity.DishFlavor;
 import com.example.entity.Merchandise;
+import com.example.service.DishFlavorService;
 import com.example.service.MerchandiseService;
 import com.example.util.ThreadLocalUser;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -34,6 +42,9 @@ public class MerchandiseController {
     
     @Autowired
     MerchandiseService service;
+    
+    @Autowired
+    DishFlavorService dishFlavorService;
     
     @AdminAccess
     @ApiOperation("分页查询-管理员版")
@@ -57,13 +68,26 @@ public class MerchandiseController {
     
     @ApiOperation("插入商品信息")
     @PostMapping("/add")
-    public R insert(@RequestBody Merchandise merchandise) {
+    @Transactional(rollbackFor = Exception.class)
+    public R insert(@RequestBody MerchandiseDataDTO merchandise) {
         // 判断是否重复
         Merchandise hasMerchandise = service.getById(merchandise);
         if (ObjectUtil.isNotNull(hasMerchandise)) {
             return R.build(AckCode.FAIL);
         }
         boolean save = service.save(merchandise);
+        Long id = merchandise.getId();
+        List<DishFlavorsDTO> dishFlavors = merchandise.getDishFlavors();
+        if (ObjectUtil.isNotNull(id) && ObjectUtil.isNotNull(dishFlavors) && dishFlavors.size() > 0) {
+            ArrayList<DishFlavor> dishFlavorArrayList = new ArrayList<>();
+            for (DishFlavorsDTO dishFlavor : dishFlavors) {
+                if (dishFlavor.getTags().length != 0 || StrUtil.isNotBlank(dishFlavor.getName())) {
+                    dishFlavorArrayList.add(new DishFlavor(id, dishFlavor.getName(), JSONUtil.toJsonStr(dishFlavor.getTags()), 0));
+                }
+                
+            }
+            dishFlavorService.saveBatch(dishFlavorArrayList);
+        }
         return save ? R.ok() : R.build(AckCode.FAIL);
     }
     
@@ -104,6 +128,7 @@ public class MerchandiseController {
      */
     @ApiOperation("编辑商品信息")
     @PostMapping("/update")
+    @Transactional(rollbackFor = Exception.class)
     public R update(@RequestBody Merchandise merchandise) {
         boolean update = false;
         // 查看是否有这个商品

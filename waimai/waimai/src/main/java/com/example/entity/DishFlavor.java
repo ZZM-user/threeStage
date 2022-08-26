@@ -1,12 +1,14 @@
 package com.example.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * 菜品口味关系表
@@ -43,27 +45,38 @@ public class DishFlavor implements Serializable {
     /**
      * 创建人
      */
+    @TableField(fill = FieldFill.INSERT)
     private String create_by;
-
+    
+    
     /**
      * 创建时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime create_time;
-
+    @TableField(fill = FieldFill.INSERT)
+    private Date create_time;
     /**
      * 更新时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime update_time;
-
+    @TableField(fill = FieldFill.UPDATE)
+    private Date update_time;
+    
     /**
      * 修改人
      */
+    @TableField(fill = FieldFill.UPDATE)
     private String update_by;
-
+    
     private static final long serialVersionUID = 1L;
-
+    
+    public DishFlavor(Long dishId, String name, String value, Integer isDelete) {
+        this.setDish_id(dishId);
+        this.setName(name);
+        this.setValue(value);
+        this.setIs_deleted(isDelete);
+    }
+    
     @Override
     public boolean equals(Object that) {
         if (this == that) {

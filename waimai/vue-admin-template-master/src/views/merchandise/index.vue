@@ -41,10 +41,10 @@
       </el-col>
     </el-row>
     <!--    dialog弹框-->
-    <el-dialog :closed="closeDialog" :title="dialogTitle" :visible.sync="dialogVisible" width="62%">
+    <el-dialog :closed="closeDialog" :title="dialogTitle" :visible.sync="dialogVisible" width="70%">
       <el-form ref="dialogForm" :model="dialogForm" :rules="rules" class="demo-ruleForm" label-width="100px">
         <el-row>
-          <el-col :span="12">
+        <el-col :span="12">
             <el-form-item label="商品名称" prop="name">
               <el-input v-model="dialogForm.name" placeholder="请输入商品名称"/>
             </el-form-item>
@@ -65,18 +65,11 @@
               </el-select>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="商品价格" prop="price">
-              <el-input v-model="dialogForm.price" placeholder="请输入商品价格"/>
-            </el-form-item>
-          </el-col>
           <el-col :span="12">
             <el-form-item label="商品分类" prop="m_id">
               <el-select v-model="dialogForm.m_id" :loading="loading" clearable
                          filterable placeholder="请选择分类"
-                         @visible-change="fetchCategory(true)"
+                         @visible-change="fetchCategorys()"
               >
                 <el-option
                   v-for="item in categorys"
@@ -88,9 +81,68 @@
               </el-select>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
+        <el-col :span="12">
+          <el-form-item label="商品价格" prop="price">
+            <el-input v-model="dialogForm.price" placeholder="请输入商品价格"/>
+          </el-form-item>
+        </el-col>
+          <el-col :span="24">
+            <el-form-item label="口味配置">
+          <div v-if="this.dishFlavors" class="flavorBox">
+            <!-- 商品本身没有口味数据 -->
+            <el-button v-if="this.dishFlavors.length === 0" type="warning" class="addBut" @click="addFlavor()">+添加口味</el-button>
+
+            <!--商品本身有口味-->
+            <div v-if="this.dishFlavors.length !== 0" class="flavor">
+              <div class="title">
+                <span>口味名（3个字内）</span>
+                <span class="kwbq">口味标签（输入标签回车添加）</span>
+              </div>
+              <div v-for="(item ,index ) in this.dishFlavors" :key="index" class="cont">
+                <!--口味名称 -->
+                <el-autocomplete
+                  v-model="item.name"
+                  class="inline-input"
+                  :fetch-suggestions="querySearch"
+                  placeholder="请输入内容"
+                  :minlength="0"
+                  :maxlength="3"
+                  show-word-limit
+                  @select="handleSelect"
+                >
+                  <template slot-scope="{ item }">
+                    <span>{{ item.name }}</span>
+                  </template>
+                </el-autocomplete>
+
+                <!-- 口味明细 -->
+                <div  class="labItems">
+                  <el-tag v-for="(tag,ind) in item.tags" :key="tag" closable :disable-transitions="false" @close="handleClose(item,ind)">
+                    {{ tag }}
+                  </el-tag>
+                  <el-input
+                    v-if="item.inputVisible"
+                    ref="'saveTagInput' + index"
+                    v-model="item.inputValue"
+                    class="input-new-tag"
+                    size="small"
+                    :minlength="0"
+                    :maxlength="5"
+                    @keyup.enter.native="handleInputConfirm(item)"
+                    @blur="handleInputConfirm(item)"
+                  />
+                  <el-button v-else class="button-new-tag" size="small" @click="showInput(item, index)">+ New Tag</el-button>
+                </div>
+
+                <span class="delFlavor delBut non" @click="delFlavor(index)">删除</span>
+              </div>
+              <el-button type="warning" @click="addFlavor()">添加口味</el-button>
+            </div>
+          </div>
+
+          </el-form-item>
+          </el-col>
+          <el-col :span="24">
             <el-form-item label="商品图片" prop="picture">
               <el-input v-model="dialogForm.picture" placeholder="请输入商品图片地址" @change="setAlbumOfAvatar"/>
               <el-upload
@@ -111,16 +163,12 @@
               </el-upload>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="24">
             <el-form-item label="状态" prop="isgrounding" width="80">
-              <el-radio v-model="dialogForm.isgrounding" :label="0">未上架</el-radio>
-              <el-radio v-model="dialogForm.isgrounding" :label="1">已上架</el-radio>
+              <el-radio v-model="dialogForm.isgrounding" :label=0>暂不上架</el-radio>
+              <el-radio v-model="dialogForm.isgrounding"  :label=1>正常上架</el-radio>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="24">
             <el-form-item label="商品描述" prop="description">
               <el-input
@@ -145,6 +193,7 @@
             </el-form-item>
           </el-col>
         </el-row>
+
       </el-form>
     </el-dialog>
     <!--    信息展示-->
@@ -174,7 +223,7 @@
           <el-tag v-if="scope.row.isgrounding===1" effect="dark" type="success">已上架</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="所属商家" prop="enterprise.name" width="60"/>
+      <el-table-column :show-tooltip-when-overflow="true" label="所属商家" prop="enterprise.name" width="60"/>
       <el-table-column :show-tooltip-when-overflow="true" label="所属分类" prop="categoryClass.name" width="60"/>
       <el-table-column label="创建时间" prop="create_time" width="150"/>
       <el-table-column label="创建人" prop="create_by" width="80"/>
@@ -215,25 +264,16 @@ import {
   editMerchandiseData,
   fetchMerchandise,
   fetchMerchandiseData,
-  findMerchandiseData,
+  findMerchandiseData, flavorsListApi,
   MerchandiseStatus
 } from '@/api/merchandise'
 import PageMixin from '@/mixin/PageMixin'
 import { findEnterprisesData } from '@/api/enterprise'
-import { findCategorysData } from '@/api/category'
+import { fetchCategory } from '@/api/category'
 
 export default {
   mixins: [PageMixin],
   data() {
-    let validatePrice = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入价格'))
-      } else if (value < 0) {
-        callback(new Error('价格不能为负数！'))
-      } else {
-        callback()
-      }
-    }
     return {
       // 搜索列表相关
       loading: false,
@@ -242,18 +282,21 @@ export default {
       // 图片暂存
       avatar: '',
       merchandiseStatus: MerchandiseStatus(),
+      dishFlavors:[],
+      suggestFlavors: flavorsListApi(),
       rules: {
-        b_id: [
-          { required: true, message: '所属商家不能为空', trigger: 'blur' }
-        ],
+        // b_id: [
+        //   { required: true, message: '所属商家不能为空', trigger: 'blur' }
+        // ],
         name: [
           { required: true, message: '请输入商品名称', trigger: 'blur' }
         ],
         picture: [
           { required: true, message: '请上传商品图片', trigger: 'blur' }
         ],
-        price: [
-          { validator: validatePrice, trigger: 'blur' }
+      price: [
+          { required: true, message: '请输入商品价格', trigger: 'blur' },
+          { pattern:"^[1-9]\\d*|^[1-9]\\d*.\\d*|0.\\d*[1-9]\\d*|0?.0+|0$", message:"价格不正确"}
         ],
         m_id: [
           { required: true, message: '分类不能为空', trigger: 'blur' }
@@ -265,8 +308,7 @@ export default {
           { required: true, message: '描述不能为空', trigger: 'blur' },
           { min: 5, max: 100, message: '描述需要在5-100字之间', trigger: 'blur' }
         ]
-
-      }
+      },
     }
   }, methods: {
     fetchDataHook() {
@@ -276,6 +318,10 @@ export default {
       return fetchMerchandiseData
     },
     addDataHooK() {
+      if (this.$store.getters.loginType===2){
+        this.dialogForm.b_id=this.$store.getters.id
+      }
+      this.dialogForm.dishFlavors = this.dishFlavors
       return addMerchandiseData
     },
     // 编辑框打开之前
@@ -283,6 +329,7 @@ export default {
       const id = row ? row.id : this.ids[0]
       findMerchandiseData(id).then(resp => {
         this.dialogForm = resp.data
+        this.dishFlavors = resp.data.dishFlavors
         this.avatar = this.dialogForm.picture
       }).catch(err => {
           console.log(err)
@@ -291,13 +338,14 @@ export default {
       )
     },
     editDataHook() {
+      this.dialogForm.dishFlavors = this.dishFlavors
       return editMerchandiseData
     },
     delDataHook() {
       return delMerchandiseData
     },
     // 搜索商家
-    fetchOptions(query) {
+    fetchOptions() {
       this.loading = true
       findEnterprisesData({ enterpriseName: this.dialogForm.b_id }).then(response => {
         if (response.code === 0) {
@@ -311,15 +359,12 @@ export default {
       })
     },
     // 搜索分类
-    fetchCategory(query) {
+    fetchCategorys() {
       this.loading = true
-      findCategorysData({ categoryName: this.dialogForm.m_id }).then(response => {
-        if (response.code === 0) {
-          this.loading = false
-          this.categorys = response.data
-        } else {
-          this.categorys = []
-        }
+      const params = { page: 1, size: 150 }
+      fetchCategory(params).then(response => {
+        this.loading = false
+        this.categorys = response.data.records
       }).catch(error => {
         console.log(error)
       })
@@ -333,6 +378,7 @@ export default {
       this.dialogForm.picture = 'http://localhost:8080/' + res.data.fileUrl
       this.avatar = this.dialogForm.picture
     },
+    // 改变商品上架状态
     changeState(row) {
       changeMerchandiseState({ id: row.id }).then(resp => {
         const { code, message, data } = resp
@@ -349,6 +395,102 @@ export default {
           })
         }
       })
+    },
+    // 口味输入建议
+    querySearch(queryString, cb) {
+      const restaurants = this.suggestFlavors
+      const results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants
+      // 调用 callback 返回建议列表的数据
+      cb(results);
+    },
+    // 过滤方法
+    createFilter(queryString) {
+      return (item) => {
+        return (item.name.indexOf(queryString) === 0);
+      };
+    },
+    // 选择 搜索建议 内容 触发
+    handleSelect(item) {
+      const tag = item
+      let repeat = false;
+      let p = undefined;
+      let pd = 0;
+      for (const element of this.dishFlavors) {
+        if (element.name === tag.name){
+          if (pd >0) {
+            pd = this.dishFlavors.indexOf(element)
+            repeat = true
+            break
+          }
+          p = this.dishFlavors.indexOf(element);
+          pd ++;
+        }
+      }
+      if (repeat){
+        this.$message.error("口味标签已经存在哦！")
+        this.dishFlavors[p]=tag
+        this.delFlavor(pd)
+        return
+      }
+
+      this.dishFlavors[p]=tag
+      console.log(item);
+    },
+    // 删除一个口味中的标签
+    handleClose(tag, index) {
+      tag.tags.splice(index, 1);
+    },
+    // 手动添加口味标签
+    showInput(tag, index) {
+      if (tag.tags.length>=5){
+        this.$message.error("口味标签个数不能超过5个")
+        tag.inputVisible = false;
+        tag.inputValue = '';
+        return
+      }
+
+      tag.inputVisible = true
+      this.$nextTick(_ => {
+        if (this.$refs['saveTagInput' + index]){
+          this.$refs['saveTagInput' + index][0].$refs.input.focus();
+        }
+      });
+    },
+    // 添加口味
+    handleInputConfirm(tag) {
+      let inputValue = tag.inputValue;
+      if (inputValue.length<=0 || inputValue.length>=4){
+        this.$message.error("口味名称不能超过4个字符")
+        return
+      }
+
+      tag.tags.push(inputValue);
+      tag.inputVisible = false;
+      tag.inputValue = '';
+    },
+    // 删除口味
+    delFlavor(index){
+      this.dishFlavors.splice(index, 1);
+    },
+    // 添加口味
+    addFlavor(obj){
+      if (!obj){
+         obj ={
+          inputVisible: false,
+          inputValue: '',
+          name: '',
+          tags: []
+        }
+      }
+      this.dishFlavors.push(obj)
+    },
+    // 重置表单
+    resetForm() {
+      if (this.$refs['dialogForm']) {
+        this.$refs['dialogForm'].resetFields()
+        this.$refs['dialogForm'].clearValidate()
+      }
+      this.dishFlavors = []
     }
   }
 }
@@ -385,4 +527,68 @@ export default {
   margin: 0 auto;
   border: 1px solid #f1f2f6;
 }
+
+.mb8{
+  margin-bottom: 8px;
+}
+
+.mr10{
+  margin-right: 10px;
+}
+
+.el-tag + .el-tag {
+  margin-left: 10px;
+}
+.button-new-tag {
+  margin-left: 10px;
+  height: 32px;
+  line-height: 30px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.input-new-tag {
+  width: 90px;
+  margin-left: 10px;
+  vertical-align: bottom;
+}
+
+.flavorBox .flavor {
+  border: solid 1px #dfe2e8;
+  border-radius: 3px;
+  padding: 15px;
+  background: #fafafb;
+}
+.flavorBox .flavor .title {
+  color: #606168;
+}
+
+.flavor .el-autocomplete {
+  width: 150px;
+}
+
+.flavorBox .flavor .cont .labItems {
+  display: inline-block;
+  border-radius: 3px;
+  min-height: 39px;
+  border: solid 1px #d8dde3;
+  background: #fff;
+  padding: 0 5px;
+  margin-left: 10px;
+}
+
+.flavorBox .flavor .cont  .delFlavor {
+  display: inline-block;
+  padding: 0 10px;
+  color: #f19c59;
+  cursor: pointer;
+}
+
+.flavorBox .flavor .cont {
+  margin: 10px 0;
+}
+.flavorBox .title   .kwbq{
+  margin-left: 45px;
+}
+</style>
+
 </style>
