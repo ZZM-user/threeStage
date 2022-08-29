@@ -125,7 +125,7 @@ public class MerchandiseController {
         // 查看是否有这个商品
         Merchandise hasMerchandise = service.getById(merchandiseDataDTO);
         if (ObjectUtil.isNull(hasMerchandise)) {
-            return R.build(AckCode.FAIL);
+            return R.build(AckCode.NOT_FOUND_DATA);
         }
         MerchandiseDataVO byId = service.findById(merchandiseDataDTO.getId());
         // 先删除后新增

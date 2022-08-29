@@ -90,7 +90,9 @@
             <el-form-item label="口味配置">
           <div v-if="this.dishFlavors" class="flavorBox">
             <!-- 商品本身没有口味数据 -->
-            <el-button v-if="this.dishFlavors.length === 0" type="warning" class="addBut" @click="addFlavor()">+添加口味</el-button>
+            <el-button v-if="this.dishFlavors.length === 0" class="addBut" type="warning" @click="addFlavor()">
+              +添加口味
+            </el-button>
 
             <!--商品本身有口味-->
             <div v-if="this.dishFlavors.length !== 0" class="flavor">
@@ -102,11 +104,11 @@
                 <!--口味名称 -->
                 <el-autocomplete
                   v-model="item.name"
-                  class="inline-input"
                   :fetch-suggestions="querySearch"
-                  placeholder="请输入内容"
-                  :minlength="0"
                   :maxlength="3"
+                  :minlength="0"
+                  class="inline-input"
+                  placeholder="请输入内容"
                   show-word-limit
                   @select="handleSelect"
                 >
@@ -116,20 +118,22 @@
                 </el-autocomplete>
 
                 <!-- 口味明细 -->
-                <div  class="labItems">
-                  <el-tag v-for="(tag,ind) in item.tags" :key="tag" closable :disable-transitions="false" @close="handleClose(item,ind)">
+                <div class="labItems">
+                  <el-tag v-for="(tag,ind) in item.tags" :key="tag" :disable-transitions="false" closable
+                          @close="handleClose(item,ind)"
+                  >
                     {{ tag }}
                   </el-tag>
                   <el-input
                     v-if="item.inputVisible"
                     ref="'saveTagInput' + index"
                     v-model="item.inputValue"
+                    :maxlength="5"
+                    :minlength="0"
                     class="input-new-tag"
                     size="small"
-                    :minlength="0"
-                    :maxlength="5"
-                    @keyup.enter.native="handleInputConfirm(item)"
                     @blur="handleInputConfirm(item)"
+                    @keyup.enter.native="handleInputConfirm(item)"
                   />
                   <el-button v-else class="button-new-tag" size="small" @click="showInput(item, index)">+ New Tag</el-button>
                 </div>
@@ -264,7 +268,8 @@ import {
   editMerchandiseData,
   fetchMerchandise,
   fetchMerchandiseData,
-  findMerchandiseData, flavorsListApi,
+  findMerchandiseData,
+  flavorsListApi,
   MerchandiseStatus
 } from '@/api/merchandise'
 import PageMixin from '@/mixin/PageMixin'
@@ -296,7 +301,7 @@ export default {
         ],
       price: [
           { required: true, message: '请输入商品价格', trigger: 'blur' },
-          { pattern:"^[1-9]\\d*|^[1-9]\\d*.\\d*|0.\\d*[1-9]\\d*|0?.0+|0$", message:"价格不正确"}
+        { pattern: '^[1-9]\\d*|^[1-9]\\d*.\\d*|0.\\d*[1-9]\\d*|0?.0+|0$', message: '价格不正确' }
         ],
         m_id: [
           { required: true, message: '分类不能为空', trigger: 'blur' }
@@ -331,6 +336,10 @@ export default {
         this.dialogForm = resp.data
         this.dishFlavors = resp.data.dishFlavors
         this.avatar = this.dialogForm.picture
+        // 防止价格校验失败
+        if (this.dialogForm.price) {
+          this.dialogForm.price = this.dialogForm.price + ''
+        }
       }).catch(err => {
           console.log(err)
           return 0
@@ -576,7 +585,7 @@ export default {
   margin-left: 10px;
 }
 
-.flavorBox .flavor .cont  .delFlavor {
+.flavorBox .flavor .cont .delFlavor {
   display: inline-block;
   padding: 0 10px;
   color: #f19c59;
@@ -586,9 +595,9 @@ export default {
 .flavorBox .flavor .cont {
   margin: 10px 0;
 }
-.flavorBox .title   .kwbq{
+
+.flavorBox .title .kwbq {
   margin-left: 45px;
 }
-</style>
 
 </style>
