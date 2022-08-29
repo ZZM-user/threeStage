@@ -20,9 +20,9 @@ spring:
     username: root
     password: root
   redis:
-    client-name: localhost
+    client-name: 192.168.21.180
     password: hxzy
-    host: localhost
+    host: 192.168.21.180
     database: 2
   jackson:
     time-zone: GMT+8
