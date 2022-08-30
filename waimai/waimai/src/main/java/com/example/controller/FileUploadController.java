@@ -22,7 +22,7 @@ import java.util.Map;
  * @Date： 2022/8/5 11:32
  * @Desc：
  **/
-@Api(value = "文件上传")
+@Api(tags = "文件上传")
 @Slf4j
 @CrossOrigin
 @RestController

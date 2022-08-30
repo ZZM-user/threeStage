@@ -126,3 +126,26 @@ export function EnterpriseStatus() {
     { label: '停用', value: 1 }
   ]
 }
+
+/** 前端修改
+ * @param {Object} data
+ */
+export function frontsave(data) {
+  return request({
+    url: '/front/enterprise/add',
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * 商家注册  校验电话号是否存在
+ * @returns {*}
+ * @param params
+ */
+export function checkFrontPhoneIsExists(params) {
+  return request({
+    url: '/front/account/exists/' + params,
+    method: 'GET'
+  })
+}

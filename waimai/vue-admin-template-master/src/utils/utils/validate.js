@@ -19,11 +19,13 @@ export function validUsername(str) {
   return valid_map.indexOf(str.trim()) >= 0
 }
 
+
 /**
- * 验证是否为手机号
- * @param phone
- * @returns {boolean}
+ * 验证手机号是否可用
+ * @param {Object} value
  */
-export function isPhone(phone) {
-  return /^(?:0|86|\+86)?1[3-9]\d{9}/.test(phone)
+export function isPhone(value){
+  const exp= /^0?(13|15|17|18|14|19)[0-9]{9}$/
+  // 判断是否是手机号
+  return exp.test(value)
 }

@@ -41,7 +41,24 @@ export const constantRoutes = [
     component: () => import('@/views/404'),
     hidden: true
   },
-
+  // 商家入住
+  {
+    path: '/recruit',
+    component: () => import('@/views/recruit/index'),
+    hidden: true,
+    meta: {
+      title: '商家申请入住'
+    }
+  },
+  // 同意政策
+  {
+    path: '/safety-policy',
+    component: () => import('@/views/recruit/safety-policy'),
+    hidden: true,
+    meta: {
+      title: '商家申请入住'
+    }
+  },
   {
     path: '/',
     component: Layout,

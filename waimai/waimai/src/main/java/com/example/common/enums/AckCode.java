@@ -17,15 +17,20 @@ public enum AckCode {
      * 通用提示
      **/
     COMMON_FRE_OPERATION(200, "服务器频繁,请重试"),
+    RATE_LIMATE(10000, "操作频繁，系统限流"),
     
     /*-------------------编辑资料-------------------*/
     NICK_NAME_TOO_LONG(300, "昵称最多8个字符"),
+    
     ILLEGAL_MONOLOGUE(301, "内心独白违规"),
+    
     ILLEGAL_NICKNAME(302, "昵称涉及敏感词"),
+    
     ILLEGAL_SPECIAL(303, "昵称不能包含特殊符号"),
     
     /*-----Basic-----*/
     SUCCESS(0, "ok"),
+    
     VALUE_IS_USED(1, "该值已被使用"),
     FAIL(500, "fail"),
     SYSTEM_PARAM_FAIL(400, "参数错误"),
@@ -66,8 +71,11 @@ public enum AckCode {
     SMS_CODE_OVERTIME(704, "验证码超时"),
     SMS_CODE_STATUS_USED(705, "验证码已使用"),
     SMS_SEND_OVERTIMES(706, "今日发送次数已用完"),
+    
     SMS_SEND_TYPE_WRONG(707, "发送验证码类型错误"),
-    SMS_SEND_COLD_TIME(708, "两次验证码发送间隔不能小于1分钟"),
+    
+    SMS_SEND_COLD_TIME(708, "两次验证码发送间隔不能小于2分钟"),
+    
     /**
      * 身份证验证性别
      */
@@ -115,7 +123,11 @@ public enum AckCode {
     OLD_PASSWORD_NOTNULL(1119, "原密码不能为空"),
     OLD_PASSWORD_INVALID(1120, "原密码不正确"),
     OLD_PASSWORD_ERROR(1121, "原密码错误"),
+    
     PHONE_NUMBER_SET_ACCOUNT_INVALID(1122, "该手机号码已经被其他用户绑定"),
+    
+    PHONE_NUMBER_INVALID(1122, "无效的手机号码"),
+    
     PLEASE_BIND_PHONE_NUMBER(1123, "请先绑定手机号码"),
     PHONE_NUMBER_NOTNULL(1124, "手机号码不能为空"),
     PASSWORD_VERIFY_FAILED(1125, "密码必须是6~16位的数字、字母组合"),

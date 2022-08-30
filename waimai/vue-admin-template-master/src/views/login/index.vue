@@ -53,17 +53,15 @@
             placeholder="验证码"
             style="width: 63%;"
             tabindex="3"
+            @focus="refreshCode"
             @keyup.enter.native="handleLogin"
           >
           </el-input>
           <div class="login-code">
             <el-image
-              :src="base64Image" alt="看不清，就用莎普爱思！" class="login-code-img"
+              :src="base64Image" alt="看不清，就用莎普爱思！" class="login-code-img" fit="contain"
               @click.native="getCode"
             >
-              <div slot="error" class="image-slot">
-                <i class="el-icon-picture-outline"></i>
-              </div>
             </el-image>
           </div>
         </el-form-item>
@@ -76,7 +74,9 @@
           <span style="margin-right:20px;">username: 123456 or 13565421563</span>
           <span> password: 123456</span>
         </div>
-
+        <div class="tips">
+          <router-link :to="{path:'recruit'}" class="el-link" target="_blank">我要入驻</router-link>
+        </div>
       </el-form>
     </div>
   </div>
@@ -127,6 +127,11 @@ export default {
     this.getCode()
   },
   methods: {
+    refreshCode() {
+      if (!this.base64Image) {
+        this.getCode()
+      }
+    },
     getCode() {
       const params = { width: 150, height: 52 }
       getCaptcha(params).then(resp => {
@@ -188,9 +193,9 @@ $cursor: #FFF;
 #board {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #69ff97, #00e4ff);
+  background: linear-gradient(to left, #F9BA36, #A9CEF0, #409EFF);
+  background-size: auto 100%;
   position: absolute;
-  filter: blur(0);
 }
 
 /* reset element-ui css */
@@ -214,14 +219,14 @@ $cursor: #FFF;
       caret-color: $cursor;
 
       &:-webkit-autofill {
-        box-shadow: 0 0 0px 1000px $bg inset !important;
+        box-shadow: 0 0 0 1000px $bg inset !important;
         -webkit-text-fill-color: $cursor !important;
       }
     }
   }
 
   .el-form-item {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(248, 248, 248, 1);
     border-radius: 5px;
     color: #f8f8f8;
     border: 1px solid rgba(255, 255, 255, 0.6);
@@ -231,7 +236,7 @@ $cursor: #FFF;
     position: absolute;
     top: 1px;
     right: 0;
-    border-radius: 5px;
+    border-radius: 0 5px 5px 0;
     cursor: pointer;
   }
 
@@ -263,6 +268,11 @@ $cursor: #FFF;
     //color: $bg;
     //border: 2px $bg;
   }
+
+  .login-container .el-image__error {
+    margin-top: 8px;
+    margin-right: 16px;
+  }
 }
 </style>
 
@@ -274,17 +284,18 @@ $dark_gray: #889aa4;
 .login-container {
   min-height: 90%;
   width: 80%;
-  margin: 2% auto 0;
+  margin: 2.5% auto 0;
   background-color: $bg;
   overflow: hidden;
   border-radius: 15px;
+  box-shadow: 2px 2px 2px 1px;
 
   .login-form {
     width: 520px;
     max-width: 100%;
     position: relative;
     padding: 50px 35px 50px;
-    margin: 4% 0 0 50%;
+    margin: 4% 0 0 52%;
     overflow: hidden;
     //border: 0.2px solid #f8f8f8;
     //box-shadow: 0 2px 3px 0;
