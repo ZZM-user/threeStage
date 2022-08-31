@@ -18,6 +18,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
@@ -36,6 +37,7 @@ import java.util.Objects;
 @Api(tags = "商家信息")
 @RestController
 @CrossOrigin
+@Slf4j
 @RequestMapping("/api/enterprise")
 public class EnterpriseController {
     @Autowired
@@ -106,6 +108,10 @@ public class EnterpriseController {
         }
         enterprise.setStatus(1);
         boolean count = service.updateById(enterprise);
+        if (count) {
+            // 发送短信
+            log.info(enterprise.getName() + "\t商家通知已发送！");
+        }
         return R.ok();
     }
     
@@ -191,7 +197,7 @@ public class EnterpriseController {
         return R.okHasData(enterpriseList);
     }
     
-    private Enterprise hasEnterprise(Enterprise enterprise) {
+    Enterprise hasEnterprise(Enterprise enterprise) {
         LambdaQueryWrapper<Enterprise> wrapper = new LambdaQueryWrapper<>();
         LambdaQueryWrapper<Enterprise> eq = wrapper.eq(Enterprise::getPhone, enterprise.getPhone());
         LambdaQueryWrapper<Enterprise> last = eq.last("limit 1");

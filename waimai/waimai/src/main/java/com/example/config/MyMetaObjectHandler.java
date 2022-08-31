@@ -1,5 +1,6 @@
 package com.example.config;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.example.util.ThreadLocalUser;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +22,11 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
     public void insertFill(MetaObject metaObject) {
         log.info("start insert fill ....");
         this.strictInsertFill(metaObject, "create_time", Date.class, new Date());
-        this.strictInsertFill(metaObject, "create_by", String.class, ThreadLocalUser.loginThreadLocal.get().getAccount());
+        if (ObjectUtil.isNull(ThreadLocalUser.loginThreadLocal.get())) {
+            this.strictInsertFill(metaObject, "create_by", String.class, "用户注册");
+        } else {
+            this.strictInsertFill(metaObject, "create_by", String.class, ThreadLocalUser.loginThreadLocal.get().getAccount());
+        }
     }
     
     @Override

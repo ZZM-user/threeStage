@@ -33,7 +33,7 @@ public class FrontSmsController {
     RedisTemplate redisTemplate;
     
     
-    @RateLimiter(time = 60, count = 2, limitType = LimitType.PARAMS)
+    @RateLimiter(time = 60 * 60 * 12, count = 20, limitType = LimitType.PARAMS)
     @ApiOperation(value = "发送短信")
     @PostMapping(value = "/send/{phone}")
     public R sendSms(@PathVariable(value = "phone") String phone) {
