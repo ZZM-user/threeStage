@@ -48,21 +48,19 @@ public class RateLimiterAspect {
      *
      * @param point       当前执行的方法是什么
      * @param rateLimiter 自定义注解
-     *
-     * @throws Throwable
      */
     @Before("@annotation(rateLimiter)")
-    public void doBefore(JoinPoint point, RateLimiter rateLimiter) throws Throwable {
+    public void doBefore(JoinPoint point, RateLimiter rateLimiter) {
         // 前缀 rate_limit:
         String key = rateLimiter.key();
         // 时间
         int time = rateLimiter.time();
         // 次数
         int count = rateLimiter.count();
-        
+    
         String combineKey = getCombineKey(rateLimiter, point);
         List<Object> keys = Collections.singletonList(combineKey);
-        
+    
         // 脚本有问题
         Object value = redisTemplate.execute(limitScript, keys, count, time);
         Long number = (Long) value;
