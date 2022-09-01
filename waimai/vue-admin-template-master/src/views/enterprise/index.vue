@@ -43,6 +43,7 @@
           <el-button :disabled="ableDelete" icon="el-icon-delete" size="small" type="danger" @click="submitDelete">
             删除
           </el-button>
+          <el-button icon="el-icon-edit" size="small" type="warning" @click="handleExport()">导出</el-button>
         </el-col>
       </el-row>
     </el-form>
@@ -169,7 +170,7 @@
                 icon="el-icon-info"
                 icon-color="red"
                 title="是否通过该商家的审核？"
-                @onConfirm="submitCheck(scope.row)"
+                @confirm="submitCheck(scope.row)"
               >
                 <el-link slot="reference" icon="el-icon-check" type="success">审核通过</el-link>
               </el-popconfirm>
@@ -307,6 +308,7 @@ export default {
       return editEnterpriseData
     },
     submitCheck(row) {
+      console.log('发起审核')
       changeEnterpriseState({ id: row.id }).then(resp => {
         const { code, message, data } = resp
         if (code === 0) {
@@ -334,6 +336,9 @@ export default {
     handleAvatarSuccess(res, file) {
       this.dialogForm.album = 'http://localhost:8080/' + res.data.fileUrl
       this.avatar = this.dialogForm.album
+    },
+    handleExport() {
+      this.download('/api/enterprise/export/excel', this.queryParams, `商家信息.xlsx`)
     }
   }
 }

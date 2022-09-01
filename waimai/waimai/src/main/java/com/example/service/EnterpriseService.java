@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.dto.EnterpriseSearchDTO;
 import com.example.entity.Enterprise;
 
+import java.util.List;
+
 /**
  * @author 17602
  * @description 针对表【enterprise(商家信息表)】的数据库操作Service
@@ -32,4 +34,6 @@ public interface EnterpriseService extends IService<Enterprise> {
     int checkPhoneExists(Long id, String phone);
     
     IPage<Enterprise> searchByEnterprise();
+    
+    List<Enterprise> export(EnterpriseSearchDTO enterpriseSearchDTO);
 }

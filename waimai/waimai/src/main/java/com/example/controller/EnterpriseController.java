@@ -19,12 +19,17 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.util.IOUtils;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -195,6 +200,73 @@ public class EnterpriseController {
         queryWrapper.select(Enterprise::getId, Enterprise::getName, Enterprise::getStatus);
         List<Enterprise> enterpriseList = service.list(queryWrapper);
         return R.okHasData(enterpriseList);
+    }
+    
+    /**
+     * excel导出
+     *
+     * @param enterpriseSearchDTO
+     *
+     * @return
+     */
+    @AdminAccess
+    @ApiOperation("管理员-excel导出")
+    @PostMapping("/export/excel")
+    public void export(EnterpriseSearchDTO enterpriseSearchDTO, HttpServletResponse response) throws IOException {
+        List<Enterprise> search = service.export(enterpriseSearchDTO);
+        String[] headers = {"编号", "商家名称", "商家封面", "联系电话", "状态", "创建人", "创建时间"};
+        
+        Workbook wb = generateXlsx(headers, search);
+        // response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        // response.setCharacterEncoding("utf-8");
+        // wb.write(response.getOutputStream());
+        
+        // 把excel输出到响应流
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setCharacterEncoding("utf-8");
+        try {
+            wb.write(response.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            IOUtils.closeQuietly(wb);
+        }
+    }
+    
+    public static Workbook generateXlsx(String[] header, List<Enterprise> example) throws IOException {
+        // 创建工作文档对象
+        Workbook wb = new XSSFWorkbook();
+        
+        String[] status = {"正常", "禁用", "未审核"};
+        // 日期格式
+        CreationHelper createHelper = wb.getCreationHelper();
+        CellStyle cellStyle = wb.createCellStyle();
+        cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("yyyy/m/d h:mm"));
+        
+        // 创建sheet对象
+        Sheet sheet = wb.createSheet("sheet1");
+        // 循环写入行数据
+        Row row = sheet.createRow(0);
+        for (int i = 0; i < header.length; i++) {
+            Cell cell = row.createCell(i);
+            cell.setCellValue(header[i]);
+        }
+        for (int i = 1; i < example.size(); i++) {
+            row = sheet.createRow(i);
+            // 循环写入列数据
+            Enterprise enterprise = example.get(i);
+            row.createCell(0).setCellValue(enterprise.getId());
+            row.createCell(1).setCellValue(enterprise.getName());
+            row.createCell(2).setCellValue(enterprise.getAlbum());
+            row.createCell(3).setCellValue(enterprise.getPhone());
+            Integer state = enterprise.getStatus();
+            row.createCell(4).setCellValue(status[state]);
+            row.createCell(5).setCellValue(enterprise.getCreate_by());
+            Cell cell = row.createCell(6);
+            cell.setCellValue(enterprise.getCreate_time());
+            cell.setCellStyle(cellStyle);
+        }
+        return wb;
     }
     
     Enterprise hasEnterprise(Enterprise enterprise) {

@@ -10,15 +10,6 @@ export function sendSmsApi(phone) {
   })
 }
 
-/**
- * 判断是否短信已否还存在
- */
-export function checkSms(phone) {
-  return request({
-    url: '/front/sms/checkSmsSend/' + phone,
-    method: 'get'
-  })
-}
 
 /**
  * 验证手机验证码是否正确

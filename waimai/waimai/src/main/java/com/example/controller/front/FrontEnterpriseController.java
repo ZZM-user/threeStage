@@ -57,4 +57,5 @@ public class FrontEnterpriseController {
         }
         return save ? R.ok() : R.build(AckCode.FAIL);
     }
+    
 }

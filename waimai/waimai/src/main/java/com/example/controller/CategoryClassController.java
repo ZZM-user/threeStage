@@ -147,4 +147,5 @@ public class CategoryClassController {
         return counter == ids.size() ? R.ok() : R.build(AckCode.FAIL);
     }
     
+    
 }

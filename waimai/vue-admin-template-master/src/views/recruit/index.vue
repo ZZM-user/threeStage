@@ -95,8 +95,8 @@
                 <el-input v-model="form.phone" placeholder="联系电话"/>
               </el-form-item>
 
-              <el-form-item label="密码" prop="loginPwd">
-                <el-input v-model="form.loginPwd" placeholder="密码" type="password"/>
+              <el-form-item label="密码" prop="login_pwd">
+                <el-input v-model="form.login_pwd" placeholder="密码" type="password"/>
               </el-form-item>
 
               <el-form-item label="确认密码" prop="reLoginPwd">
@@ -120,20 +120,20 @@
                 <el-input v-model="form.address" placeholder="商家地址"/>
               </el-form-item>
 
-              <el-form-item label="商家图片" prop="picture">
+              <el-form-item label="商家图片" prop="album">
                 <el-upload
                   :before-upload="beforeAvatarUpload"
                   :on-success="handleAvatarSuccess"
                   :show-file-list="false"
-                  action="http://localhost:8080/image/upload"
+                  action="http://localhost:8080/img/upload"
                   class="avatar-uploader"
                 >
-                  <img v-if="form.picture" :src="form.picture" class="avatar" width="350">
+                  <img v-if="form.album" :src="form.album" class="avatar" width="350">
                   <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
 
                 <div style="display:none;">
-                  <el-input v-model="form.picture"/>
+                  <el-input v-model="form.album"/>
                 </div>
               </el-form-item>
 
@@ -208,7 +208,7 @@
 
     <!-- 地图选择器-->
     <el-dialog :close-on-click-modal="false" :visible.sync="mapShow" append-to-body title="位置选择器" width="800px">
-      <BaiduAddress :itemData="form" v-on:myclick="handlerLocation"></BaiduAddress>
+      <BaiduAddress :itemData="form" v-on:location="handlerLocation"></BaiduAddress>
     </el-dialog>
 
   </div>
@@ -218,7 +218,7 @@
 import { isPhone } from '@/utils/validate.js'
 import regUtil from '@/utils/regexpUtil.js'
 import { checkFrontPhoneIsExists, frontsave } from '@/api/enterprise.js'
-import { checkSms, sendSmsApi, validate } from '@/api/sms'
+import { sendSmsApi, validate } from '@/api/sms'
 import BaiduAddress from '@/components/BaiduAddress/index.vue'
 import CityList from '@/utils/city.json'
 
@@ -245,7 +245,7 @@ export default {
 
     // 验证密码是否相同
     const pwdConfirmFunction = (rule, value, callback) => {
-      if (value === this.form.loginPwd) {
+      if (value === this.form.login_pwd) {
         callback()
       } else {
         callback(new Error('两次输入的密码不一致'))
@@ -268,10 +268,11 @@ export default {
       // 发送短信按钮是否禁用(true禁用，false启用 )
       btnSendVisable: true,
       form: {
-        picture: undefined,
+        album: undefined,
         address: undefined,
         latitude: undefined,
-        longitude: undefined
+        longitude: undefined,
+        status: 2
       },
       rules: {
         loginName: [
@@ -295,10 +296,10 @@ export default {
         longitude: [
           { required: true, message: '该值不能为空', trigger: 'blur' }
         ],
-        picture: [
+        album: [
           { required: true, message: '该值不能为空', trigger: 'blur' }
         ],
-        loginPwd: [
+        login_pwd: [
           { required: true, message: '该值不能为空', trigger: 'blur' },
           { min: 4, max: 30, message: '密码长度在4-30个字符之间', trigger: 'blur' }
         ],
@@ -316,12 +317,6 @@ export default {
         this.$message.error('请勾选并阅读华信商家版隐私政策')
         return
       }
-
-      // 查看是否发送过短信
-      checkSms(this.form.loginName).then(resp => {
-        if (resp.data) {
-          this.$message.error(resp.message)
-        } else {
           // 发送短信
           sendSmsApi(this.form.loginName).then(resp => {
             //发送短信禁用，导计时
@@ -342,20 +337,18 @@ export default {
 
             }, 1000)
           })
-        }
-      })
     },
     // 地图位置注册事件
     handlerLocation(resp) {
+      this.mapShow = false
       console.log(resp)
       this.form.address = resp.address
       this.form.longitude = resp.longitude
       this.form.latitude = resp.latitude
-      this.mapShow = false
     },
     // 图片上传成功以后返回的数据(json, file[blob]数据)
     handleAvatarSuccess(res, file) {
-      this.form.picture = res.data.url
+      this.form.album = 'http://localhost:8080/' + res.data.fileUrl
     },
     // 图片上传之前验证
     beforeAvatarUpload(file) {
@@ -376,6 +369,7 @@ export default {
       validate(this.form).then(resp => {
         // 正确(进入到录入商家信息页面)
         this.step = 2
+        this.form.phone = this.form.loginName
       })
     },
     // 提交保存商家信息
@@ -402,12 +396,7 @@ export default {
       // 如果不为空
       if (this.form.loginName) {
         // 再验证手机号码格式是否正确，如果正确
-        if (isPhone(this.form.loginName)) {
-          return false
-        } else {
-          // 格式不正确
-          return true
-        }
+        return !isPhone(this.form.loginName)
       }
       return true
     }

@@ -1,7 +1,9 @@
 package com.example.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.common.vo.LoginUserVO;
@@ -12,6 +14,7 @@ import com.example.service.EnterpriseService;
 import com.example.util.ThreadLocalUser;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -56,10 +59,21 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
     public int checkPhoneExists(Long id, String phone) {
         QueryWrapper<Enterprise> wrapper = new QueryWrapper<>();
         wrapper.eq("phone", phone);
-        
+    
         if (Objects.nonNull(id)) {
             wrapper.ne("id", id);
         }
         return super.baseMapper.selectCount(wrapper).intValue();
+    }
+    
+    @Override
+    public List<Enterprise> export(EnterpriseSearchDTO enterpriseSearchDTO) {
+        QueryWrapper<Enterprise> wrapper = new QueryWrapper<>();
+        wrapper.like(StringUtils.isNotBlank(enterpriseSearchDTO.getName()), "name", enterpriseSearchDTO.getName());
+        wrapper.like(StringUtils.isNotBlank(enterpriseSearchDTO.getPhone()), "phone", enterpriseSearchDTO.getPhone());
+        wrapper.eq(ObjectUtil.isNotNull(enterpriseSearchDTO.getStatus()), "status", enterpriseSearchDTO.getStatus());
+        boolean b = ObjectUtil.isNotNull(enterpriseSearchDTO.getStartDate()) && ObjectUtil.isNotNull(enterpriseSearchDTO.getEndDate());
+        wrapper.between(b, "create_time", enterpriseSearchDTO.getStartDate(), enterpriseSearchDTO.getEndDate());
+        return super.baseMapper.selectList(wrapper);
     }
 }

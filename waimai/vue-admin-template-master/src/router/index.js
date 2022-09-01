@@ -56,7 +56,7 @@ export const constantRoutes = [
     component: () => import('@/views/recruit/safety-policy'),
     hidden: true,
     meta: {
-      title: '商家申请入住'
+      title: '商家申请入驻'
     }
   },
   {
