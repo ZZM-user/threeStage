@@ -1,0 +1,22 @@
+# 应用名称
+spring:
+  application:
+    name: eureka-server
+
+# 端口号
+server:
+  port: 8763
+
+# server client instance 三大类配置
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka01:8762,http://eureka02:8763
+  server:
+    eviction-interval-timer-in-ms: 10000 # 间隔多久定期删除
+    renewal-percent-threshold: 0.85 # 续约百分比 超过85%的服务都没有续约。则不剔除任何服务
+  instance:
+    hostname: eureka03
+    instance-id: ${eureka.instance.hostname}:${spring.application.name}:${server.port}
+    prefer-ip-address: true # 启用ip显示
+    lease-renewal-interval-in-seconds: 5 # 续约间隔
